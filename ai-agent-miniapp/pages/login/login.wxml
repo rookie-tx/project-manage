@@ -1,0 +1,36 @@
+<view class="login-page">
+  <!-- 微信登录 -->
+  <view class="login-card" wx:if="{{!showBindForm}}">
+    <view class="login-logo">
+      <text class="login-icon">🏗️</text>
+      <text class="login-title">智能管理平台</text>
+      <text class="login-subtitle">建筑项目管理 · 移动办公</text>
+    </view>
+
+    <view class="error-msg" wx:if="{{loginError}}">{{loginError}}</view>
+
+    <button class="wechat-login-btn" loading="{{loading}}" bindtap="handleWechatLogin">
+      微信一键登录
+    </button>
+
+    <text class="login-tip">首次登录后将自动创建账号</text>
+  </view>
+
+  <!-- 绑定已有账号 -->
+  <view class="login-card" wx:else>
+    <view class="login-logo">
+      <text class="login-icon">🔗</text>
+      <text class="login-title">绑定已有账号</text>
+      <text class="login-subtitle">输入您的系统账号完成绑定</text>
+    </view>
+
+    <view class="error-msg" wx:if="{{bindError}}">{{bindError}}</view>
+
+    <view class="bind-form">
+      <input class="form-input" placeholder="请输入用户名" value="{{username}}" bindinput="onUsernameInput" focus />
+      <input class="form-input" type="password" placeholder="请输入密码" value="{{password}}" bindinput="onPasswordInput" />
+      <button class="bind-submit-btn" loading="{{loading}}" bindtap="handleBind">绑定并登录</button>
+      <text class="go-back-link" bindtap="goBack">返回微信登录</text>
+    </view>
+  </view>
+</view>

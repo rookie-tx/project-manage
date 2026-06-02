@@ -1,0 +1,60 @@
+.dashboard-page { min-height: 100vh; background-color: #f0f2f5; }
+
+.dashboard-header {
+  background: #fff;
+  padding: 24rpx 32rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.header-title { font-size: 36rpx; font-weight: 700; color: #1a1a1a; }
+.logout-btn { font-size: 28rpx; color: #ff4d4f; }
+
+.user-card {
+  background: linear-gradient(135deg, #1677ff 0%, #69b1ff 100%);
+  margin: 32rpx;
+  padding: 40rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+}
+
+.avatar-text { color: #fff; font-size: 36rpx; font-weight: 700; }
+
+.user-info { display: flex; flex-direction: column; }
+.user-name { color: #fff; font-size: 36rpx; font-weight: 600; margin-bottom: 8rpx; }
+.user-role { color: rgba(255,255,255,0.8); font-size: 26rpx; }
+
+.feature-grid { display: flex; flex-wrap: wrap; padding: 0 16rpx; }
+
+.feature-item {
+  width: calc(50% - 32rpx);
+  margin: 16rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 40rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+
+.feature-icon { font-size: 56rpx; margin-bottom: 16rpx; }
+.feature-name { font-size: 28rpx; font-weight: 600; color: #333; margin-bottom: 8rpx; }
+.feature-tip { font-size: 22rpx; color: #bbb; }
+
+.version-info { padding: 60rpx 0 40rpx; display: flex; justify-content: center; }
+.version-text { font-size: 24rpx; color: #ccc; }

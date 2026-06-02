@@ -1,0 +1,32 @@
+<view class="dashboard-page">
+  <!-- 顶部栏 -->
+  <view class="dashboard-header">
+    <text class="header-title">智能管理平台</text>
+    <text class="logout-btn" bindtap="handleLogout">退出</text>
+  </view>
+
+  <!-- 用户卡片 -->
+  <view class="user-card">
+    <view class="user-avatar">
+      <text class="avatar-text">{{username[0]}}</text>
+    </view>
+    <view class="user-info">
+      <text class="user-name">{{username}}</text>
+      <text class="user-role">欢迎使用智能管理平台</text>
+    </view>
+  </view>
+
+  <!-- 功能入口（占位） -->
+  <view class="feature-grid">
+    <view class="feature-item" wx:for="{{features}}" wx:key="name">
+      <text class="feature-icon">{{item.icon}}</text>
+      <text class="feature-name">{{item.name}}</text>
+      <text class="feature-tip">{{item.tip}}</text>
+    </view>
+  </view>
+
+  <!-- 版本信息 -->
+  <view class="version-info">
+    <text class="version-text">Phase 1 · v1.0.0</text>
+  </view>
+</view>

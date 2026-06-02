@@ -1,0 +1,34 @@
+const auth = require('../../utils/auth')
+
+Page({
+  data: {
+    username: '',
+    features: [
+      { icon: '📋', name: '项目管理', tip: '即将上线' },
+      { icon: '📷', name: '废渣管理', tip: '即将上线' },
+      { icon: '⏱️', name: '考勤打卡', tip: '即将上线' },
+      { icon: '✅', name: '待办审批', tip: '即将上线' }
+    ]
+  },
+
+  onLoad() {
+    if (!auth.isLoggedIn()) {
+      wx.reLaunch({ url: '/pages/login/login' })
+      return
+    }
+    const user = auth.getUser()
+    this.setData({ username: user ? user.username : '未知' })
+  },
+
+  handleLogout() {
+    wx.showModal({
+      title: '提示',
+      content: '确定要退出登录吗？',
+      success: (res) => {
+        if (res.confirm) {
+          auth.logout()
+        }
+      }
+    })
+  }
+})
