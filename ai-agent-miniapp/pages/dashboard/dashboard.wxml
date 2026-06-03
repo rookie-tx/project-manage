@@ -18,7 +18,7 @@
 
   <!-- 功能入口（占位） -->
   <view class="feature-grid">
-    <view class="feature-item" wx:for="{{features}}" wx:key="name">
+    <view class="feature-item" wx:for="{{features}}" wx:key="name" data-index="{{index}}" bindtap="handleFeatureTap">
       <text class="feature-icon">{{item.icon}}</text>
       <text class="feature-name">{{item.name}}</text>
       <text class="feature-tip">{{item.tip}}</text>

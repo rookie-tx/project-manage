@@ -6,7 +6,7 @@ Page({
     features: [
       { icon: '📋', name: '项目管理', tip: '即将上线' },
       { icon: '📷', name: '废渣管理', tip: '即将上线' },
-      { icon: '⏱️', name: '考勤打卡', tip: '即将上线' },
+      { icon: '⏱️', name: '考勤打卡', tip: '点击进入', url: '/pages/checkin/checkin' },
       { icon: '✅', name: '待办审批', tip: '即将上线' }
     ]
   },
@@ -18,6 +18,14 @@ Page({
     }
     const user = auth.getUser()
     this.setData({ username: user ? user.username : '未知' })
+  },
+
+  handleFeatureTap(e) {
+    const idx = e.currentTarget.dataset.index
+    const feature = this.data.features[idx]
+    if (feature && feature.url) {
+      wx.navigateTo({ url: feature.url })
+    }
   },
 
   handleLogout() {

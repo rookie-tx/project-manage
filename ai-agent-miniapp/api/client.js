@@ -11,7 +11,8 @@ const BASE_URL = 'https://legwork-blush-vitally.ngrok-free.dev/api'
 function request(method, url, data) {
   const token = auth.getToken()
   const header = {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'ngrok-skip-browser-warning': '69420'
   }
   if (token) {
     header['Authorization'] = 'Bearer ' + token

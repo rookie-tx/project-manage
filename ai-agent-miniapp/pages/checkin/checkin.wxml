@@ -1,0 +1,55 @@
+<view class="checkin-page">
+  <!-- 用户信息 -->
+  <view class="user-bar">
+    <view class="user-avatar">{{username[0]}}</view>
+    <text class="user-name">{{username}}</text>
+  </view>
+
+  <!-- 今日打卡卡片 -->
+  <view class="today-card">
+    <view class="today-title">今日打卡</view>
+    <view class="today-body">
+      <view class="time-item">
+        <text class="time-label">上班</text>
+        <text class="time-value">{{clockInTime || '--:--'}}</text>
+      </view>
+      <view class="time-divider"></view>
+      <view class="time-item">
+        <text class="time-label">下班</text>
+        <text class="time-value">{{clockOutTime || '--:--'}}</text>
+      </view>
+    </view>
+    <view class="today-status">{{isClockedOut ? '已完成' : (isClockedIn ? '已上班' : '未打卡')}}</view>
+  </view>
+
+  <!-- 打卡按钮 -->
+  <view class="action-buttons">
+    <button class="btn-clock-in"
+            disabled="{{isClockedIn || locating || loading}}"
+            bindtap="handleClockIn">
+      {{locating ? '定位中...' : (isClockedIn ? '已打卡上班' : '上班打卡')}}
+    </button>
+    <button class="btn-clock-out"
+            disabled="{{!isClockedIn || isClockedOut || locating || loading}}"
+            bindtap="handleClockOut">
+      {{locating ? '定位中...' : (isClockedOut ? '已下班' : '下班打卡')}}
+    </button>
+  </view>
+
+  <!-- 本月记录 -->
+  <view class="records-section">
+    <view class="records-title">本月记录</view>
+    <view wx:if="{{recordsLoading}}" class="records-loading">加载中...</view>
+    <view wx:elif="{{records.length === 0}}" class="records-empty">本月暂无打卡记录</view>
+    <view wx:else class="records-list">
+      <view class="record-item" wx:for="{{records}}" wx:key="id">
+        <text class="record-date">{{item.dateStr}}</text>
+        <text class="record-in">上班: {{item.clockInStr}}</text>
+        <text class="record-out">下班: {{item.clockOutStr}}</text>
+        <text class="record-status {{item.isDone ? 'status-done' : 'status-in'}}">
+          {{item.isDone ? '已完成' : '已上班'}}
+        </text>
+      </view>
+    </view>
+  </view>
+</view>

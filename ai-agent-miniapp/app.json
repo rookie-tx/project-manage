@@ -1,7 +1,8 @@
 {
   "pages": [
     "pages/login/login",
-    "pages/dashboard/dashboard"
+    "pages/dashboard/dashboard",
+    "pages/checkin/checkin"
   ],
   "window": {
     "navigationBarTextStyle": "black",
@@ -9,6 +10,14 @@
     "navigationBarBackgroundColor": "#ffffff",
     "backgroundColor": "#f0f2f5"
   },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "需要使用您的位置信息进行考勤打卡范围校验"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation"
+  ],
   "style": "v2",
   "sitemapLocation": "sitemap.json"
 }
