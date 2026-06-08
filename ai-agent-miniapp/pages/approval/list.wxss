@@ -1,0 +1,119 @@
+.approval-list-page {
+  min-height: 100vh;
+  background: #f0f2f5;
+  padding-bottom: 20rpx;
+}
+
+.page-header {
+  padding: 20rpx 32rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #e8e8e8;
+}
+
+.header-title {
+  font-size: 34rpx;
+  font-weight: 600;
+}
+
+/* 加载中 */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 200rpx 0;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 200rpx 0;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 24rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 任务列表 */
+.tasks-list {
+  padding: 16rpx 24rpx;
+}
+
+.task-card {
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8rpx;
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 16rpx;
+}
+
+.card-time {
+  font-size: 22rpx;
+  color: #999;
+  flex-shrink: 0;
+}
+
+.card-mid {
+  margin-bottom: 12rpx;
+}
+
+.card-subtitle {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-node {
+  font-size: 24rpx;
+  color: #1677ff;
+  background: #e6f4ff;
+  padding: 4rpx 16rpx;
+  border-radius: 6rpx;
+}
+
+.card-arrow {
+  font-size: 24rpx;
+  color: #1677ff;
+}
+
+/* 底部加载 */
+.load-more {
+  text-align: center;
+  padding: 30rpx 0;
+  font-size: 24rpx;
+  color: #bbb;
+}

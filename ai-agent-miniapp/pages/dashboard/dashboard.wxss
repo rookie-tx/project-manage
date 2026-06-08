@@ -52,7 +52,10 @@
   box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
 }
 
-.feature-icon { font-size: 56rpx; margin-bottom: 16rpx; }
+.feature-icon-wrapper { position: relative; display: inline-block; margin-bottom: 16rpx; }
+.feature-icon { font-size: 56rpx; }
+.feature-badge { position: absolute; top: -8rpx; right: -16rpx; min-width: 32rpx; height: 32rpx; line-height: 32rpx; background: #ff4d4f; border-radius: 16rpx; padding: 0 6rpx; display: flex; justify-content: center; align-items: center; }
+.badge-text { font-size: 20rpx; color: #fff; }
 .feature-name { font-size: 28rpx; font-weight: 600; color: #333; margin-bottom: 8rpx; }
 .feature-tip { font-size: 22rpx; color: #bbb; }
 

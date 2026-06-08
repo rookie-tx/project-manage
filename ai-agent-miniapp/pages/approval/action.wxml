@@ -1,0 +1,72 @@
+<view class="approval-action-page">
+  <!-- 任务信息卡片 -->
+  <view class="info-card">
+    <view class="card-title">任务信息</view>
+    <view class="info-row">
+      <text class="info-label">业务类型</text>
+      <text class="info-value">{{businessType || '-'}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">业务标题</text>
+      <text class="info-value">{{businessTitle || '-'}}</text>
+    </view>
+    <view class="info-row" wx:if="{{businessSubtitle}}">
+      <text class="info-label">业务副标题</text>
+      <text class="info-value">{{businessSubtitle}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">当前节点</text>
+      <text class="info-value tag">{{nodeName || '-'}}</text>
+    </view>
+    <view class="info-row" wx:if="{{createTime}}">
+      <text class="info-label">到达时间</text>
+      <text class="info-value">{{createTime}}</text>
+    </view>
+  </view>
+
+  <!-- 审批意见 -->
+  <view class="comment-card">
+    <view class="card-title">审批意见</view>
+    <textarea class="comment-textarea" placeholder="{{canComplete ? '请输入审批意见（通过时选填，驳回时必填）' : '暂无审批权限'}}" value="{{comment}}" bindinput="onCommentInput" maxlength="500" auto-height disabled="{{!canComplete}}" />
+  </view>
+
+  <!-- 审批按钮 -->
+  <view class="action-bar" wx:if="{{canComplete}}">
+    <button class="btn-reject" loading="{{submitting}}" bindtap="handleReject">驳回</button>
+    <button class="btn-approve" loading="{{submitting}}" bindtap="handleApprove">通过</button>
+  </view>
+
+  <!-- 无权限提示 -->
+  <view class="no-permission" wx:if="{{!canComplete}}">
+    <text class="permission-text">您没有审批权限</text>
+  </view>
+
+  <!-- 审批历史时间线 -->
+  <view class="history-card">
+    <view class="card-title">审批历史</view>
+
+    <view wx:if="{{historyLoading}}" class="history-loading">
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <view wx:elif="{{history.length === 0}}" class="history-empty">
+      <text class="empty-text">暂无审批记录</text>
+    </view>
+
+    <view wx:else class="timeline">
+      <view class="timeline-item" wx:for="{{history}}" wx:key="index">
+        <view class="timeline-dot {{item.result === '通过' ? 'dot-approve' : 'dot-reject'}}"></view>
+        <view class="timeline-line" wx:if="{{index < history.length - 1}}"></view>
+        <view class="timeline-content">
+          <view class="timeline-header">
+            <text class="timeline-node">{{item.nodeName || '-'}}</text>
+            <text class="timeline-result {{item.result === '通过' ? 'text-approve' : 'text-reject'}}">{{item.result}}</text>
+          </view>
+          <text class="timeline-assignee">审批人：{{item.assignee || '-'}}</text>
+          <text class="timeline-comment" wx:if="{{item.comment}}">意见：{{item.comment}}</text>
+          <text class="timeline-time">{{item.time || '-'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -5,7 +5,9 @@
     "pages/checkin/checkin",
     "pages/waste/list",
     "pages/waste/create",
-    "pages/waste/detail"
+    "pages/waste/detail",
+    "pages/approval/list",
+    "pages/approval/action"
   ],
   "window": {
     "navigationBarTextStyle": "black",

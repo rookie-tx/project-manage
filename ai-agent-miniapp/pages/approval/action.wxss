@@ -1,0 +1,199 @@
+.approval-action-page {
+  min-height: 100vh;
+  background: #f0f2f5;
+  padding-bottom: 40rpx;
+}
+
+/* 信息卡片 */
+.info-card, .comment-card, .history-card {
+  background: #fff;
+  margin: 16rpx 24rpx;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid #fafafa;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 26rpx;
+  color: #999;
+  flex-shrink: 0;
+  margin-right: 24rpx;
+}
+
+.info-value {
+  font-size: 26rpx;
+  color: #333;
+  text-align: right;
+  word-break: break-all;
+}
+
+.info-value.tag {
+  color: #1677ff;
+  background: #e6f4ff;
+  padding: 4rpx 16rpx;
+  border-radius: 6rpx;
+}
+
+/* 审批意见 */
+.comment-textarea {
+  font-size: 28rpx;
+  color: #333;
+  width: 100%;
+  min-height: 120rpx;
+  box-sizing: border-box;
+}
+
+/* 审批按钮 */
+.action-bar {
+  display: flex;
+  gap: 24rpx;
+  margin: 24rpx 24rpx;
+}
+
+.btn-reject, .btn-approve {
+  flex: 1;
+  font-size: 30rpx;
+  border-radius: 8rpx;
+  padding: 22rpx 0;
+}
+
+.btn-reject {
+  background: #fff;
+  color: #ff4d4f;
+  border: 1rpx solid #ff4d4f;
+}
+
+.btn-approve {
+  background: #1677ff;
+  color: #fff;
+}
+
+/* 无权限提示 */
+.no-permission {
+  margin: 24rpx 24rpx;
+  text-align: center;
+}
+
+.permission-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 审批历史 */
+.history-loading, .history-empty {
+  text-align: center;
+  padding: 30rpx 0;
+}
+
+.loading-text, .empty-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 时间线 */
+.timeline {
+  padding-left: 20rpx;
+}
+
+.timeline-item {
+  display: flex;
+  position: relative;
+  padding-bottom: 24rpx;
+}
+
+.timeline-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  margin-top: 10rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.dot-approve {
+  background: #52c41a;
+}
+
+.dot-reject {
+  background: #ff4d4f;
+}
+
+.timeline-line {
+  position: absolute;
+  left: 7rpx;
+  top: 30rpx;
+  width: 2rpx;
+  height: calc(100% - 6rpx);
+  background: #e8e8e8;
+  z-index: 0;
+}
+
+.timeline-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6rpx;
+}
+
+.timeline-node {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.timeline-result {
+  font-size: 24rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 4rpx;
+}
+
+.text-approve {
+  color: #52c41a;
+  background: #f6ffed;
+}
+
+.text-reject {
+  color: #ff4d4f;
+  background: #fff2f0;
+}
+
+.timeline-assignee, .timeline-comment {
+  font-size: 24rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.timeline-time {
+  font-size: 22rpx;
+  color: #bbb;
+  display: block;
+}

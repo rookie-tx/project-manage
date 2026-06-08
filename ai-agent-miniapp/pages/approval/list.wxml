@@ -1,0 +1,40 @@
+<view class="approval-list-page">
+  <!-- 顶部栏 -->
+  <view class="page-header">
+    <text class="header-title">待办审批</text>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading && tasks.length === 0}}" class="loading-container">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:elif="{{tasks.length === 0}}" class="empty-container">
+    <text class="empty-icon">✅</text>
+    <text class="empty-text">暂无待办任务</text>
+  </view>
+
+  <!-- 任务列表 -->
+  <view wx:else class="tasks-list">
+    <view class="task-card" wx:for="{{tasks}}" wx:key="taskId" data-task="{{item}}" bindtap="handleTaskTap">
+      <view class="card-top">
+        <text class="card-title">{{item.businessTitle || '未命名'}}</text>
+        <text class="card-time">{{item.createTimeStr}}</text>
+      </view>
+      <view class="card-mid">
+        <text class="card-subtitle">{{item.businessSubtitle || ''}}</text>
+      </view>
+      <view class="card-bottom">
+        <text class="card-node">{{item.nodeName || ''}}</text>
+        <text class="card-arrow">处理 ›</text>
+      </view>
+    </view>
+
+    <!-- 底部加载状态 -->
+    <view class="load-more">
+      <text wx:if="{{loading}}">加载中...</text>
+      <text wx:elif="{{!hasMore}}">— 没有更多了 —</text>
+    </view>
+  </view>
+</view>

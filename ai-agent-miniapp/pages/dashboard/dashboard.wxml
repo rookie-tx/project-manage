@@ -19,7 +19,12 @@
   <!-- 功能入口（占位） -->
   <view class="feature-grid">
     <view class="feature-item" wx:for="{{features}}" wx:key="name" data-index="{{index}}" bindtap="handleFeatureTap">
-      <text class="feature-icon">{{item.icon}}</text>
+      <view class="feature-icon-wrapper">
+        <text class="feature-icon">{{item.icon}}</text>
+        <view class="feature-badge" wx:if="{{item.badge && approvalCount > 0}}">
+          <text class="badge-text">{{approvalCount > 99 ? '99+' : approvalCount}}</text>
+        </view>
+      </view>
       <text class="feature-name">{{item.name}}</text>
       <text class="feature-tip">{{item.tip}}</text>
     </view>
