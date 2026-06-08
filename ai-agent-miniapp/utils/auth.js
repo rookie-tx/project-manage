@@ -15,6 +15,14 @@ function getUser() {
   return _user
 }
 
+function getPermissions() {
+  return (_user && _user.permissions) ? _user.permissions : []
+}
+
+function hasPermission(perm) {
+  return getPermissions().includes(perm)
+}
+
 function setAuth(token, user) {
   _token = token
   _user = user
@@ -33,4 +41,4 @@ function logout() {
   wx.reLaunch({ url: '/pages/login/login' })
 }
 
-module.exports = { isLoggedIn, getToken, getUser, setAuth, clearAuth, logout }
+module.exports = { isLoggedIn, getToken, getUser, getPermissions, hasPermission, setAuth, clearAuth, logout }

@@ -5,7 +5,7 @@ Page({
     username: '',
     features: [
       { icon: '📋', name: '项目管理', tip: '即将上线' },
-      { icon: '📷', name: '废渣管理', tip: '即将上线' },
+      { icon: '📷', name: '废渣管理', tip: '点击进入', url: '/pages/waste/list' },
       { icon: '⏱️', name: '考勤打卡', tip: '点击进入', url: '/pages/checkin/checkin' },
       { icon: '✅', name: '待办审批', tip: '即将上线' }
     ]

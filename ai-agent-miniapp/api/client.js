@@ -1,4 +1,5 @@
 const auth = require('../utils/auth')
+const storage = require('../utils/storage')
 
 const BASE_URL = 'https://legwork-blush-vitally.ngrok-free.dev/api'
 
@@ -9,7 +10,11 @@ const BASE_URL = 'https://legwork-blush-vitally.ngrok-free.dev/api'
  * - 认证错误跳转登录
  */
 function request(method, url, data) {
-  const token = auth.getToken()
+  // 双重保障：内存优先，storage 兜底（防止模块变量因小程序引擎回收而丢失）
+  let token = auth.getToken()
+  if (!token) {
+    token = storage.getToken()
+  }
   const header = {
     'Content-Type': 'application/json',
     'ngrok-skip-browser-warning': '69420'

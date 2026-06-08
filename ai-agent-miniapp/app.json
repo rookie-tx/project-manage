@@ -2,7 +2,10 @@
   "pages": [
     "pages/login/login",
     "pages/dashboard/dashboard",
-    "pages/checkin/checkin"
+    "pages/checkin/checkin",
+    "pages/waste/list",
+    "pages/waste/create",
+    "pages/waste/detail"
   ],
   "window": {
     "navigationBarTextStyle": "black",

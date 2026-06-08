@@ -1,0 +1,86 @@
+<view class="waste-detail-page">
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 记录不存在 -->
+  <view wx:elif="{{!record}}" class="empty-container">
+    <text class="empty-icon">📋</text>
+    <text class="empty-text">记录不存在</text>
+    <view class="btn-back" bindtap="navigateBack">
+      <text>返回列表</text>
+    </view>
+  </view>
+
+  <!-- 详情内容 -->
+  <view wx:else>
+    <!-- 基本信息卡片 -->
+    <view class="info-card">
+      <view class="card-title">基本信息</view>
+      <view class="info-row">
+        <text class="info-label">所属项目</text>
+        <text class="info-value">{{record.projectName || '未知'}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">废渣种类</text>
+        <text class="info-value tag">{{record.wasteType}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">数量</text>
+        <text class="info-value">{{quantityStr}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">运出日期</text>
+        <text class="info-value">{{removalDateStr}}</text>
+      </view>
+    </view>
+
+    <!-- 运输信息卡片 -->
+    <view class="info-card" wx:if="{{record.vehiclePlate || record.driverName || record.destination}}">
+      <view class="card-title">运输信息</view>
+      <view class="info-row" wx:if="{{record.vehiclePlate}}">
+        <text class="info-label">车牌号</text>
+        <text class="info-value">{{record.vehiclePlate}}</text>
+      </view>
+      <view class="info-row" wx:if="{{record.driverName}}">
+        <text class="info-label">司机姓名</text>
+        <text class="info-value">{{record.driverName}}</text>
+      </view>
+      <view class="info-row" wx:if="{{record.destination}}">
+        <text class="info-label">处置去向</text>
+        <text class="info-value">{{record.destination}}</text>
+      </view>
+    </view>
+
+    <!-- 备注卡片 -->
+    <view class="info-card" wx:if="{{record.remark}}">
+      <view class="card-title">备注</view>
+      <text class="remark-text">{{record.remark}}</text>
+    </view>
+
+    <!-- 操作信息 -->
+    <view class="info-card">
+      <view class="card-title">操作信息</view>
+      <view class="info-row" wx:if="{{createdAtStr}}">
+        <text class="info-label">创建时间</text>
+        <text class="info-value">{{createdAtStr}}</text>
+      </view>
+    </view>
+
+    <!-- 现场照片 -->
+    <view class="info-card" wx:if="{{photoUrls.length > 0}}">
+      <view class="card-title">现场照片</view>
+      <view class="photo-grid">
+        <view class="photo-item" wx:for="{{photoUrls}}" wx:key="index" data-index="{{index}}" bindtap="handlePreviewPhoto">
+          <image class="photo-thumb" src="{{item}}" mode="aspectFill" />
+        </view>
+      </view>
+    </view>
+
+    <!-- 删除按钮 -->
+    <view class="delete-bar" wx:if="{{canDelete}}">
+      <button class="btn-delete" bindtap="handleDelete">删除记录</button>
+    </view>
+  </view>
+</view>

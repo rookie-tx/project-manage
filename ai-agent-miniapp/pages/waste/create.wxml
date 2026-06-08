@@ -1,0 +1,106 @@
+<view class="waste-create-page">
+  <!-- 顶部栏 -->
+  <view class="page-header">
+    <text class="header-title">新建运出记录</text>
+  </view>
+
+  <!-- 错误提示 -->
+  <view class="error-bar" wx:if="{{error}}">
+    <text class="error-text">{{error}}</text>
+  </view>
+
+  <!-- 表单 -->
+  <view class="form-container">
+    <!-- 所属项目 -->
+    <view class="form-item">
+      <text class="form-label">所属项目 <text class="required">*</text></text>
+      <picker mode="selector" range="{{projectNames}}" value="{{selectedProjectIdx}}" bindchange="onProjectChange">
+        <view class="form-picker {{selectedProjectIdx === -1 ? 'picker-placeholder' : ''}}">
+          <text>{{selectedProjectIdx === -1 ? '请选择项目' : projectNames[selectedProjectIdx]}}</text>
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 废渣种类 -->
+    <view class="form-item">
+      <text class="form-label">废渣种类 <text class="required">*</text></text>
+      <input class="form-input" placeholder="如：混凝土块、砖块、土方" value="{{form.wasteType}}" data-field="wasteType" bindinput="onInput" />
+    </view>
+
+    <!-- 数量 + 单位 -->
+    <view class="form-row">
+      <view class="form-item form-half">
+        <text class="form-label">数量 <text class="required">*</text></text>
+        <input class="form-input" type="digit" placeholder="数量" value="{{form.quantity}}" data-field="quantity" bindinput="onInput" />
+      </view>
+      <view class="form-item form-half">
+        <text class="form-label">单位 <text class="required">*</text></text>
+        <input class="form-input" placeholder="如：吨、方、车" value="{{form.unit}}" data-field="unit" bindinput="onInput" />
+      </view>
+    </view>
+
+    <!-- 车牌号 + 司机 -->
+    <view class="form-row">
+      <view class="form-item form-half">
+        <text class="form-label">车牌号</text>
+        <input class="form-input" placeholder="运输车辆车牌号" value="{{form.vehiclePlate}}" data-field="vehiclePlate" bindinput="onInput" />
+      </view>
+      <view class="form-item form-half">
+        <text class="form-label">司机姓名</text>
+        <input class="form-input" placeholder="运输司机姓名" value="{{form.driverName}}" data-field="driverName" bindinput="onInput" />
+      </view>
+    </view>
+
+    <!-- 处置去向 -->
+    <view class="form-item">
+      <text class="form-label">处置去向</text>
+      <input class="form-input" placeholder="如：城南建筑垃圾处理厂" value="{{form.destination}}" data-field="destination" bindinput="onInput" />
+    </view>
+
+    <!-- 运出日期 -->
+    <view class="form-item">
+      <text class="form-label">运出日期 <text class="required">*</text></text>
+      <picker mode="date" value="{{form.removalDate}}" bindchange="onDateChange">
+        <view class="form-picker {{form.removalDate ? '' : 'picker-placeholder'}}">
+          <text>{{form.removalDate || '选择运出日期'}}</text>
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 备注 -->
+    <view class="form-item">
+      <text class="form-label">备注</text>
+      <textarea class="form-textarea" placeholder="备注信息（可选）" value="{{form.remark}}" data-field="remark" bindinput="onInput" maxlength="500" auto-height />
+    </view>
+
+    <!-- 现场照片 -->
+    <view class="form-item">
+      <text class="form-label">现场照片 <text class="required">*</text></text>
+      <text class="form-hint">支持 JPG、PNG 格式，至少上传一张</text>
+
+      <view class="photo-grid">
+        <view class="photo-item" wx:for="{{photos}}" wx:key="index">
+          <image class="photo-thumb" src="{{item.filePath}}" mode="aspectFill" />
+          <view class="photo-uploading" wx:if="{{item.uploading}}">
+            <text class="uploading-text">上传中...</text>
+          </view>
+          <view class="photo-remove" wx:if="{{!item.uploading}}" data-index="{{index}}" bindtap="removePhoto">
+            <text class="remove-icon">✕</text>
+          </view>
+        </view>
+
+        <view class="photo-add" wx:if="{{photos.length < 9}}" bindtap="chooseImage">
+          <text class="add-icon">+</text>
+          <text class="add-text">拍照/相册</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 提交按钮 -->
+    <view class="submit-bar">
+      <button class="btn-submit" loading="{{submitting}}" bindtap="handleSubmit">提交记录</button>
+    </view>
+  </view>
+</view>

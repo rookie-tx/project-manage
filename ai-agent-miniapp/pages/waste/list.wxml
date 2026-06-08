@@ -1,0 +1,72 @@
+<view class="waste-list-page">
+  <!-- 顶部栏 -->
+  <view class="page-header">
+    <text class="header-title">废渣管理</text>
+    <text class="header-action" wx:if="{{canCreate}}" bindtap="handleCreate">+ 新建</text>
+  </view>
+
+  <!-- 筛选区 -->
+  <view class="filter-bar">
+    <picker mode="selector" range="{{projectNames}}" value="{{selectedProjectIdx}}" bindchange="onProjectChange">
+      <view class="filter-item">
+        <text class="filter-label">项目</text>
+        <text class="filter-value {{selectedProjectIdx === 0 ? 'filter-placeholder' : ''}}">{{projectNames[selectedProjectIdx]}}</text>
+      </view>
+    </picker>
+    <view class="filter-item">
+      <input class="filter-input" placeholder="废渣种类" value="{{wasteType}}" bindinput="onWasteTypeInput" bindblur="onWasteTypeSearch" bindconfirm="onWasteTypeSearch" />
+    </view>
+    <view class="filter-row">
+      <picker mode="date" value="{{startDate}}" bindchange="onStartDateChange">
+        <view class="filter-item filter-date">
+          <text class="filter-value {{startDate ? '' : 'filter-placeholder'}}">{{startDate || '开始日期'}}</text>
+        </view>
+      </picker>
+      <text class="filter-sep">—</text>
+      <picker mode="date" value="{{endDate}}" bindchange="onEndDateChange">
+        <view class="filter-item filter-date">
+          <text class="filter-value {{endDate ? '' : 'filter-placeholder'}}">{{endDate || '结束日期'}}</text>
+        </view>
+      </picker>
+    </view>
+    <view class="filter-clear" wx:if="{{selectedProjectIdx > 0 || wasteType || startDate || endDate}}" bindtap="clearFilters">
+      <text class="clear-text">清除筛选</text>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading && records.length === 0}}" class="loading-container">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:elif="{{records.length === 0}}" class="empty-container">
+    <text class="empty-icon">📋</text>
+    <text class="empty-text">暂无废渣运出记录</text>
+  </view>
+
+  <!-- 记录列表 -->
+  <view wx:else class="records-list">
+    <view class="record-card" wx:for="{{records}}" wx:key="id" data-id="{{item.id}}" bindtap="handleRecordTap">
+      <view class="card-top">
+        <text class="card-project">{{item.projectName || '未知项目'}}</text>
+        <text class="card-date">{{item.removalDateStr}}</text>
+      </view>
+      <view class="card-mid">
+        <text class="card-type">{{item.wasteType}}</text>
+        <text class="card-quantity">{{item.quantityStr}}</text>
+      </view>
+      <view class="card-bottom">
+        <text class="card-vehicle" wx:if="{{item.vehiclePlate}}">{{item.vehiclePlate}}</text>
+        <text class="card-driver" wx:if="{{item.driverName}}">{{item.driverName}}</text>
+        <text class="card-detail-link">查看详情 ›</text>
+      </view>
+    </view>
+
+    <!-- 底部加载状态 -->
+    <view class="load-more">
+      <text wx:if="{{loading}}">加载中...</text>
+      <text wx:elif="{{!hasMore}}">— 没有更多了 —</text>
+    </view>
+  </view>
+</view>
