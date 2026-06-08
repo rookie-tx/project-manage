@@ -1,157 +1,116 @@
-.checkin-page {
-  padding: 24rpx;
-  background: #f0f2f5;
-  min-height: 100vh;
-  box-sizing: border-box;
-}
+.checkin-page { min-height: 100vh; background: #f3f4f6; padding: 0 24rpx 40rpx; box-sizing: border-box; }
 
-/* 用户信息 */
-.user-bar {
-  display: flex;
-  align-items: center;
-  padding: 24rpx 0;
-}
+/* ===== 顶部 ===== */
+.top-bar { display: flex; justify-content: space-between; align-items: center; padding: 28rpx 0 8rpx; }
+.top-user { display: flex; align-items: center; }
 .user-avatar {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 50%;
-  background: #1890ff;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 36rpx;
-  font-weight: bold;
-  margin-right: 20rpx;
+  width: 72rpx; height: 72rpx; border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  display: flex; align-items: center; justify-content: center; margin-right: 20rpx;
 }
-.user-name {
-  font-size: 32rpx;
-  font-weight: 500;
-  color: #333;
-}
+.avatar-text { color: #fff; font-size: 32rpx; font-weight: 700; }
+.user-name { display: block; font-size: 30rpx; font-weight: 600; color: #1f2937; }
+.user-date { display: block; font-size: 22rpx; color: #9ca3af; margin-top: 2rpx; }
+.month-label { font-size: 56rpx; font-weight: 800; color: #e5e7eb; }
 
-/* 今日打卡卡片 */
-.today-card {
-  background: #fff;
-  border-radius: 16rpx;
-  padding: 32rpx;
-  margin-bottom: 32rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06);
-}
-.today-title {
-  font-size: 28rpx;
-  color: #999;
-  margin-bottom: 24rpx;
-}
-.today-body {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  margin-bottom: 24rpx;
-}
-.time-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.time-label {
-  font-size: 24rpx;
-  color: #999;
-  margin-bottom: 8rpx;
-}
-.time-value {
-  font-size: 48rpx;
-  font-weight: bold;
-  color: #333;
-}
-.time-divider {
-  width: 2rpx;
-  height: 80rpx;
-  background: #e8e8e8;
-}
-.today-status {
+/* ===== 时钟面板 ===== */
+.clock-card {
+  background: #fff; border-radius: 24rpx; padding: 36rpx;
+  margin-top: 24rpx; box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
   text-align: center;
-  font-size: 26rpx;
-  color: #52c41a;
 }
 
-/* 打卡按钮 */
-.action-buttons {
-  display: flex;
-  gap: 24rpx;
-  margin-bottom: 40rpx;
+.clock-status {
+  display: inline-flex; align-items: center; gap: 8rpx;
+  font-size: 24rpx; padding: 8rpx 24rpx; border-radius: 20rpx;
+  margin-bottom: 28rpx;
 }
-.btn-clock-in,
-.btn-clock-out {
-  flex: 1;
-  height: 100rpx;
-  line-height: 100rpx;
-  border-radius: 16rpx;
-  font-size: 32rpx;
-  font-weight: 500;
-  border: none;
-}
-.btn-clock-in {
-  background: #1890ff;
-  color: #fff;
-}
-.btn-clock-out {
-  background: #52c41a;
-  color: #fff;
-}
-.btn-clock-in[disabled],
-.btn-clock-out[disabled] {
-  background: #d9d9d9;
-  color: #999;
-}
+.clock-status.idle  { background: #f3f4f6; color: #9ca3af; }
+.clock-status.in    { background: #eff6ff; color: #3b82f6; }
+.clock-status.done  { background: #f0fdf4; color: #16a34a; }
+.status-dot { width: 12rpx; height: 12rpx; border-radius: 50%; }
+.idle .status-dot  { background: #d1d5db; }
+.in .status-dot    { background: #3b82f6; }
+.done .status-dot  { background: #16a34a; }
 
-/* 本月记录 */
+.clock-body { display: flex; align-items: center; justify-content: center; gap: 0; }
+.clock-item { flex: 1; display: flex; flex-direction: column; align-items: center; }
+.clock-label { font-size: 24rpx; color: #9ca3af; margin-bottom: 10rpx; letter-spacing: 4rpx; }
+.clock-time { font-size: 64rpx; font-weight: 800; color: #1f2937; font-family: 'SF Mono', 'Menlo', monospace; letter-spacing: 2rpx; }
+
+.clock-divider {
+  width: 80rpx; display: flex; flex-direction: column; align-items: center; gap: 10rpx;
+  padding: 0 20rpx;
+}
+.divider-line { width: 1rpx; height: 24rpx; background: #e5e7eb; }
+.divider-dot { width: 10rpx; height: 10rpx; border-radius: 50%; background: #e5e7eb; }
+
+/* ===== 打卡按钮 ===== */
+.action-area { display: flex; gap: 28rpx; margin: 32rpx 0; }
+
+.btn-wrap { flex: 1; position: relative; }
+
+.btn-check {
+  width: 100%; height: 120rpx; border-radius: 20rpx;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 28rpx; font-weight: 600; border: none; color: #fff;
+  position: relative; z-index: 1;
+}
+.btn-icon { font-size: 32rpx; margin-bottom: 6rpx; }
+
+.btn-in  { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); box-shadow: 0 6rpx 20rpx rgba(37,99,235,0.3); }
+.btn-out { background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); box-shadow: 0 6rpx 20rpx rgba(21,128,61,0.3); }
+
+.btn-in[disabled]  { background: #e5e7eb; color: #9ca3af; box-shadow: none; }
+.btn-out[disabled] { background: #e5e7eb; color: #9ca3af; box-shadow: none; }
+
+.btn-ring {
+  position: absolute; top: -6rpx; left: -6rpx; right: -6rpx; bottom: -6rpx;
+  border-radius: 24rpx; border: 3rpx dashed #3b82f6; z-index: 0; opacity: 0.6;
+}
+.btn-wrap:last-child .btn-ring { border-color: #16a34a; }
+
+.btn-busy { opacity: 0.7; }
+
+/* ===== 本月记录 ===== */
 .records-section {
-  background: #fff;
-  border-radius: 16rpx;
-  padding: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06);
+  background: #fff; border-radius: 24rpx; padding: 28rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
 }
-.records-title {
-  font-size: 30rpx;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 16rpx;
+
+.section-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 20rpx; padding-bottom: 18rpx;
+  border-bottom: 1rpx solid #f3f4f6;
 }
-.records-loading,
-.records-empty {
-  text-align: center;
-  padding: 48rpx 0;
-  color: #999;
-  font-size: 26rpx;
+.section-title { font-size: 30rpx; font-weight: 600; color: #1f2937; }
+.section-count { font-size: 24rpx; color: #9ca3af; }
+
+.records-placeholder {
+  display: flex; flex-direction: column; align-items: center; padding: 60rpx 0;
+  color: #9ca3af; font-size: 26rpx;
 }
-.record-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
-  font-size: 26rpx;
-  color: #666;
+.placeholder-icon { font-size: 56rpx; margin-bottom: 16rpx; }
+
+/* 记录行 */
+.record-row { display: flex; align-items: center; padding: 20rpx 0; }
+.record-row + .record-row { border-top: 1rpx solid #f9fafb; }
+
+.record-left { display: flex; align-items: center; flex: 1; }
+.record-dot { width: 14rpx; height: 14rpx; border-radius: 50%; margin-right: 16rpx; flex-shrink: 0; }
+.dot-in  { background: #fbbf24; }
+.dot-done { background: #16a34a; }
+
+.record-info { display: flex; flex-direction: column; }
+.record-date { font-size: 26rpx; font-weight: 500; color: #1f2937; }
+.record-weekday { font-size: 20rpx; color: #9ca3af; margin-top: 2rpx; }
+
+.record-right { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8rpx; }
+.record-time { font-size: 26rpx; color: #6b7280; font-family: 'SF Mono', 'Menlo', monospace; }
+.record-sep { font-size: 24rpx; color: #d1d5db; }
+
+.record-tag {
+  font-size: 22rpx; padding: 4rpx 16rpx; border-radius: 8rpx; flex-shrink: 0;
 }
-.record-item:last-child {
-  border-bottom: none;
-}
-.record-date {
-  flex: 1;
-}
-.record-in,
-.record-out {
-  flex: 1;
-  text-align: center;
-}
-.record-status {
-  width: 100rpx;
-  text-align: right;
-}
-.status-in {
-  color: #fa8c16;
-}
-.status-done {
-  color: #52c41a;
-}
+.tag-in  { background: #fef3c7; color: #d97706; }
+.tag-done { background: #dcfce7; color: #16a34a; }

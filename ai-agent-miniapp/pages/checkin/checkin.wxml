@@ -1,54 +1,97 @@
 <view class="checkin-page">
-  <!-- 用户信息 -->
-  <view class="user-bar">
-    <view class="user-avatar">{{username[0]}}</view>
-    <text class="user-name">{{username}}</text>
-  </view>
-
-  <!-- 今日打卡卡片 -->
-  <view class="today-card">
-    <view class="today-title">今日打卡</view>
-    <view class="today-body">
-      <view class="time-item">
-        <text class="time-label">上班</text>
-        <text class="time-value">{{clockInTime || '--:--'}}</text>
+  <!-- 用户条 -->
+  <view class="top-bar">
+    <view class="top-user">
+      <view class="user-avatar">
+        <text class="avatar-text">{{username[0]}}</text>
       </view>
-      <view class="time-divider"></view>
-      <view class="time-item">
-        <text class="time-label">下班</text>
-        <text class="time-value">{{clockOutTime || '--:--'}}</text>
+      <view>
+        <text class="user-name">{{username}}</text>
+        <text class="user-date">{{currentDate}}</text>
       </view>
     </view>
-    <view class="today-status">{{isClockedOut ? '已完成' : (isClockedIn ? '已上班' : '未打卡')}}</view>
+    <text class="month-label">{{currentMonth}}月</text>
+  </view>
+
+  <!-- 时钟面板 -->
+  <view class="clock-card">
+    <view class="clock-status {{isClockedOut ? 'done' : (isClockedIn ? 'in' : 'idle')}}">
+      <text class="status-dot"></text>
+      <text>{{isClockedOut ? '今日已完成' : (isClockedIn ? '工作中' : '未打卡')}}</text>
+    </view>
+
+    <view class="clock-body">
+      <view class="clock-item">
+        <text class="clock-label">上班</text>
+        <text class="clock-time">{{clockInTime || '--:--'}}</text>
+      </view>
+      <view class="clock-divider">
+        <view class="divider-line"></view>
+        <view class="divider-dot"></view>
+        <view class="divider-line"></view>
+      </view>
+      <view class="clock-item">
+        <text class="clock-label">下班</text>
+        <text class="clock-time">{{clockOutTime || '--:--'}}</text>
+      </view>
+    </view>
   </view>
 
   <!-- 打卡按钮 -->
-  <view class="action-buttons">
-    <button class="btn-clock-in"
-            disabled="{{isClockedIn || locating || loading}}"
-            bindtap="handleClockIn">
-      {{locating ? '定位中...' : (isClockedIn ? '已打卡上班' : '上班打卡')}}
-    </button>
-    <button class="btn-clock-out"
-            disabled="{{!isClockedIn || isClockedOut || locating || loading}}"
-            bindtap="handleClockOut">
-      {{locating ? '定位中...' : (isClockedOut ? '已下班' : '下班打卡')}}
-    </button>
+  <view class="action-area">
+    <view class="btn-wrap">
+      <button class="btn-check btn-in {{locating || loading ? 'btn-busy' : ''}}"
+              disabled="{{isClockedIn || locating || loading}}"
+              bindtap="handleClockIn">
+        <text class="btn-icon">📷</text>
+        <text>{{locating ? '定位中...' : (isClockedIn ? '已打卡' : '上班打卡')}}</text>
+      </button>
+      <view class="btn-ring" wx:if="{{!isClockedIn}}"></view>
+    </view>
+    <view class="btn-wrap">
+      <button class="btn-check btn-out {{locating || loading ? 'btn-busy' : ''}}"
+              disabled="{{!isClockedIn || isClockedOut || locating || loading}}"
+              bindtap="handleClockOut">
+        <text class="btn-icon">🏁</text>
+        <text>{{locating ? '定位中...' : (isClockedOut ? '已下班' : '下班打卡')}}</text>
+      </button>
+      <view class="btn-ring" wx:if="{{isClockedIn && !isClockedOut}}"></view>
+    </view>
   </view>
 
   <!-- 本月记录 -->
   <view class="records-section">
-    <view class="records-title">本月记录</view>
-    <view wx:if="{{recordsLoading}}" class="records-loading">加载中...</view>
-    <view wx:elif="{{records.length === 0}}" class="records-empty">本月暂无打卡记录</view>
+    <view class="section-header">
+      <text class="section-title">本月记录</text>
+      <text class="section-count" wx:if="{{records.length > 0}}">{{records.length}} 天</text>
+    </view>
+
+    <view wx:if="{{recordsLoading}}" class="records-placeholder">
+      <text>加载中...</text>
+    </view>
+
+    <view wx:elif="{{records.length === 0}}" class="records-placeholder">
+      <text class="placeholder-icon">📅</text>
+      <text>本月暂无打卡记录</text>
+    </view>
+
     <view wx:else class="records-list">
-      <view class="record-item" wx:for="{{records}}" wx:key="id">
-        <text class="record-date">{{item.dateStr}}</text>
-        <text class="record-in">上班: {{item.clockInStr}}</text>
-        <text class="record-out">下班: {{item.clockOutStr}}</text>
-        <text class="record-status {{item.isDone ? 'status-done' : 'status-in'}}">
-          {{item.isDone ? '已完成' : '已上班'}}
-        </text>
+      <view class="record-row" wx:for="{{records}}" wx:key="id">
+        <view class="record-left">
+          <view class="record-dot {{item.isDone ? 'dot-done' : 'dot-in'}}"></view>
+          <view class="record-info">
+            <text class="record-date">{{item.dateStr}}</text>
+            <text class="record-weekday">{{item.weekday || ''}}</text>
+          </view>
+        </view>
+        <view class="record-right">
+          <text class="record-time">{{item.clockInStr}}</text>
+          <text class="record-sep">—</text>
+          <text class="record-time">{{item.clockOutStr}}</text>
+        </view>
+        <view class="record-tag {{item.isDone ? 'tag-done' : 'tag-in'}}">
+          {{item.isDone ? '完成' : '上班中'}}
+        </view>
       </view>
     </view>
   </view>

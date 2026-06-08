@@ -1,17 +1,10 @@
 <view class="waste-create-page">
-  <!-- 顶部栏 -->
-  <view class="page-header">
-    <text class="header-title">新建运出记录</text>
-  </view>
-
-  <!-- 错误提示 -->
   <view class="error-bar" wx:if="{{error}}">
     <text class="error-text">{{error}}</text>
   </view>
 
-  <!-- 表单 -->
-  <view class="form-container">
-    <!-- 所属项目 -->
+  <view class="form-section">
+    <!-- 项目 -->
     <view class="form-item">
       <text class="form-label">所属项目 <text class="required">*</text></text>
       <picker mode="selector" range="{{projectNames}}" value="{{selectedProjectIdx}}" bindchange="onProjectChange">
@@ -36,7 +29,7 @@
       </view>
       <view class="form-item form-half">
         <text class="form-label">单位 <text class="required">*</text></text>
-        <input class="form-input" placeholder="如：吨、方、车" value="{{form.unit}}" data-field="unit" bindinput="onInput" />
+        <input class="form-input" placeholder="吨、方、车" value="{{form.unit}}" data-field="unit" bindinput="onInput" />
       </view>
     </view>
 
@@ -74,33 +67,35 @@
       <text class="form-label">备注</text>
       <textarea class="form-textarea" placeholder="备注信息（可选）" value="{{form.remark}}" data-field="remark" bindinput="onInput" maxlength="500" auto-height />
     </view>
+  </view>
 
-    <!-- 现场照片 -->
-    <view class="form-item">
-      <text class="form-label">现场照片 <text class="required">*</text></text>
-      <text class="form-hint">支持 JPG、PNG 格式，至少上传一张</text>
+  <!-- 照片 -->
+  <view class="photo-section">
+    <view class="section-header">
+      <text class="section-title">现场照片 <text class="required">*</text></text>
+      <text class="section-hint">至少一张 · 支持 JPG/PNG</text>
+    </view>
 
-      <view class="photo-grid">
-        <view class="photo-item" wx:for="{{photos}}" wx:key="index">
-          <image class="photo-thumb" src="{{item.filePath}}" mode="aspectFill" />
-          <view class="photo-uploading" wx:if="{{item.uploading}}">
-            <text class="uploading-text">上传中...</text>
-          </view>
-          <view class="photo-remove" wx:if="{{!item.uploading}}" data-index="{{index}}" bindtap="removePhoto">
-            <text class="remove-icon">✕</text>
-          </view>
+    <view class="photo-grid">
+      <view class="photo-item" wx:for="{{photos}}" wx:key="index">
+        <image class="photo-thumb" src="{{item.filePath}}" mode="aspectFill" />
+        <view class="photo-mask" wx:if="{{item.uploading}}">
+          <text class="mask-text">上传中</text>
         </view>
-
-        <view class="photo-add" wx:if="{{photos.length < 9}}" bindtap="chooseImage">
-          <text class="add-icon">+</text>
-          <text class="add-text">拍照/相册</text>
+        <view class="photo-remove" wx:if="{{!item.uploading}}" data-index="{{index}}" bindtap="removePhoto">
+          <text class="remove-icon">✕</text>
         </view>
       </view>
-    </view>
 
-    <!-- 提交按钮 -->
-    <view class="submit-bar">
-      <button class="btn-submit" loading="{{submitting}}" bindtap="handleSubmit">提交记录</button>
+      <view class="photo-add" wx:if="{{photos.length < 9}}" bindtap="chooseImage">
+        <text class="add-icon">+</text>
+        <text class="add-label">拍照/相册</text>
+      </view>
     </view>
+  </view>
+
+  <!-- 提交 -->
+  <view class="submit-bar">
+    <button class="btn-submit" loading="{{submitting}}" bindtap="handleSubmit">提交记录</button>
   </view>
 </view>

@@ -1,4 +1,6 @@
 {
   "usingComponents": {},
-  "navigationBarTitleText": "考勤打卡"
+  "navigationBarTitleText": "考勤打卡",
+  "navigationBarBackgroundColor": "#ffffff",
+  "backgroundColor": "#f3f4f6"
 }

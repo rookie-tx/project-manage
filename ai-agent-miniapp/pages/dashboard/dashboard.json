@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "智能管理平台",
+  "navigationBarBackgroundColor": "#ffffff",
+  "backgroundColor": "#f3f4f6",
   "usingComponents": {}
 }

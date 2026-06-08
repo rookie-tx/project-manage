@@ -1,37 +1,65 @@
 <view class="dashboard-page">
-  <!-- 顶部栏 -->
-  <view class="dashboard-header">
-    <text class="header-title">智能管理平台</text>
-    <text class="logout-btn" bindtap="handleLogout">退出</text>
-  </view>
-
-  <!-- 用户卡片 -->
-  <view class="user-card">
-    <view class="user-avatar">
+  <!-- 顶部问候 -->
+  <view class="greeting-section">
+    <view class="greeting-left">
+      <text class="greeting-text">{{greetingText}}</text>
+      <text class="greeting-user">{{username}}</text>
+    </view>
+    <view class="greeting-avatar" bindtap="handleLogout">
       <text class="avatar-text">{{username[0]}}</text>
     </view>
-    <view class="user-info">
-      <text class="user-name">{{username}}</text>
-      <text class="user-role">欢迎使用智能管理平台</text>
+  </view>
+
+  <!-- 概览卡片 -->
+  <view class="overview-row">
+    <view class="overview-card overview-blue" bindtap="handleOverviewTap" data-type="checkin">
+      <view class="overview-icon-wrap">
+        <text class="overview-icon">⏱️</text>
+      </view>
+      <view class="overview-info">
+        <text class="overview-value">考勤打卡</text>
+        <text class="overview-label">今日{{checkedIn ? '已打卡' : '未打卡'}}</text>
+      </view>
+      <text class="overview-arrow">›</text>
+    </view>
+    <view class="overview-card overview-red" bindtap="handleOverviewTap" data-type="approval">
+      <view class="overview-icon-wrap">
+        <text class="overview-icon">✅</text>
+      </view>
+      <view class="overview-info">
+        <text class="overview-value">{{approvalCount}} 项待办</text>
+        <text class="overview-label">审批任务</text>
+      </view>
+      <text class="overview-arrow">›</text>
     </view>
   </view>
 
-  <!-- 功能入口（占位） -->
+  <!-- 功能入口 -->
+  <view class="section-header">
+    <text class="section-title">功能服务</text>
+  </view>
+
   <view class="feature-grid">
-    <view class="feature-item" wx:for="{{features}}" wx:key="name" data-index="{{index}}" bindtap="handleFeatureTap">
-      <view class="feature-icon-wrapper">
-        <text class="feature-icon">{{item.icon}}</text>
-        <view class="feature-badge" wx:if="{{item.badge && approvalCount > 0}}">
-          <text class="badge-text">{{approvalCount > 99 ? '99+' : approvalCount}}</text>
-        </view>
+    <view
+      class="feature-card {{item.active ? 'card-active' : 'card-disabled'}}"
+      wx:for="{{features}}"
+      wx:key="name"
+      data-index="{{index}}"
+      bindtap="handleFeatureTap"
+    >
+      <view class="card-icon-container" style="background: {{item.color}}">
+        <text class="card-icon">{{item.icon}}</text>
       </view>
-      <text class="feature-name">{{item.name}}</text>
-      <text class="feature-tip">{{item.tip}}</text>
+      <text class="card-name">{{item.name}}</text>
+      <text class="card-tip">{{item.tip}}</text>
+      <view class="card-badge" wx:if="{{item.badge && approvalCount > 0}}">
+        <text class="card-badge-text">{{approvalCount > 99 ? '99+' : approvalCount}}</text>
+      </view>
     </view>
   </view>
 
   <!-- 版本信息 -->
-  <view class="version-info">
-    <text class="version-text">Phase 1 · v1.0.0</text>
+  <view class="footer">
+    <text class="footer-text">智能管理平台 v1.0</text>
   </view>
 </view>

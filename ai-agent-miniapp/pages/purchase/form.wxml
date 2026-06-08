@@ -1,8 +1,4 @@
 <view class="pr-form-page">
-  <view class="page-header">
-    <text class="header-title">{{title}}</text>
-  </view>
-
   <view class="error-bar" wx:if="{{error}}">
     <text class="error-text">{{error}}</text>
   </view>

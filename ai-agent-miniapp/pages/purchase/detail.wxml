@@ -1,37 +1,55 @@
 <view class="pr-detail-page">
-  <view wx:if="{{loading}}" class="loading-container">
-    <text class="loading-text">加载中...</text>
+  <view wx:if="{{loading}}" class="state-box">
+    <text class="state-text">加载中...</text>
   </view>
 
-  <view wx:elif="{{!record}}" class="empty-container">
-    <text class="empty-text">记录不存在</text>
+  <view wx:elif="{{!record}}" class="state-box">
+    <text class="state-text">记录不存在</text>
   </view>
 
   <view wx:else>
-    <!-- 基本信息 -->
-    <view class="info-card">
-      <view class="card-title">{{record.name}}</view>
-      <view class="info-row"><text class="info-label">项目</text><text class="info-value">{{record.projectName || '-'}}</text></view>
-      <view class="info-row"><text class="info-label">物料名称</text><text class="info-value">{{record.name}}</text></view>
-      <view class="info-row" wx:if="{{record.specification}}"><text class="info-label">规格</text><text class="info-value">{{record.specification}}</text></view>
-      <view class="info-row" wx:if="{{record.brand}}"><text class="info-label">品牌</text><text class="info-value">{{record.brand}}</text></view>
-      <view class="info-row"><text class="info-label">数量</text><text class="info-value">{{quantityStr}}</text></view>
-      <view class="info-row"><text class="info-label">到场时间</text><text class="info-value">{{arrivalDateStr}}</text></view>
-      <view class="info-row">
-        <text class="info-label">状态</text>
-        <text class="info-value tag status-{{record.statusCode}}">{{statusLabel}}</text>
+    <!-- 头部 -->
+    <view class="detail-card">
+      <view class="card-head">
+        <view class="head-icon">📦</view>
+        <view class="head-info">
+          <text class="head-title">{{record.name}}</text>
+          <text class="head-sub">{{record.projectName || '未知项目'}}</text>
+        </view>
+        <view class="head-status status-{{record.statusCode}}">{{statusLabel}}</view>
       </view>
-      <view class="info-row" wx:if="{{record.currentApprovalNode}}">
-        <text class="info-label">当前审批节点</text><text class="info-value">{{record.currentApprovalNode}}</text>
+      <view class="divider"></view>
+      <view class="detail-grid">
+        <view class="grid-item" wx:if="{{record.specification}}">
+          <text class="grid-label">规格</text><text class="grid-value">{{record.specification}}</text>
+        </view>
+        <view class="grid-item" wx:if="{{record.brand}}">
+          <text class="grid-label">品牌</text><text class="grid-value">{{record.brand}}</text>
+        </view>
+        <view class="grid-item">
+          <text class="grid-label">数量</text><text class="grid-value">{{quantityStr}}</text>
+        </view>
+        <view class="grid-item">
+          <text class="grid-label">到场时间</text><text class="grid-value">{{arrivalDateStr}}</text>
+        </view>
+        <view class="grid-item" wx:if="{{record.currentApprovalNode}}">
+          <text class="grid-label">当前节点</text><text class="grid-value tag-node">{{record.currentApprovalNode}}</text>
+        </view>
+        <view class="grid-item" wx:if="{{record.createdByName}}">
+          <text class="grid-label">创建人</text><text class="grid-value">{{record.createdByName}}</text>
+        </view>
+        <view class="grid-item" wx:if="{{createdAtStr}}">
+          <text class="grid-label">创建时间</text><text class="grid-value">{{createdAtStr}}</text>
+        </view>
+        <view class="grid-item full" wx:if="{{record.remark}}">
+          <text class="grid-label">备注</text><text class="grid-value">{{record.remark}}</text>
+        </view>
       </view>
-      <view class="info-row" wx:if="{{record.createdByName}}"><text class="info-label">创建人</text><text class="info-value">{{record.createdByName}}</text></view>
-      <view class="info-row" wx:if="{{createdAtStr}}"><text class="info-label">创建时间</text><text class="info-value">{{createdAtStr}}</text></view>
-      <view class="info-row" wx:if="{{record.remark}}"><text class="info-label">备注</text><text class="info-value">{{record.remark}}</text></view>
     </view>
 
-    <!-- 提交审批区（仅待提交 + 有权限） -->
-    <view class="submit-card" wx:if="{{isPending && canSubmit}}" id="submitArea">
-      <view class="card-title">提交审批</view>
+    <!-- 提交审批 -->
+    <view class="detail-card" wx:if="{{isPending && canSubmit}}" id="submitArea">
+      <text class="card-title">提交审批</text>
       <view class="form-item">
         <text class="form-label">部门经理</text>
         <picker mode="selector" range="{{userNames}}" value="{{deptMgrIdx}}" bindchange="onDeptMgrChange">
@@ -62,17 +80,17 @@
       <button class="btn-submit-approval" loading="{{submittingApproval}}" bindtap="handleSubmitApproval">确认提交审批</button>
     </view>
 
-    <!-- 操作按钮（仅待提交） -->
+    <!-- 操作 -->
     <view class="action-bar" wx:if="{{isPending}}">
       <button class="btn-edit" bindtap="handleEdit">编辑</button>
       <button class="btn-delete" bindtap="handleDelete">删除</button>
     </view>
 
-    <!-- 审批历史时间线 -->
-    <view class="history-card">
-      <view class="card-title">审批历史</view>
-      <view wx:if="{{historyLoading}}" class="history-loading"><text class="loading-text">加载中...</text></view>
-      <view wx:elif="{{history.length === 0}}" class="history-empty"><text class="empty-text">暂无审批记录</text></view>
+    <!-- 审批历史 -->
+    <view class="detail-card">
+      <text class="card-title">审批历史</text>
+      <view wx:if="{{historyLoading}}" class="history-placeholder"><text class="placeholder-text">加载中...</text></view>
+      <view wx:elif="{{history.length === 0}}" class="history-placeholder"><text class="placeholder-text">暂无审批记录</text></view>
       <view wx:else class="timeline">
         <view class="timeline-item" wx:for="{{history}}" wx:key="index">
           <view class="timeline-dot {{item.result === '通过' ? 'dot-approve' : 'dot-reject'}}"></view>

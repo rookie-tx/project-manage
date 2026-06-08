@@ -4,13 +4,15 @@ const approvalApi = require('../../api/approval')
 Page({
   data: {
     username: '',
+    greetingText: '',
+    checkedIn: false,
     approvalCount: 0,
     features: [
-      { icon: '📋', name: '项目管理', tip: '即将上线' },
-      { icon: '📷', name: '废渣管理', tip: '点击进入', url: '/pages/waste/list' },
-      { icon: '⏱️', name: '考勤打卡', tip: '点击进入', url: '/pages/checkin/checkin' },
-      { icon: '✅', name: '待办审批', tip: '点击进入', url: '/pages/approval/list', badge: true },
-      { icon: '📦', name: '采购申请', tip: '点击进入', url: '/pages/purchase/list' }
+      { icon: '📷', name: '废渣管理', tip: '点击使用', active: true, url: '/pages/waste/list', color: '#eff6ff' },
+      { icon: '📦', name: '采购申请', tip: '点击使用', active: true, url: '/pages/purchase/list', color: '#fef3c7' },
+      { icon: '⏱️', name: '考勤打卡', tip: '点击使用', active: true, url: '/pages/checkin/checkin', color: '#dbeafe' },
+      { icon: '✅', name: '待办审批', tip: '点击使用', active: true, url: '/pages/approval/list', badge: true, color: '#fce7f3' },
+      { icon: '📋', name: '项目管理', tip: '即将开放', active: false, url: '', color: '#f3f4f6' }
     ]
   },
 
@@ -20,7 +22,10 @@ Page({
       return
     }
     const user = auth.getUser()
-    this.setData({ username: user ? user.username : '未知' })
+    this.setData({
+      username: user ? user.username : '未知',
+      greetingText: getGreeting()
+    })
     this.loadApprovalCount()
   },
 
@@ -28,7 +33,6 @@ Page({
     this.loadApprovalCount()
   },
 
-  /** 加载待办审批数量 */
   async loadApprovalCount() {
     try {
       const result = await approvalApi.count()
@@ -47,6 +51,15 @@ Page({
     }
   },
 
+  handleOverviewTap(e) {
+    const type = e.currentTarget.dataset.type
+    if (type === 'checkin') {
+      wx.navigateTo({ url: '/pages/checkin/checkin' })
+    } else if (type === 'approval') {
+      wx.navigateTo({ url: '/pages/approval/list' })
+    }
+  },
+
   handleLogout() {
     wx.showModal({
       title: '提示',
@@ -59,3 +72,13 @@ Page({
     })
   }
 })
+
+function getGreeting() {
+  const h = new Date().getHours()
+  if (h < 6) return '夜深了，注意休息'
+  if (h < 9) return '早上好'
+  if (h < 12) return '上午好'
+  if (h < 14) return '中午好'
+  if (h < 18) return '下午好'
+  return '晚上好'
+}
