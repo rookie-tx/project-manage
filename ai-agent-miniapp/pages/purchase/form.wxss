@@ -1,0 +1,18 @@
+.pr-form-page { min-height: 100vh; background: #f0f2f5; padding-bottom: 60rpx; }
+.page-header { padding: 20rpx 32rpx; background: #fff; border-bottom: 1rpx solid #e8e8e8; }
+.header-title { font-size: 34rpx; font-weight: 600; }
+.error-bar { margin: 16rpx 24rpx; padding: 16rpx 24rpx; background: #fff2f0; border: 1rpx solid #ffccc7; border-radius: 8rpx; }
+.error-text { font-size: 26rpx; color: #ff4d4f; }
+.form-container { padding: 24rpx; }
+.form-item { margin-bottom: 28rpx; }
+.form-label { display: block; font-size: 28rpx; color: #333; margin-bottom: 12rpx; font-weight: 500; }
+.required { color: #ff4d4f; }
+.form-input { background: #fff; border: 1rpx solid #d9d9d9; border-radius: 8rpx; padding: 18rpx 20rpx; font-size: 28rpx; color: #333; }
+.form-textarea { background: #fff; border: 1rpx solid #d9d9d9; border-radius: 8rpx; padding: 18rpx 20rpx; font-size: 28rpx; color: #333; width: 100%; box-sizing: border-box; min-height: 150rpx; }
+.form-picker { background: #fff; border: 1rpx solid #d9d9d9; border-radius: 8rpx; padding: 18rpx 20rpx; font-size: 28rpx; color: #333; display: flex; justify-content: space-between; align-items: center; }
+.picker-placeholder { color: #bbb; }
+.picker-arrow { font-size: 36rpx; color: #bbb; }
+.form-row { display: flex; gap: 20rpx; }
+.form-half { flex: 1; }
+.submit-bar { margin-top: 20rpx; padding: 0 8rpx; }
+.btn-submit { width: 100%; background: #1677ff; color: #fff; font-size: 32rpx; border-radius: 8rpx; padding: 22rpx 0; }

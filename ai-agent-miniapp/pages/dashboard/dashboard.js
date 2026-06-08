@@ -9,7 +9,8 @@ Page({
       { icon: '📋', name: '项目管理', tip: '即将上线' },
       { icon: '📷', name: '废渣管理', tip: '点击进入', url: '/pages/waste/list' },
       { icon: '⏱️', name: '考勤打卡', tip: '点击进入', url: '/pages/checkin/checkin' },
-      { icon: '✅', name: '待办审批', tip: '点击进入', url: '/pages/approval/list', badge: true }
+      { icon: '✅', name: '待办审批', tip: '点击进入', url: '/pages/approval/list', badge: true },
+      { icon: '📦', name: '采购申请', tip: '点击进入', url: '/pages/purchase/list' }
     ]
   },
 
@@ -31,9 +32,9 @@ Page({
   async loadApprovalCount() {
     try {
       const result = await approvalApi.count()
-      this.setData({ approvalCount: result ? result.count : 0 })
+      const count = (result && typeof result.count === 'number') ? result.count : Number(result && result.count || 0)
+      this.setData({ approvalCount: count })
     } catch {
-      // 计数失败时不显示角标
       this.setData({ approvalCount: 0 })
     }
   },

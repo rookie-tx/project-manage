@@ -7,7 +7,10 @@
     "pages/waste/create",
     "pages/waste/detail",
     "pages/approval/list",
-    "pages/approval/action"
+    "pages/approval/action",
+    "pages/purchase/list",
+    "pages/purchase/form",
+    "pages/purchase/detail"
   ],
   "window": {
     "navigationBarTextStyle": "black",

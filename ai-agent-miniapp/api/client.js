@@ -71,6 +71,9 @@ module.exports = {
   post(url, data) {
     return request('POST', url, data)
   },
+  put(url, data) {
+    return request('PUT', url, data)
+  },
   del(url, data) {
     return request('DELETE', url, data)
   }

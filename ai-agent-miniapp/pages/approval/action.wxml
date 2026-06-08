@@ -24,6 +24,14 @@
     </view>
   </view>
 
+  <!-- 查看业务详情 -->
+  <view class="detail-link-card" wx:if="{{showDetailLink}}">
+    <view class="detail-link" bindtap="handleViewDetail">
+      <text class="link-text">查看采购详情</text>
+      <text class="link-arrow">›</text>
+    </view>
+  </view>
+
   <!-- 审批意见 -->
   <view class="comment-card">
     <view class="card-title">审批意见</view>

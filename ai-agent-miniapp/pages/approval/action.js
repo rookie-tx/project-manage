@@ -38,7 +38,9 @@ Page({
       businessSubtitle: decodeURIComponent(options.businessSubtitle || ''),
       nodeName: decodeURIComponent(options.nodeName || ''),
       createTime: options.createTime || '',
-      canComplete: auth.hasPermission('task:complete')
+      canComplete: auth.hasPermission('task:complete'),
+      showDetailLink: options.businessType === 'PURCHASE_REQUEST',
+      detailId: options.businessId || ''
     })
 
     this.loadHistory()
@@ -58,6 +60,11 @@ Page({
     } finally {
       this.setData({ historyLoading: false })
     }
+  },
+
+  /** 跳转采购详情 */
+  handleViewDetail() {
+    wx.navigateTo({ url: '/pages/purchase/detail?id=' + this.data.detailId })
   },
 
   /** 审批意见输入 */

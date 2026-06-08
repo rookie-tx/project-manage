@@ -1,0 +1,64 @@
+<view class="pr-list-page">
+  <view class="page-header">
+    <text class="header-title">采购申请</text>
+    <text class="header-action" wx:if="{{canCreate}}" bindtap="handleCreate">+ 新建</text>
+  </view>
+
+  <!-- 项目筛选 -->
+  <view class="filter-bar">
+    <picker mode="selector" range="{{projectNames}}" value="{{selectedProjectIdx}}" bindchange="onProjectChange">
+      <view class="filter-item">
+        <text class="filter-label">项目</text>
+        <text class="filter-value {{selectedProjectIdx === 0 ? 'filter-placeholder' : ''}}">{{projectNames[selectedProjectIdx]}}</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading && items.length === 0}}" class="loading-container">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:elif="{{items.length === 0}}" class="empty-container">
+    <text class="empty-icon">📦</text>
+    <text class="empty-text">暂无采购申请</text>
+  </view>
+
+  <!-- 列表 -->
+  <view wx:else class="items-list">
+    <view class="pr-card" wx:for="{{items}}" wx:key="id">
+      <view class="card-main" data-id="{{item.id}}" bindtap="handleView">
+        <view class="card-top">
+          <text class="card-name">{{item.name}}</text>
+          <text class="card-status status-{{item.statusCode}}">{{item.statusLabel}}</text>
+        </view>
+        <view class="card-mid">
+          <text class="card-project">{{item.projectName || '未知项目'}}</text>
+          <text class="card-qty">{{item.quantityStr}}</text>
+        </view>
+        <view class="card-bottom">
+          <text class="card-date">到场：{{item.arrivalDateStr}}</text>
+          <text class="card-node" wx:if="{{item.currentApprovalNode}}">{{item.currentApprovalNode}}</text>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="card-actions">
+        <block wx:if="{{item.isPending}}">
+          <text class="action-btn btn-submit" data-id="{{item.id}}" bindtap="handleSubmitApproval">提交审批</text>
+          <text class="action-btn btn-edit" data-id="{{item.id}}" bindtap="handleEdit">编辑</text>
+          <text class="action-btn btn-delete" data-id="{{item.id}}" bindtap="handleDelete">删除</text>
+        </block>
+        <block wx:else>
+          <text class="action-btn btn-view" data-id="{{item.id}}" bindtap="handleView">查看</text>
+        </block>
+      </view>
+    </view>
+
+    <view class="load-more">
+      <text wx:if="{{loading}}">加载中...</text>
+      <text wx:elif="{{!hasMore}}">— 没有更多了 —</text>
+    </view>
+  </view>
+</view>

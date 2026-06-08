@@ -55,6 +55,12 @@
   border-radius: 6rpx;
 }
 
+/* 业务详情链接 */
+.detail-link-card { background: #fff; margin: 0 24rpx 16rpx; border-radius: 12rpx; padding: 24rpx; box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04); }
+.detail-link { display: flex; justify-content: space-between; align-items: center; }
+.link-text { font-size: 28rpx; color: #1677ff; }
+.link-arrow { font-size: 32rpx; color: #1677ff; }
+
 /* 审批意见 */
 .comment-textarea {
   font-size: 28rpx;
