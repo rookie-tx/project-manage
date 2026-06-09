@@ -1,0 +1,82 @@
+<view class="prj-form-page">
+  <view class="error-bar" wx:if="{{error}}"><text class="error-text">{{error}}</text></view>
+
+  <view class="form-container">
+    <view class="form-item">
+      <text class="form-label">项目名称 <text class="required">*</text></text>
+      <input class="form-input" placeholder="请输入项目名称" value="{{form.name}}" data-field="name" bindinput="onInput" />
+    </view>
+
+    <view class="form-row">
+      <view class="form-item form-half">
+        <text class="form-label">项目类型 <text class="required">*</text></text>
+        <picker mode="selector" range="{{typeNames}}" value="{{typeIdx}}" bindchange="onTypeChange">
+          <view class="form-picker {{typeIdx === -1 ? 'picker-placeholder' : ''}}">
+            <text>{{typeIdx === -1 ? '选择类型' : typeNames[typeIdx]}}</text>
+            <text class="picker-arrow">›</text>
+          </view>
+        </picker>
+      </view>
+      <view class="form-item form-half" wx:if="{{isEdit}}">
+        <text class="form-label">项目状态</text>
+        <picker mode="selector" range="{{statusNames}}" value="{{statusIdx}}" bindchange="onStatusChange">
+          <view class="form-picker"><text>{{statusNames[statusIdx]}}</text><text class="picker-arrow">›</text></view>
+        </picker>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">项目地点</text>
+      <input class="form-input" placeholder="项目地址" value="{{form.location}}" data-field="location" bindinput="onInput" />
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">项目经理 <text class="required">*</text></text>
+      <picker mode="selector" range="{{userNames}}" value="{{mgrIdx}}" bindchange="onMgrChange">
+        <view class="form-picker {{mgrIdx === -1 ? 'picker-placeholder' : ''}}">
+          <text>{{mgrIdx === -1 ? '选择项目经理' : userNames[mgrIdx]}}</text>
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-row">
+      <view class="form-item form-half">
+        <text class="form-label">甲方名称</text>
+        <input class="form-input" placeholder="建设单位" value="{{form.clientName}}" data-field="clientName" bindinput="onInput" />
+      </view>
+      <view class="form-item form-half">
+        <text class="form-label">监理单位</text>
+        <input class="form-input" placeholder="监理单位" value="{{form.supervisorUnit}}" data-field="supervisorUnit" bindinput="onInput" />
+      </view>
+    </view>
+
+    <view class="form-row">
+      <view class="form-item form-half">
+        <text class="form-label">计划开工 <text class="required">*</text></text>
+        <picker mode="date" value="{{form.plannedStartDate}}" bindchange="onStartDateChange">
+          <view class="form-picker {{form.plannedStartDate ? '' : 'picker-placeholder'}}">
+            <text>{{form.plannedStartDate || '选择日期'}}</text><text class="picker-arrow">›</text>
+          </view>
+        </picker>
+      </view>
+      <view class="form-item form-half">
+        <text class="form-label">计划竣工 <text class="required">*</text></text>
+        <picker mode="date" value="{{form.plannedEndDate}}" bindchange="onEndDateChange">
+          <view class="form-picker {{form.plannedEndDate ? '' : 'picker-placeholder'}}">
+            <text>{{form.plannedEndDate || '选择日期'}}</text><text class="picker-arrow">›</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">备注</text>
+      <textarea class="form-textarea" placeholder="备注信息（可选）" value="{{form.remark}}" data-field="remark" bindinput="onInput" maxlength="500" auto-height />
+    </view>
+
+    <view class="submit-bar">
+      <button class="btn-submit" loading="{{submitting}}" bindtap="handleSubmit">{{isEdit ? '保存修改' : '创建项目'}}</button>
+    </view>
+  </view>
+</view>

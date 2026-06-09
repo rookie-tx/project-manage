@@ -1,0 +1,39 @@
+<view class="prj-detail-page">
+  <view wx:if="{{loading}}" class="state-box"><text class="state-text">加载中...</text></view>
+
+  <view wx:elif="{{!record}}" class="state-box">
+    <text class="state-icon">📋</text><text class="state-text">项目不存在</text>
+  </view>
+
+  <view wx:else>
+    <view class="detail-card">
+      <view class="card-head">
+        <view class="head-icon">📋</view>
+        <view class="head-info">
+          <text class="head-title">{{record.name}}</text>
+          <text class="head-sub">{{record.code}}</text>
+        </view>
+        <view class="head-status status-{{record.status}}">{{statusLabel}}</view>
+      </view>
+      <view class="divider"></view>
+      <view class="detail-grid">
+        <view class="grid-item"><text class="grid-label">项目类型</text><text class="grid-value tag">{{typeLabel}}</text></view>
+        <view class="grid-item"><text class="grid-label">项目状态</text><text class="grid-value tag status-{{record.status}}">{{statusLabel}}</text></view>
+        <view class="grid-item" wx:if="{{record.location}}"><text class="grid-label">项目地点</text><text class="grid-value">{{record.location}}</text></view>
+        <view class="grid-item" wx:if="{{record.clientName}}"><text class="grid-label">甲方名称</text><text class="grid-value">{{record.clientName}}</text></view>
+        <view class="grid-item" wx:if="{{record.supervisorUnit}}"><text class="grid-label">监理单位</text><text class="grid-value">{{record.supervisorUnit}}</text></view>
+        <view class="grid-item" wx:if="{{record.projectManagerName}}"><text class="grid-label">项目经理</text><text class="grid-value">{{record.projectManagerName}}</text></view>
+        <view class="grid-item"><text class="grid-label">计划工期</text><text class="grid-value">{{plannedStr}}</text></view>
+        <view class="grid-item" wx:if="{{record.actualStartDate}}"><text class="grid-label">实际开工</text><text class="grid-value">{{record.actualStartDate}}</text></view>
+        <view class="grid-item" wx:if="{{record.actualEndDate}}"><text class="grid-label">实际竣工</text><text class="grid-value">{{record.actualEndDate}}</text></view>
+        <view class="grid-item" wx:if="{{createdAtStr}}"><text class="grid-label">创建时间</text><text class="grid-value">{{createdAtStr}}</text></view>
+        <view class="grid-item full" wx:if="{{record.remark}}"><text class="grid-label">备注</text><text class="grid-value">{{record.remark}}</text></view>
+      </view>
+    </view>
+
+    <view class="action-bar">
+      <button class="btn-edit" wx:if="{{canEdit}}" bindtap="handleEdit">编辑</button>
+      <button class="btn-delete" wx:if="{{canDelete}}" bindtap="handleDelete">删除</button>
+    </view>
+  </view>
+</view>

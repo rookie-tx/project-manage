@@ -1,0 +1,70 @@
+<view class="project-list-page">
+  <view class="page-header">
+    <text class="header-title">项目管理</text>
+    <text class="header-action" wx:if="{{canCreate}}" bindtap="handleCreate">+ 新建</text>
+  </view>
+
+  <!-- 搜索 -->
+  <view class="search-bar">
+    <input class="search-input" placeholder="搜索项目名称" value="{{keyword}}" bindinput="onKeywordInput" bindconfirm="handleSearch" confirm-type="search" />
+    <text class="search-btn" bindtap="handleSearch">搜索</text>
+  </view>
+
+  <!-- 筛选 chips -->
+  <view class="filter-bar">
+    <scroll-view scroll-x class="filter-scroll">
+      <view class="filter-chips">
+        <text class="chip-label">类型</text>
+        <picker mode="selector" range="{{['全部类型','房建','市政','装修','路桥','水利','其他']}}" value="{{typeIdx}}" bindchange="onTypeChange">
+          <view class="chip {{typeIdx > 0 ? 'chip-active' : ''}}">
+            <text>{{typeIdx === 0 ? '全部类型' : ['房建','市政','装修','路桥','水利','其他'][typeIdx-1]}}</text>
+            <text class="chip-arrow">▾</text>
+          </view>
+        </picker>
+      </view>
+    </scroll-view>
+    <scroll-view scroll-x class="filter-scroll">
+      <view class="filter-chips">
+        <text class="chip-label">状态</text>
+        <picker mode="selector" range="{{['全部状态','筹备中','在建','停工','已竣工','已结算']}}" value="{{statusIdx}}" bindchange="onStatusChange">
+          <view class="chip {{statusIdx > 0 ? 'chip-active' : ''}}">
+            <text>{{statusIdx === 0 ? '全部状态' : ['筹备中','在建','停工','已竣工','已结算'][statusIdx-1]}}</text>
+            <text class="chip-arrow">▾</text>
+          </view>
+        </picker>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 状态 -->
+  <view wx:if="{{loading && items.length === 0}}" class="state-box"><text class="state-text">加载中...</text></view>
+  <view wx:elif="{{items.length === 0}}" class="state-box">
+    <text class="state-icon">📋</text><text class="state-text">暂无项目</text>
+  </view>
+
+  <!-- 列表 -->
+  <view wx:else class="items-list">
+    <view class="prj-card" wx:for="{{items}}" wx:key="id" data-id="{{item.id}}" bindtap="handleTap">
+      <view class="card-body">
+        <view class="card-top">
+          <text class="card-code">{{item.code}}</text>
+          <view class="card-tags">
+            <text class="tag-type">{{typeIdx > 0 ? ['房建','市政','装修','路桥','水利','其他'][typeIdx-1] : item.typeLabel}}</text>
+            <text class="tag-status status-{{item.status}}">{{item.statusLabel}}</text>
+          </view>
+        </view>
+        <text class="card-name">{{item.name}}</text>
+        <view class="card-bottom">
+          <text class="card-client" wx:if="{{item.clientName}}">{{item.clientName}}</text>
+          <text class="card-mgr" wx:if="{{item.projectManagerName}}">{{item.projectManagerName}}</text>
+          <text class="card-arrow">查看 ›</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="load-more">
+      <text wx:if="{{loading}}">加载中...</text>
+      <text wx:elif="{{!hasMore}}">— 没有更多了 —</text>
+    </view>
+  </view>
+</view>

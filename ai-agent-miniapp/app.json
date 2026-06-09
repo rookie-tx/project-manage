@@ -10,7 +10,10 @@
     "pages/approval/action",
     "pages/purchase/list",
     "pages/purchase/form",
-    "pages/purchase/detail"
+    "pages/purchase/detail",
+    "pages/project/list",
+    "pages/project/form",
+    "pages/project/detail"
   ],
   "window": {
     "navigationBarTextStyle": "black",

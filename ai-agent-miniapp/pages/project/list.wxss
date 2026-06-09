@@ -1,0 +1,44 @@
+.project-list-page { min-height: 100vh; background: #f3f4f6; padding-bottom: 20rpx; }
+.page-header { display: flex; justify-content: space-between; align-items: center; padding: 28rpx 28rpx 20rpx; }
+.header-title { font-size: 36rpx; font-weight: 700; color: #1f2937; }
+.header-action { font-size: 28rpx; font-weight: 600; color: #6366f1; padding: 10rpx 24rpx; background: #eef2ff; border-radius: 10rpx; }
+
+/* 搜索 */
+.search-bar { display: flex; gap: 16rpx; padding: 0 20rpx 12rpx; }
+.search-input { flex: 1; background: #fff; border-radius: 12rpx; padding: 18rpx 20rpx; font-size: 28rpx; color: #1f2937; box-shadow: 0 1rpx 3rpx rgba(0,0,0,0.04); }
+.search-btn { padding: 18rpx 28rpx; background: #6366f1; color: #fff; font-size: 28rpx; font-weight: 500; border-radius: 12rpx; white-space: nowrap; }
+
+/* 筛选 */
+.filter-bar { padding: 0 20rpx 8rpx; }
+.filter-scroll { white-space: nowrap; margin-bottom: 8rpx; }
+.filter-chips { display: inline-flex; align-items: center; gap: 12rpx; padding: 4rpx 8rpx; }
+.chip-label { font-size: 24rpx; color: #9ca3af; margin-right: 4rpx; }
+.chip { display: inline-flex; align-items: center; background: #fff; border-radius: 10rpx; padding: 12rpx 20rpx; font-size: 26rpx; color: #6b7280; box-shadow: 0 1rpx 3rpx rgba(0,0,0,0.04); }
+.chip-active { color: #6366f1; background: #eef2ff; }
+.chip-arrow { font-size: 20rpx; margin-left: 6rpx; color: #9ca3af; }
+
+/* 状态 */
+.state-box { display: flex; flex-direction: column; align-items: center; padding: 180rpx 0; }
+.state-icon { font-size: 72rpx; margin-bottom: 20rpx; }
+.state-text { font-size: 28rpx; color: #9ca3af; }
+
+/* 列表 */
+.items-list { padding: 0 20rpx; }
+.prj-card { background: #fff; border-radius: 16rpx; margin-bottom: 16rpx; overflow: hidden; box-shadow: 0 1rpx 4rpx rgba(0,0,0,0.04); }
+.card-body { padding: 24rpx; }
+.card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12rpx; }
+.card-code { font-size: 22rpx; color: #9ca3af; }
+.card-tags { display: flex; gap: 8rpx; }
+.tag-type { font-size: 22rpx; padding: 4rpx 12rpx; border-radius: 6rpx; background: #eef2ff; color: #6366f1; }
+.tag-status { font-size: 22rpx; padding: 4rpx 12rpx; border-radius: 6rpx; }
+.status-0 { background: #fef3c7; color: #d97706; }
+.status-1 { background: #dbeafe; color: #2563eb; }
+.status-2 { background: #fecaca; color: #dc2626; }
+.status-3 { background: #dcfce7; color: #16a34a; }
+.status-4 { background: #f3f4f6; color: #6b7280; }
+.card-name { font-size: 30rpx; font-weight: 600; color: #1f2937; display: block; margin-bottom: 14rpx; }
+.card-bottom { display: flex; align-items: center; gap: 16rpx; }
+.card-client, .card-mgr { font-size: 22rpx; color: #6b7280; background: #f3f4f6; padding: 4rpx 12rpx; border-radius: 6rpx; }
+.card-arrow { font-size: 24rpx; color: #6366f1; margin-left: auto; }
+
+.load-more { text-align: center; padding: 30rpx 0; font-size: 24rpx; color: #d1d5db; }
