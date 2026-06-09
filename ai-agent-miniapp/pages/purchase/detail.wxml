@@ -51,7 +51,7 @@
     <view class="detail-card" wx:if="{{isPending && canSubmit}}" id="submitArea">
       <text class="card-title">提交审批</text>
       <view class="form-item">
-        <text class="form-label">部门经理</text>
+        <text class="form-label">部门经理 <text class="required">*</text></text>
         <picker mode="selector" range="{{userNames}}" value="{{deptMgrIdx}}" bindchange="onDeptMgrChange">
           <view class="form-picker {{deptMgrIdx === -1 ? 'picker-placeholder' : ''}}">
             <text>{{deptMgrIdx === -1 ? '请选择部门经理' : userNames[deptMgrIdx]}}</text>
@@ -60,7 +60,7 @@
         </picker>
       </view>
       <view class="form-item">
-        <text class="form-label">财务审批</text>
+        <text class="form-label">财务审批 <text class="required">*</text></text>
         <picker mode="selector" range="{{userNames}}" value="{{financeMgrIdx}}" bindchange="onFinanceMgrChange">
           <view class="form-picker {{financeMgrIdx === -1 ? 'picker-placeholder' : ''}}">
             <text>{{financeMgrIdx === -1 ? '请选择财务经理' : userNames[financeMgrIdx]}}</text>
@@ -69,7 +69,7 @@
         </picker>
       </view>
       <view class="form-item">
-        <text class="form-label">总经理</text>
+        <text class="form-label">总经理 <text class="required">*</text></text>
         <picker mode="selector" range="{{userNames}}" value="{{generalMgrIdx}}" bindchange="onGeneralMgrChange">
           <view class="form-picker {{generalMgrIdx === -1 ? 'picker-placeholder' : ''}}">
             <text>{{generalMgrIdx === -1 ? '请选择总经理' : userNames[generalMgrIdx]}}</text>
@@ -100,7 +100,7 @@
               <text class="timeline-node">{{item.nodeName || '-'}}</text>
               <text class="timeline-result {{item.result === '通过' ? 'text-approve' : 'text-reject'}}">{{item.result}}</text>
             </view>
-            <text class="timeline-assignee">审批人：{{item.assignee || '-'}}</text>
+            <text class="timeline-assignee">审批人：{{item.assigneeName || item.assignee || '-'}}</text>
             <text class="timeline-comment" wx:if="{{item.comment}}">意见：{{item.comment}}</text>
             <text class="timeline-time">{{item.time || '-'}}</text>
           </view>

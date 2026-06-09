@@ -32,6 +32,7 @@
 /* 提交审批 */
 .form-item { margin-bottom: 20rpx; }
 .form-label { display: block; font-size: 26rpx; color: #1f2937; margin-bottom: 8rpx; }
+.required { color: #ef4444; }
 .form-picker { background: #f3f4f6; border-radius: 12rpx; padding: 16rpx 20rpx; font-size: 26rpx; display: flex; justify-content: space-between; align-items: center; color: #1f2937; }
 .picker-placeholder { color: #9ca3af; }
 .picker-arrow { font-size: 32rpx; color: #d1d5db; }

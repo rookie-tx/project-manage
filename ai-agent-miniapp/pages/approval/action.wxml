@@ -70,7 +70,7 @@
             <text class="timeline-node">{{item.nodeName || '-'}}</text>
             <text class="timeline-result {{item.result === '通过' ? 'text-approve' : 'text-reject'}}">{{item.result}}</text>
           </view>
-          <text class="timeline-assignee">审批人：{{item.assignee || '-'}}</text>
+          <text class="timeline-assignee">审批人：{{item.assigneeName || item.assignee || '-'}}</text>
           <text class="timeline-comment" wx:if="{{item.comment}}">意见：{{item.comment}}</text>
           <text class="timeline-time">{{item.time || '-'}}</text>
         </view>

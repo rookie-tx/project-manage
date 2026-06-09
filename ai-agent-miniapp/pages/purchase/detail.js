@@ -99,8 +99,8 @@ Page({
     if (financeMgrIdx >= 0) selectedIds.push(users[financeMgrIdx].id)
     if (generalMgrIdx >= 0) selectedIds.push(users[generalMgrIdx].id)
 
-    if (selectedIds.length === 0) {
-      wx.showToast({ title: '请至少选择一个审批人', icon: 'none' })
+    if (deptMgrIdx < 0 || financeMgrIdx < 0 || generalMgrIdx < 0) {
+      wx.showToast({ title: '三个审批人均为必选', icon: 'none' })
       return
     }
 
