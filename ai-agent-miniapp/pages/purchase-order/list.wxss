@@ -1,0 +1,20 @@
+.po-list-page { min-height: 100vh; background: #f3f4f6; padding-bottom: 20rpx; }
+.page-header { display: flex; justify-content: space-between; align-items: center; padding: 28rpx 28rpx 20rpx; }
+.header-title { font-size: 36rpx; font-weight: 700; color: #1f2937; }
+.header-action { font-size: 28rpx; font-weight: 600; color: #6366f1; padding: 10rpx 24rpx; background: #eef2ff; border-radius: 10rpx; }
+.filter-bar { padding: 0 20rpx 12rpx; } .filter-scroll { white-space: nowrap; } .filter-chips { display: inline-flex; gap: 12rpx; padding: 4rpx 8rpx; }
+.chip { display: inline-flex; align-items: center; background: #fff; border-radius: 10rpx; padding: 14rpx 22rpx; font-size: 26rpx; color: #6b7280; box-shadow: 0 1rpx 3rpx rgba(0,0,0,0.04); }
+.chip-active { color: #6366f1; background: #eef2ff; } .chip-arrow { font-size: 20rpx; margin-left: 6rpx; color: #9ca3af; }
+.state-box { display: flex; flex-direction: column; align-items: center; padding: 180rpx 0; } .state-icon { font-size: 72rpx; margin-bottom: 20rpx; } .state-text { font-size: 28rpx; color: #9ca3af; }
+.items-list { padding: 0 20rpx; }
+.po-card { background: #fff; border-radius: 16rpx; margin-bottom: 16rpx; overflow: hidden; box-shadow: 0 1rpx 4rpx rgba(0,0,0,0.04); }
+.card-body { padding: 24rpx; } .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10rpx; }
+.card-name { font-size: 30rpx; font-weight: 600; color: #1f2937; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 16rpx; }
+.card-status { font-size: 22rpx; padding: 4rpx 14rpx; border-radius: 8rpx; flex-shrink: 0; }
+.status-0 { color: #d97706; background: #fef3c7; } .status-1 { color: #2563eb; background: #dbeafe; } .status-2 { color: #16a34a; background: #dcfce7; }
+.card-mid { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8rpx; }
+.card-supplier { font-size: 24rpx; color: #6b7280; } .card-amount { font-size: 26rpx; font-weight: 600; color: #1f2937; }
+.card-prs { padding: 6rpx 0; } .pr-detail { display: block; font-size: 22rpx; color: #6b7280; padding: 2rpx 0; }
+.card-bottom { display: flex; justify-content: space-between; align-items: center; }
+.card-date { font-size: 22rpx; color: #9ca3af; } .card-arrow { font-size: 24rpx; color: #6366f1; }
+.load-more { text-align: center; padding: 30rpx 0; font-size: 24rpx; color: #d1d5db; }

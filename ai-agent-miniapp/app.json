@@ -13,7 +13,10 @@
     "pages/purchase/detail",
     "pages/project/list",
     "pages/project/form",
-    "pages/project/detail"
+    "pages/project/detail",
+    "pages/purchase-order/list",
+    "pages/purchase-order/form",
+    "pages/purchase-order/detail"
   ],
   "window": {
     "navigationBarTextStyle": "black",

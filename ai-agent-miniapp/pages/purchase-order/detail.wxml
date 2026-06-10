@@ -1,0 +1,33 @@
+<view class="po-detail-page">
+  <view wx:if="{{loading}}" class="state-box"><text class="state-text">加载中...</text></view>
+  <view wx:elif="{{!record}}" class="state-box"><text class="state-text">记录不存在</text></view>
+  <view wx:else>
+    <view class="detail-card">
+      <view class="card-head"><view class="head-icon">📦</view><view class="head-info"><text class="head-title">{{record.purchaseRequestName || '采购记录'}}</text><text class="head-sub">{{record.supplierName}}</text></view><view class="head-status status-{{record.statusCode}}">{{statusLabel}}</view></view>
+      <view class="divider"></view>
+      <view class="detail-grid">
+        <view class="grid-item"><text class="grid-label">供应商</text><text class="grid-value">{{record.supplierName}}</text></view>
+        <view class="grid-item" wx:if="{{record.supplierPhone}}"><text class="grid-label">供应商电话</text><text class="grid-value">{{record.supplierPhone}}</text></view>
+        <view class="grid-item" wx:if="{{record.unitPrice != null}}"><text class="grid-label">采购单价</text><text class="grid-value">¥{{record.unitPrice}}</text></view>
+        <view class="grid-item"><text class="grid-label">总金额</text><text class="grid-value">¥{{record.totalAmount}}</text></view>
+        <view class="grid-item"><text class="grid-label">采购日期</text><text class="grid-value">{{purchaseDateStr}}</text></view>
+        <view class="grid-item" wx:if="{{record.expectedArrivalDate}}"><text class="grid-label">预计到货</text><text class="grid-value">{{record.expectedArrivalDate}}</text></view>
+        <view class="grid-item" wx:if="{{record.createdByName}}"><text class="grid-label">采购员</text><text class="grid-value">{{record.createdByName}}</text></view>
+        <view class="grid-item" wx:if="{{createdAtStr}}"><text class="grid-label">创建时间</text><text class="grid-value">{{createdAtStr}}</text></view>
+        <view class="grid-item full" wx:if="{{record.remark}}"><text class="grid-label">备注</text><text class="grid-value">{{record.remark}}</text></view>
+      </view>
+    </view>
+    <view class="detail-card" wx:if="{{purchaseRequests.length > 0}}">
+      <text class="card-title">关联采购申请</text>
+      <view class="pr-list"><view class="pr-item" wx:for="{{purchaseRequests}}" wx:key="id"><text class="pr-code">{{item.code || '-'}}</text><text class="pr-name">{{item.name}}</text><text class="pr-meta">{{item.quantityStr}} · {{item.arrivalDate || '-'}}</text></view></view>
+    </view>
+    <view class="detail-card" wx:if="{{photoUrls.length > 0}}">
+      <text class="card-title">附件</text><view class="photo-grid"><view class="photo-item" wx:for="{{photoUrls}}" wx:key="index" data-index="{{index}}" bindtap="handlePreviewPhoto"><image class="photo-thumb" src="{{item}}" mode="aspectFill" /></view></view>
+    </view>
+    <view class="action-bar">
+      <button class="btn-change" wx:if="{{record.statusCode < 2}}" bindtap="handleChangeStatus">{{record.statusCode === 0 ? '标记已采购' : '标记已到货'}}</button>
+      <button class="btn-edit" wx:if="{{canEdit && record.statusCode === 0}}" bindtap="handleEdit">编辑</button>
+      <button class="btn-delete" wx:if="{{canDelete && record.statusCode === 0}}" bindtap="handleDelete">删除</button>
+    </view>
+  </view>
+</view>

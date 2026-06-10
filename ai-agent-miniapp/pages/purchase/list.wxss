@@ -24,6 +24,7 @@
 .card-body { padding: 24rpx 24rpx 14rpx; }
 .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10rpx; }
 .card-name { font-size: 30rpx; font-weight: 600; color: #1f2937; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 16rpx; }
+.card-code { font-size: 22rpx; color: #9ca3af; display: block; margin-bottom: 8rpx; }
 .card-status { font-size: 22rpx; padding: 4rpx 14rpx; border-radius: 8rpx; flex-shrink: 0; }
 .status-0 { color: #d97706; background: #fef3c7; }
 .status-1 { color: #2563eb; background: #dbeafe; }

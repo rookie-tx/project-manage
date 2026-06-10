@@ -26,6 +26,7 @@ Page({
     unitNames: UNITS.map(u => u.label),
     selectedUnitIdx: -1,
 
+    recordCode: '',
     // 表单字段
     form: {
       projectId: null,
@@ -75,6 +76,7 @@ Page({
       const unitIdx = UNITS.findIndex(u => u.code === detail.unitCode)
 
       this.setData({
+        recordCode: detail.code || '',
         selectedProjectIdx: projIdx,
         selectedUnitIdx: unitIdx,
         form: {

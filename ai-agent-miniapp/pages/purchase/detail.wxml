@@ -20,6 +20,9 @@
       </view>
       <view class="divider"></view>
       <view class="detail-grid">
+        <view class="grid-item" wx:if="{{record.code}}">
+          <text class="grid-label">编号</text><text class="grid-value">{{record.code}}</text>
+        </view>
         <view class="grid-item" wx:if="{{record.specification}}">
           <text class="grid-label">规格</text><text class="grid-value">{{record.specification}}</text>
         </view>

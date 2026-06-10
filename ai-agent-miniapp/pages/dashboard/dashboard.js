@@ -12,7 +12,8 @@ Page({
       { icon: '📦', name: '采购申请', tip: '点击使用', active: true, url: '/pages/purchase/list', color: '#fef3c7' },
       { icon: '⏱️', name: '考勤打卡', tip: '点击使用', active: true, url: '/pages/checkin/checkin', color: '#dbeafe' },
       { icon: '✅', name: '待办审批', tip: '点击使用', active: true, url: '/pages/approval/list', badge: true, color: '#fce7f3' },
-      { icon: '📋', name: '项目管理', tip: '点击使用', active: true, url: '/pages/project/list', color: '#f3f4f6' }
+      { icon: '📋', name: '项目管理', tip: '点击使用', active: true, url: '/pages/project/list', color: '#f3f4f6' },
+      { icon: '📦', name: '采购管理', tip: '点击使用', active: true, url: '/pages/purchase-order/list', color: '#fef3c7' }
     ]
   },
 

@@ -4,6 +4,11 @@
   </view>
 
   <view class="form-container">
+    <!-- 编号（编辑模式只读） -->
+    <view class="form-item" wx:if="{{isEdit && recordCode}}">
+      <text class="form-label">编号</text>
+      <text class="form-static">{{recordCode}}</text>
+    </view>
     <!-- 项目 -->
     <view class="form-item">
       <text class="form-label">所属项目 <text class="required">*</text></text>

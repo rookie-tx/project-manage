@@ -7,6 +7,7 @@
 .form-container { background: #fff; margin: 16rpx 20rpx; border-radius: 20rpx; padding: 28rpx 28rpx 8rpx; box-shadow: 0 1rpx 4rpx rgba(0,0,0,0.04); }
 .form-item { margin-bottom: 28rpx; }
 .form-label { display: block; font-size: 28rpx; font-weight: 500; color: #1f2937; margin-bottom: 10rpx; }
+.form-static { font-size: 28rpx; color: #6366f1; font-weight: 600; background: #eef2ff; padding: 10rpx 20rpx; border-radius: 8rpx; display: inline-block; }
 .required { color: #ef4444; }
 
 .form-input { background: #f3f4f6; border-radius: 12rpx; padding: 18rpx 20rpx; font-size: 28rpx; color: #1f2937; }

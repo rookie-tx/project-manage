@@ -37,6 +37,7 @@
           <text class="card-name">{{item.name}}</text>
           <text class="card-status status-{{item.statusCode}}">{{item.statusLabel}}</text>
         </view>
+        <text class="card-code" wx:if="{{item.code}}">{{item.code}}</text>
         <view class="card-mid">
           <text class="card-project">{{item.projectName || '未知项目'}}</text>
           <text class="card-qty">{{item.quantityStr}}</text>
