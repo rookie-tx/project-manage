@@ -4,10 +4,11 @@
 
 智能管理平台是一个前后端分离的 Web 应用系统。
 
-| 模块 | 目录 | 技术栈 |
-|------|------|--------|
-| 前端 SPA | `ai-agent-client/` | Vue 3 + Vite 8 + Ant Design Vue 4 + Pinia 3 + Vue Router 5 + Axios (JavaScript) |
-| 后端服务 | `ai-agent-server/` | Java 25 + Spring Boot 3.5.14 + MyBatis 3.0.5 + PostgreSQL + Maven + MapStruct 1.6.3 |
+| 模块     | 目录                  | 技术栈 |
+|--------|---------------------|--------|
+| 前端 SPA | `ai-agent-client/`  | Vue 3 + Vite 8 + Ant Design Vue 4 + Pinia 3 + Vue Router 5 + Axios (JavaScript) |
+| 后端服务   | `ai-agent-server/`  | Java 25 + Spring Boot 3.5.14 + MyBatis 3.0.5 + PostgreSQL + Maven + MapStruct 1.6.3 |
+| 小程序    | `ai-agent-miniapp/` |  |
 
 ## 语言要求
 

@@ -24,7 +24,7 @@ Page({
     }
     const user = auth.getUser()
     this.setData({
-      username: user ? user.username : '未知',
+      username: user ? (user.name || user.username) : '未知',
       greetingText: getGreeting()
     })
     this.loadApprovalCount()

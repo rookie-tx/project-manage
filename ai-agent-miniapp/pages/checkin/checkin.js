@@ -32,7 +32,7 @@ Page({
     const now = new Date()
     const m = now.getMonth() + 1
     this.setData({
-      username: user ? user.username : '未知',
+      username: user ? (user.name || user.username) : '未知',
       currentDate: now.getFullYear() + '年' + m + '月' + now.getDate() + '日',
       currentMonth: now.getFullYear() + '-' + (m < 10 ? '0' + m : '' + m)
     })

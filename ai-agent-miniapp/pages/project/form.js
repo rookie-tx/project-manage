@@ -30,7 +30,7 @@ Page({
   async loadUsers() {
     try {
       const users = await projectApi.getUsers()
-      this.setData({ users: users || [], userNames: (users || []).map(u => u.username) })
+      this.setData({ users: users || [], userNames: (users || []).map(u => u.name || u.username) })
     } catch { /* ignore */ }
   },
 

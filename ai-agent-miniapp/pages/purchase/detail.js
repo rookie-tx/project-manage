@@ -83,7 +83,7 @@ Page({
       const users = await purchaseApi.getUsers()
       this.setData({
         users: users || [],
-        userNames: (users || []).map(u => u.username)
+        userNames: (users || []).map(u => u.name || u.username)
       })
     } catch { /* ignore */ }
   },
