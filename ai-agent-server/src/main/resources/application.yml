@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: ai-agent
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+    serialization:
+      write-dates-as-timestamps: false
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+  web:
+    locale: zh_CN
+  datasource:
+    url: ${DS_URL}
+    username: ${DS_USERNAME}
+    password: ${DS_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      minimum-idle: 5
+      idle-timeout: 600000
+      maximum-pool-size: 10
+      auto-commit: true
+      max-lifetime: 720000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+
+server:
+  port: 8088
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: cn.tx.aiagent.login.infrastructure
+  configuration:
+    map-underscore-to-camel-case: true
+
+ai:
+  agent:
+    allowed:
+      origins: http://localhost:5173
+
+app:
+  upload:
+    dir: uploads
+  jwt:
+    secret: changeme-please-change-in-production
+    expiration-days: 7
+  wechat:
+    miniapp:
+      appid: ${WECHAT_APPID}
+      secret: ${WECHAT_SECRET}
+
+flowable:
+  database-schema-update: true
+  async-executor-activate: false

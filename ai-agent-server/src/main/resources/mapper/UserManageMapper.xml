@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tx.aiagent.user.infrastructure.UserManageMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_user (username, name, password_hash, email, phone, status, is_deleted, created_at, updated_at)
+        VALUES (#{username}, #{name}, #{passwordHash}, #{email}, #{phone}, #{status}, #{isDeleted}, NOW(), NOW())
+    </insert>
+
+    <select id="selectById" resultType="cn.tx.aiagent.user.infrastructure.UserPO">
+        SELECT id, username, name, password_hash, email, phone, status, must_change_password, is_deleted, created_at, updated_at
+        FROM t_user
+        WHERE id = #{id} AND is_deleted = 0
+    </select>
+
+    <select id="selectByUsername" resultType="cn.tx.aiagent.user.infrastructure.UserPO">
+        SELECT id, username, name, password_hash, email, phone, status, must_change_password, is_deleted, created_at, updated_at
+        FROM t_user
+        WHERE username = #{username} AND is_deleted = 0
+    </select>
+
+    <select id="selectAll" resultType="cn.tx.aiagent.user.infrastructure.UserPO">
+        SELECT id, username, name, password_hash, email, phone, status, must_change_password, is_deleted, created_at, updated_at
+        FROM t_user
+        WHERE is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            AND username LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+        ORDER BY id ASC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countAll" resultType="long">
+        SELECT COUNT(*)
+        FROM t_user
+        WHERE is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            AND username LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+    </select>
+
+    <update id="update">
+        UPDATE t_user
+        SET name = #{name}, email = #{email}, phone = #{phone}, status = #{status}, updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="softDelete">
+        UPDATE t_user
+        SET is_deleted = 1, updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectAllActive" resultType="cn.tx.aiagent.user.infrastructure.UserPO">
+        SELECT id, username, name, password_hash, email, phone, status, must_change_password, is_deleted, created_at, updated_at
+        FROM t_user
+        WHERE status = 1 AND is_deleted = 0
+        ORDER BY id
+    </select>
+
+    <delete id="deleteUserRoles">
+        DELETE FROM t_user_role WHERE user_id = #{userId}
+    </delete>
+
+    <insert id="insertUserRoles">
+        INSERT INTO t_user_role (user_id, role_id, created_at)
+        VALUES
+        <foreach collection="roleIds" item="roleId" separator=",">
+            (#{userId}, #{roleId}, NOW())
+        </foreach>
+    </insert>
+
+    <select id="selectRoleIdsByUserId" resultType="long">
+        SELECT role_id FROM t_user_role WHERE user_id = #{userId}
+    </select>
+
+    <update id="updatePassword">
+        UPDATE t_user
+        SET password_hash = #{passwordHash}, updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateMustChangePassword">
+        UPDATE t_user SET must_change_password = #{mustChangePassword}, updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+</mapper>

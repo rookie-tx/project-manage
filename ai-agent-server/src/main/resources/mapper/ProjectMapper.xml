@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tx.aiagent.project.infrastructure.ProjectMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_project (code, name, type, location, client_name, supervisor_unit,
+                               project_manager_id, planned_start_date, planned_end_date,
+                               actual_start_date, actual_end_date, status, remark, is_deleted, created_by)
+        VALUES (#{code}, #{name}, #{type}, #{location}, #{clientName}, #{supervisorUnit},
+                #{projectManagerId}, #{plannedStartDate}, #{plannedEndDate},
+                #{actualStartDate}, #{actualEndDate}, #{status}, #{remark}, #{isDeleted}, #{createdBy})
+    </insert>
+
+    <select id="selectById" resultType="cn.tx.aiagent.project.infrastructure.ProjectPO">
+        SELECT id, code, name, type, location, client_name, supervisor_unit,
+               project_manager_id, planned_start_date, planned_end_date,
+               actual_start_date, actual_end_date, status, remark, is_deleted,
+               created_by, created_at, updated_at
+        FROM t_project
+        WHERE id = #{id} AND is_deleted = 0
+    </select>
+
+    <select id="selectByCode" resultType="cn.tx.aiagent.project.infrastructure.ProjectPO">
+        SELECT id, code, name, type, location, client_name, supervisor_unit,
+               project_manager_id, planned_start_date, planned_end_date,
+               actual_start_date, actual_end_date, status, remark, is_deleted,
+               created_by, created_at, updated_at
+        FROM t_project
+        WHERE code = #{code} AND is_deleted = 0
+    </select>
+
+    <select id="selectMaxCodeByYear" resultType="java.lang.String">
+        SELECT code
+        FROM t_project
+        WHERE code LIKE CONCAT('PRJ-', #{year}, '-%')
+        ORDER BY code DESC
+        LIMIT 1
+    </select>
+
+    <select id="selectAll" resultType="cn.tx.aiagent.project.infrastructure.ProjectPO">
+        SELECT id, code, name, type, location, client_name, supervisor_unit,
+               project_manager_id, planned_start_date, planned_end_date,
+               actual_start_date, actual_end_date, status, remark, is_deleted,
+               created_by, created_at, updated_at
+        FROM t_project
+        WHERE is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            AND name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        <if test="type != null">
+            AND type = #{type}
+        </if>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+        ORDER BY id DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countAll" resultType="long">
+        SELECT COUNT(*)
+        FROM t_project
+        WHERE is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            AND name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        <if test="type != null">
+            AND type = #{type}
+        </if>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+    </select>
+
+    <update id="update">
+        UPDATE t_project
+        SET name = #{name},
+            type = #{type},
+            location = #{location},
+            client_name = #{clientName},
+            supervisor_unit = #{supervisorUnit},
+            project_manager_id = #{projectManagerId},
+            planned_start_date = #{plannedStartDate},
+            planned_end_date = #{plannedEndDate},
+            actual_start_date = #{actualStartDate},
+            actual_end_date = #{actualEndDate},
+            status = #{status},
+            remark = #{remark},
+            is_deleted = #{isDeleted}
+        WHERE id = #{id}
+    </update>
+
+    <update id="softDelete">
+        UPDATE t_project SET is_deleted = 1 WHERE id = #{id}
+    </update>
+
+    <select id="selectAllActive" resultType="cn.tx.aiagent.project.infrastructure.ProjectPO">
+        SELECT id, code, name, type, location, client_name, supervisor_unit,
+               project_manager_id, planned_start_date, planned_end_date,
+               actual_start_date, actual_end_date, status, remark, is_deleted,
+               created_by, created_at, updated_at
+        FROM t_project
+        WHERE is_deleted = 0
+        ORDER BY id DESC
+    </select>
+
+</mapper>

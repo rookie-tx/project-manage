@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tx.aiagent.warehouse.infrastructure.StockRecordMapper">
+
+    <select id="selectById" resultType="cn.tx.aiagent.warehouse.infrastructure.StockRecordPO">
+        SELECT id, warehouse_id, material_id, type, quantity, purchase_request_id, project_id, operator_id, created_at
+        FROM t_stock_record WHERE id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_stock_record (warehouse_id, material_id, type, quantity, purchase_request_id, project_id, operator_id, created_at)
+        VALUES (#{warehouseId}, #{materialId}, #{type}, #{quantity}, #{purchaseRequestId}, #{projectId}, #{operatorId}, NOW())
+    </insert>
+
+    <select id="selectAll" resultType="cn.tx.aiagent.warehouse.infrastructure.StockRecordPO">
+        SELECT id, warehouse_id, material_id, type, quantity, purchase_request_id, project_id, operator_id, created_at
+        FROM t_stock_record WHERE 1=1
+        <if test="warehouseId != null">AND warehouse_id = #{warehouseId}</if>
+        <if test="materialId != null">AND material_id = #{materialId}</if>
+        <if test="type != null">AND type = #{type}</if>
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT COUNT(*) FROM t_stock_record WHERE 1=1
+        <if test="warehouseId != null">AND warehouse_id = #{warehouseId}</if>
+        <if test="materialId != null">AND material_id = #{materialId}</if>
+        <if test="type != null">AND type = #{type}</if>
+    </select>
+
+</mapper>

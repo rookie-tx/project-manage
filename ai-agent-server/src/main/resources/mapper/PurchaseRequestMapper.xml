@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tx.aiagent.purchaserequest.infrastructure.PurchaseRequestMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_purchase_request (code, project_id, name, specification, brand, quantity, unit,
+                                        arrival_date, status, remark, is_deleted, created_by)
+        VALUES (#{code}, #{projectId}, #{name}, #{specification}, #{brand}, #{quantity}, #{unit},
+                #{arrivalDate}, #{status}, #{remark}, #{isDeleted}, #{createdBy})
+    </insert>
+
+    <select id="selectById" resultType="cn.tx.aiagent.purchaserequest.infrastructure.PurchaseRequestPO">
+        SELECT id, code, project_id, name, specification, brand, quantity, unit,
+               arrival_date, status, remark, is_deleted, created_by, created_at, updated_at
+        FROM t_purchase_request
+        WHERE id = #{id} AND is_deleted = 0
+    </select>
+
+    <select id="selectByPage" resultType="cn.tx.aiagent.purchaserequest.infrastructure.PurchaseRequestPO">
+        SELECT id, code, project_id, name, specification, brand, quantity, unit,
+               arrival_date, status, remark, is_deleted, created_by, created_at, updated_at
+        FROM t_purchase_request
+        WHERE is_deleted = 0
+        <if test="projectId != null">
+            AND project_id = #{projectId}
+        </if>
+        <if test="createdBy != null">
+            AND created_by = #{createdBy}
+        </if>
+        ORDER BY id DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countByProject" resultType="long">
+        SELECT COUNT(*)
+        FROM t_purchase_request
+        WHERE is_deleted = 0
+        <if test="projectId != null">
+            AND project_id = #{projectId}
+        </if>
+        <if test="createdBy != null">
+            AND created_by = #{createdBy}
+        </if>
+    </select>
+
+    <update id="update">
+        UPDATE t_purchase_request
+        SET name = #{name},
+            specification = #{specification},
+            brand = #{brand},
+            quantity = #{quantity},
+            unit = #{unit},
+            arrival_date = #{arrivalDate},
+            status = #{status},
+            remark = #{remark}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE t_purchase_request SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <update id="softDelete">
+        UPDATE t_purchase_request SET is_deleted = 1 WHERE id = #{id}
+    </update>
+
+    <select id="findMaxCodeByPrefix" resultType="string">
+        SELECT MAX(code) FROM t_purchase_request WHERE code LIKE #{prefix} || '%'
+    </select>
+
+    <select id="existsInPurchaseOrder" resultType="boolean">
+        SELECT EXISTS(SELECT 1 FROM t_purchase_order_item WHERE purchase_request_id = #{id})
+    </select>
+
+    <select id="selectAvailable" resultType="cn.tx.aiagent.purchaserequest.infrastructure.PurchaseRequestPO">
+        SELECT id, code, project_id, name, specification, brand, quantity, unit,
+               arrival_date, status, remark, is_deleted, created_by, created_at, updated_at
+        FROM t_purchase_request
+        WHERE status = 2 AND is_deleted = 0
+          AND id NOT IN (SELECT purchase_request_id FROM t_purchase_order_item oi, t_purchase_order o WHERE oi.purchase_order_id = o.id and o.is_deleted = 0)
+        ORDER BY id DESC
+    </select>
+
+</mapper>

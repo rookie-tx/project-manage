@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tx.aiagent.task.infrastructure.WorkflowInstanceMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_workflow_instance (business_type, business_id, process_instance_id, status)
+        VALUES (#{businessType}, #{businessId}, #{processInstanceId}, #{status})
+    </insert>
+
+    <select id="selectByBusiness" resultType="cn.tx.aiagent.task.infrastructure.WorkflowInstancePO">
+        SELECT id, business_type, business_id, process_instance_id, status, created_at, updated_at
+        FROM t_workflow_instance
+        WHERE business_type = #{businessType} AND business_id = #{businessId}
+    </select>
+
+    <select id="selectByProcessInstanceId" resultType="cn.tx.aiagent.task.infrastructure.WorkflowInstancePO">
+        SELECT id, business_type, business_id, process_instance_id, status, created_at, updated_at
+        FROM t_workflow_instance
+        WHERE process_instance_id = #{processInstanceId}
+    </select>
+
+    <update id="updateStatus">
+        UPDATE t_workflow_instance SET status = #{status} WHERE id = #{id}
+    </update>
+
+</mapper>

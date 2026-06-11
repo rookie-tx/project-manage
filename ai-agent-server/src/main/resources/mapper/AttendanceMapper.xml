@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tx.aiagent.attendance.infrastructure.AttendanceMapper">
+
+    <select id="selectTodayByWorker" resultType="cn.tx.aiagent.attendance.infrastructure.AttendancePO">
+        SELECT id, worker_id, project_id, clock_in, clock_out, status,
+               clock_in_lat, clock_in_lng, clock_out_lat, clock_out_lng, location_risk,
+               created_at, updated_at
+        FROM t_attendance WHERE worker_id = #{workerId} AND DATE(clock_in) = CURRENT_DATE
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_attendance (worker_id, project_id, clock_in, status,
+                clock_in_lat, clock_in_lng, location_risk, created_at, updated_at)
+        VALUES (#{workerId}, #{projectId}, NOW(), #{status},
+                #{clockInLat}, #{clockInLng}, #{locationRisk}, NOW(), NOW())
+    </insert>
+
+    <update id="update">
+        UPDATE t_attendance
+        SET clock_out = #{clockOut}, status = #{status},
+            clock_out_lat = #{clockOutLat}, clock_out_lng = #{clockOutLng},
+            location_risk = #{locationRisk}, updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectByWorkerMonth" resultType="cn.tx.aiagent.attendance.infrastructure.AttendancePO">
+        SELECT id, worker_id, project_id, clock_in, clock_out, status,
+               clock_in_lat, clock_in_lng, clock_out_lat, clock_out_lng, location_risk,
+               created_at, updated_at
+        FROM t_attendance WHERE worker_id = #{workerId}
+        AND TO_CHAR(clock_in, 'YYYY-MM') = #{yearMonth} ORDER BY clock_in DESC
+    </select>
+
+    <select id="selectByProjectMonth" resultType="cn.tx.aiagent.attendance.infrastructure.AttendancePO">
+        SELECT id, worker_id, project_id, clock_in, clock_out, status,
+               clock_in_lat, clock_in_lng, clock_out_lat, clock_out_lng, location_risk,
+               created_at, updated_at
+        FROM t_attendance WHERE project_id = #{projectId}
+        AND TO_CHAR(clock_in, 'YYYY-MM') = #{yearMonth} ORDER BY clock_in DESC
+    </select>
+
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tx.aiagent.attendancearea.infrastructure.AttendanceAreaMapper">
+
+    <select id="selectByProjectId" resultType="cn.tx.aiagent.attendancearea.infrastructure.AttendanceAreaPO">
+        SELECT id, project_id, name, center_lat, center_lng, radius, is_deleted, created_at, updated_at
+        FROM t_attendance_area
+        WHERE project_id = #{projectId} AND is_deleted = 0
+        ORDER BY id
+    </select>
+
+    <select id="selectById" resultType="cn.tx.aiagent.attendancearea.infrastructure.AttendanceAreaPO">
+        SELECT id, project_id, name, center_lat, center_lng, radius, is_deleted, created_at, updated_at
+        FROM t_attendance_area
+        WHERE id = #{id} AND is_deleted = 0
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_attendance_area (project_id, name, center_lat, center_lng, radius, is_deleted, created_at, updated_at)
+        VALUES (#{projectId}, #{name}, #{centerLat}, #{centerLng}, #{radius}, 0, NOW(), NOW())
+    </insert>
+
+    <update id="update">
+        UPDATE t_attendance_area
+        SET name = #{name}, center_lat = #{centerLat}, center_lng = #{centerLng},
+            radius = #{radius}, updated_at = NOW()
+        WHERE id = #{id} AND is_deleted = 0
+    </update>
+
+    <update id="softDelete">
+        UPDATE t_attendance_area SET is_deleted = 1, updated_at = NOW()
+        WHERE id = #{id} AND is_deleted = 0
+    </update>
+
+</mapper>

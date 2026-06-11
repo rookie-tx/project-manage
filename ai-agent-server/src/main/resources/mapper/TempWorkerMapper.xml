@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tx.aiagent.tempworker.infrastructure.TempWorkerMapper">
+
+    <select id="selectByProjectId" resultType="cn.tx.aiagent.tempworker.infrastructure.TempWorkerPO">
+        SELECT w.id, w.user_id, u.username, u.name, u.phone, w.project_id, w.worker_type, w.entry_date, w.exit_date,
+               w.status, w.is_deleted, w.created_at, w.updated_at
+        FROM t_temp_worker w LEFT JOIN t_user u ON w.user_id = u.id
+        WHERE w.project_id = #{projectId} AND w.is_deleted = 0 ORDER BY w.entry_date DESC
+    </select>
+
+    <select id="selectById" resultType="cn.tx.aiagent.tempworker.infrastructure.TempWorkerPO">
+        SELECT w.id, w.user_id, u.username, u.name, u.phone, w.project_id, w.worker_type, w.entry_date, w.exit_date,
+               w.status, w.is_deleted, w.created_at, w.updated_at
+        FROM t_temp_worker w LEFT JOIN t_user u ON w.user_id = u.id
+        WHERE w.id = #{id} AND w.is_deleted = 0
+    </select>
+
+    <select id="selectByUserId" resultType="cn.tx.aiagent.tempworker.infrastructure.TempWorkerPO">
+        SELECT w.id, w.user_id, u.username, u.name, u.phone, w.project_id, w.worker_type, w.entry_date, w.exit_date,
+               w.status, w.is_deleted, w.created_at, w.updated_at
+        FROM t_temp_worker w LEFT JOIN t_user u ON w.user_id = u.id
+        WHERE w.user_id = #{userId} AND w.is_deleted = 0
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_temp_worker (user_id, project_id, worker_type, entry_date, status, is_deleted, created_at, updated_at)
+        VALUES (#{userId}, #{projectId}, #{workerType}, #{entryDate}, #{status}, #{isDeleted}, NOW(), NOW())
+    </insert>
+
+    <update id="update">
+        UPDATE t_temp_worker SET worker_type = #{workerType}, entry_date = #{entryDate},
+            exit_date = #{exitDate}, status = #{status}, updated_at = NOW() WHERE id = #{id}
+    </update>
+
+    <update id="softDelete">
+        UPDATE t_temp_worker SET is_deleted = 1, updated_at = NOW() WHERE id = #{id}
+    </update>
+
+</mapper>

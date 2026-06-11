@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tx.aiagent.warehouse.infrastructure.StockBalanceMapper">
+
+    <select id="selectByWarehouseAndMaterial" resultType="cn.tx.aiagent.warehouse.infrastructure.StockBalancePO">
+        SELECT id, warehouse_id, material_id, quantity, created_at, updated_at
+        FROM t_stock_balance WHERE warehouse_id = #{warehouseId} AND material_id = #{materialId}
+    </select>
+
+    <select id="selectByWarehouseId" resultType="cn.tx.aiagent.warehouse.infrastructure.StockBalancePO">
+        SELECT sb.id, sb.warehouse_id, sb.material_id, sb.quantity, sb.created_at, sb.updated_at,
+               m.name as materialName, m.spec as materialSpec, m.unit as materialUnit
+        FROM t_stock_balance sb
+        INNER JOIN t_material m ON sb.material_id = m.id
+        WHERE sb.warehouse_id = #{warehouseId} AND sb.quantity > 0
+    </select>
+
+    <select id="selectByMaterialId" resultType="cn.tx.aiagent.warehouse.infrastructure.StockBalancePO">
+        SELECT id, warehouse_id, material_id, quantity, created_at, updated_at
+        FROM t_stock_balance WHERE material_id = #{materialId} AND quantity > 0
+    </select>
+
+    <insert id="upsert">
+        INSERT INTO t_stock_balance (warehouse_id, material_id, quantity, created_at, updated_at)
+        VALUES (#{warehouseId}, #{materialId}, #{delta}, NOW(), NOW())
+        ON CONFLICT (warehouse_id, material_id)
+        DO UPDATE SET quantity = t_stock_balance.quantity + #{delta}, updated_at = NOW()
+    </insert>
+
+</mapper>

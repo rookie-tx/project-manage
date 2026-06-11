@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tx.aiagent.warehouse.infrastructure.MaterialMapper">
+
+    <select id="selectAll" resultType="cn.tx.aiagent.warehouse.infrastructure.MaterialPO">
+        SELECT id, code, name, spec, unit, is_deleted, created_at, updated_at
+        FROM t_material WHERE is_deleted = 0 ORDER BY id
+    </select>
+
+    <select id="selectById" resultType="cn.tx.aiagent.warehouse.infrastructure.MaterialPO">
+        SELECT id, code, name, spec, unit, is_deleted, created_at, updated_at
+        FROM t_material WHERE id = #{id} AND is_deleted = 0
+    </select>
+
+    <select id="selectByCode" resultType="cn.tx.aiagent.warehouse.infrastructure.MaterialPO">
+        SELECT id, code, name, spec, unit, is_deleted, created_at, updated_at
+        FROM t_material WHERE code = #{code} AND is_deleted = 0
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_material (code, name, spec, unit, is_deleted, created_at, updated_at)
+        VALUES (#{code}, #{name}, #{spec}, #{unit}, #{isDeleted}, NOW(), NOW())
+    </insert>
+
+    <update id="update">
+        UPDATE t_material SET name = #{name}, spec = #{spec}, unit = #{unit}, updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="softDelete">
+        UPDATE t_material SET is_deleted = 1, updated_at = NOW() WHERE id = #{id}
+    </update>
+
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tx.aiagent.constructionwaste.infrastructure.ConstructionWasteMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_construction_waste (project_id, waste_type, quantity, unit, vehicle_plate, driver_name, destination, removal_date, remark, operator_id, is_deleted, created_at, updated_at)
+        VALUES (#{projectId}, #{wasteType}, #{quantity}, #{unit}, #{vehiclePlate}, #{driverName}, #{destination}, #{removalDate}, #{remark}, #{operatorId}, 0, NOW(), NOW())
+    </insert>
+
+    <select id="selectById" resultType="cn.tx.aiagent.constructionwaste.infrastructure.ConstructionWastePO">
+        SELECT id, project_id, waste_type, quantity, unit, vehicle_plate, driver_name, destination, removal_date, remark, operator_id, is_deleted, created_at, updated_at
+        FROM t_construction_waste WHERE id = #{id}
+    </select>
+
+    <select id="search" resultType="cn.tx.aiagent.constructionwaste.infrastructure.ConstructionWastePO">
+        SELECT id, project_id, waste_type, quantity, unit, vehicle_plate, driver_name, destination, removal_date, remark, operator_id, is_deleted, created_at, updated_at
+        FROM t_construction_waste WHERE is_deleted = 0
+        <if test="projectId != null">AND project_id = #{projectId}</if>
+        <if test="wasteType != null and wasteType != ''">AND waste_type LIKE CONCAT('%', #{wasteType}, '%')</if>
+        <if test="startDate != null">AND removal_date &gt;= #{startDate}</if>
+        <if test="endDate != null">AND removal_date &lt;= #{endDate}</if>
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT COUNT(*) FROM t_construction_waste WHERE is_deleted = 0
+        <if test="projectId != null">AND project_id = #{projectId}</if>
+        <if test="wasteType != null and wasteType != ''">AND waste_type LIKE CONCAT('%', #{wasteType}, '%')</if>
+        <if test="startDate != null">AND removal_date &gt;= #{startDate}</if>
+        <if test="endDate != null">AND removal_date &lt;= #{endDate}</if>
+    </select>
+
+    <update id="softDelete">
+        UPDATE t_construction_waste SET is_deleted = 1, updated_at = NOW() WHERE id = #{id}
+    </update>
+
+</mapper>

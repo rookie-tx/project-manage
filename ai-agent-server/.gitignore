@@ -1,0 +1,44 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+/.gitattributes
+/src/test/java/cn/tx/aiagent/AiAgentApplicationTests.java
+/src/test/java/cn/tx/aiagent/login/api/LoginControllerTest.java
+/src/test/java/cn/tx/aiagent/login/domain/LoginDomainServiceTest.java
+/.mvn/wrapper/maven-wrapper.properties
+/mvnw
+/mvnw.cmd
+/src/test/java/cn/tx/aiagent/project/api/ProjectControllerTest.java
+/src/test/java/cn/tx/aiagent/project/domain/ProjectDomainServiceTest.java
+/.claude/settings.local.json
+/pdd/采购系统.md

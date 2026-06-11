@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tx.aiagent.purchasemanagement.infrastructure.PurchaseOrderMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_purchase_order (supplier_name, supplier_phone,
+                                      unit_price, total_amount, purchase_date, expected_arrival_date,
+                                      status, remark, is_deleted, created_by)
+        VALUES (#{supplierName}, #{supplierPhone},
+                #{unitPrice}, #{totalAmount}, #{purchaseDate}, #{expectedArrivalDate},
+                #{status}, #{remark}, #{isDeleted}, #{createdBy})
+    </insert>
+
+    <insert id="insertItem">
+        INSERT INTO t_purchase_order_item (purchase_order_id, purchase_request_id)
+        VALUES (#{orderId}, #{requestId})
+    </insert>
+
+    <delete id="deleteItemsByOrderId">
+        DELETE FROM t_purchase_order_item WHERE purchase_order_id = #{orderId}
+    </delete>
+
+    <select id="selectRequestIdsByOrderId" resultType="long">
+        SELECT purchase_request_id FROM t_purchase_order_item WHERE purchase_order_id = #{orderId}
+    </select>
+
+    <select id="selectById" resultType="cn.tx.aiagent.purchasemanagement.infrastructure.PurchaseOrderPO">
+        SELECT id, supplier_name, supplier_phone,
+               unit_price, total_amount, purchase_date, expected_arrival_date,
+               status, remark, is_deleted, created_by, created_at, updated_at
+        FROM t_purchase_order
+        WHERE id = #{id} AND is_deleted = 0
+    </select>
+
+    <select id="selectByPage" resultType="cn.tx.aiagent.purchasemanagement.infrastructure.PurchaseOrderPO">
+        SELECT DISTINCT po.id, po.supplier_name, po.supplier_phone,
+               po.unit_price, po.total_amount, po.purchase_date, po.expected_arrival_date,
+               po.status, po.remark, po.is_deleted, po.created_by, po.created_at, po.updated_at
+        FROM t_purchase_order po
+        LEFT JOIN t_purchase_order_item poi ON po.id = poi.purchase_order_id
+        LEFT JOIN t_purchase_request pr ON poi.purchase_request_id = pr.id
+        WHERE po.is_deleted = 0
+        <if test="projectId != null">
+            AND pr.project_id = #{projectId}
+        </if>
+        <if test="status != null">
+            AND po.status = #{status}
+        </if>
+        ORDER BY po.id DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countByFilter" resultType="long">
+        SELECT COUNT(DISTINCT po.id)
+        FROM t_purchase_order po
+        LEFT JOIN t_purchase_order_item poi ON po.id = poi.purchase_order_id
+        LEFT JOIN t_purchase_request pr ON poi.purchase_request_id = pr.id
+        WHERE po.is_deleted = 0
+        <if test="projectId != null">
+            AND pr.project_id = #{projectId}
+        </if>
+        <if test="status != null">
+            AND po.status = #{status}
+        </if>
+    </select>
+
+    <update id="update">
+        UPDATE t_purchase_order
+        SET supplier_name = #{supplierName},
+            supplier_phone = #{supplierPhone},
+            unit_price = #{unitPrice},
+            total_amount = #{totalAmount},
+            purchase_date = #{purchaseDate},
+            expected_arrival_date = #{expectedArrivalDate},
+            remark = #{remark}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE t_purchase_order SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <update id="softDelete">
+        UPDATE t_purchase_order SET is_deleted = 1 WHERE id = #{id}
+    </update>
+
+    <select id="existsByPurchaseRequestId" resultType="boolean">
+        SELECT EXISTS(SELECT 1 FROM t_purchase_order WHERE purchase_request_id = #{purchaseRequestId} AND is_deleted = 0)
+    </select>
+
+</mapper>
