@@ -23,8 +23,7 @@
     <insert id="upsert">
         INSERT INTO t_stock_balance (warehouse_id, material_id, quantity, created_at, updated_at)
         VALUES (#{warehouseId}, #{materialId}, #{delta}, NOW(), NOW())
-        ON CONFLICT (warehouse_id, material_id)
-        DO UPDATE SET quantity = t_stock_balance.quantity + #{delta}, updated_at = NOW()
+        ON DUPLICATE KEY UPDATE quantity = quantity + #{delta}, updated_at = NOW()
     </insert>
 
 </mapper>
