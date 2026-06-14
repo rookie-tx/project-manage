@@ -1,0 +1,39 @@
+# purchase-inbound Specification
+
+## Purpose
+TBD - created by syncing change optimize-purchase-flow. Update Purpose after sync.
+
+## Requirements
+
+### Requirement: 待入库列表查询
+系统 SHALL 在 `GET /api/purchase-orders/pending-inbound` 端点返回所有状态为"已采购"的 PO 列表，供入库管理页使用。
+
+#### Scenario: 有待入库记录
+- **WHEN** 存在状态为"已采购"的采购记录
+- **THEN** 系统返回记录列表，每条包含 PO ID、关联的 PR 名称、规格、数量、仓库/物料选择信息
+
+#### Scenario: 无待入库记录
+- **WHEN** 不存在"已采购"状态的采购记录
+- **THEN** 系统返回空列表
+
+### Requirement: 入库完成联动
+系统 SHALL 在入库操作时同步更新关联 PO 的状态为"已到货"。
+
+#### Scenario: 入库完成
+- **WHEN** 用户对一条"已采购"状态的 PO 执行入库操作（选择仓库、物料、数量，调用 `POST /api/stock-records`）
+- **THEN** 系统创建入库记录（StockRecord），同时将 PO 状态更新为"已到货"
+
+#### Scenario: 重复入库
+- **WHEN** 用户对已经是"已到货"状态的 PO 再次执行入库
+- **THEN** 系统返回状态流转不合法错误
+
+### Requirement: 入库管理页展示待入库 PO
+系统 SHALL 在 Web 端入库管理页展示待入库的 PO 列表，用户可选择一条记录执行入库操作。
+
+#### Scenario: 入库管理页看到待入库列表
+- **WHEN** 用户访问入库管理页
+- **THEN** 系统展示"待入库"区域的已采购 PO 列表，每条可点击"入库"
+
+#### Scenario: 入库操作弹窗
+- **WHEN** 用户点击某条 PO 的"入库"按钮
+- **THEN** 系统弹出 Modal，预填关联的采购请求信息和物料信息，用户补充仓库和数量后提交
