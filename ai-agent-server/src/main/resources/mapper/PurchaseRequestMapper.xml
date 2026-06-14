@@ -69,7 +69,7 @@
     </select>
 
     <select id="existsInPurchaseOrder" resultType="boolean">
-        SELECT EXISTS(SELECT 1 FROM t_purchase_order_item WHERE purchase_request_id = #{id})
+        SELECT EXISTS(SELECT 1 FROM t_purchase_order WHERE purchase_request_id = #{id} AND is_deleted = 0)
     </select>
 
     <select id="selectAvailable" resultType="cn.tx.aiagent.purchaserequest.infrastructure.PurchaseRequestPO">
@@ -77,7 +77,7 @@
                arrival_date, status, remark, is_deleted, created_by, created_at, updated_at
         FROM t_purchase_request
         WHERE status = 2 AND is_deleted = 0
-          AND id NOT IN (SELECT purchase_request_id FROM t_purchase_order_item oi, t_purchase_order o WHERE oi.purchase_order_id = o.id and o.is_deleted = 0)
+          AND id NOT IN (SELECT purchase_request_id FROM t_purchase_order WHERE is_deleted = 0)
         ORDER BY id DESC
     </select>
 

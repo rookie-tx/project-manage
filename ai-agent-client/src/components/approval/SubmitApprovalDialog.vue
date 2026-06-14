@@ -13,9 +13,7 @@ const emit = defineEmits(['close'])
 
 const store = usePurchaseRequestStore()
 const users = ref([])
-const deptManagerId = ref(null)
-const financeManagerId = ref(null)
-const generalManagerId = ref(null)
+const pmUserId = ref(null)
 const submitting = ref(false)
 
 onMounted(async () => {
@@ -28,16 +26,14 @@ onMounted(async () => {
 })
 
 async function handleSubmit() {
-  if (!deptManagerId.value || !financeManagerId.value || !generalManagerId.value) {
-    message.warning('三个审批人均为必选')
+  if (!pmUserId.value) {
+    message.warning('请选择审批人')
     return
   }
   submitting.value = true
   try {
     await store.submitApproval(props.purchaseRequestId, {
-      deptManagerId: deptManagerId.value,
-      financeManagerId: financeManagerId.value,
-      generalManagerId: generalManagerId.value,
+      pmUserId: pmUserId.value,
     })
     message.success('提交审批成功')
     emit('close', true)
@@ -57,43 +53,19 @@ function handleCancel() {
   <Modal
     :open="visible"
     title="提交审批"
-    width="500px"
+    width="400px"
     :footer="null"
     @cancel="handleCancel"
   >
     <div style="margin-bottom: 16px">
-      <label style="display: block; margin-bottom: 8px; font-weight: 500"><span style="color: #ef4444">*</span> 部门经理审批</label>
+      <label style="display: block; margin-bottom: 8px; font-weight: 500"><span style="color: #ef4444">*</span> 项目经理审批</label>
       <Select
-        v-model:value="deptManagerId"
-        placeholder="请选择部门经理"
+        v-model:value="pmUserId"
+        placeholder="请选择项目经理"
         show-search
         option-filter-prop="label"
         style="width: 100%"
-        :options="users.map(u => ({ value: u.id, label: u.username }))"
-      />
-    </div>
-
-    <div style="margin-bottom: 16px">
-      <label style="display: block; margin-bottom: 8px; font-weight: 500"><span style="color: #ef4444">*</span> 财务审批</label>
-      <Select
-        v-model:value="financeManagerId"
-        placeholder="请选择财务经理"
-        show-search
-        option-filter-prop="label"
-        style="width: 100%"
-        :options="users.map(u => ({ value: u.id, label: u.username }))"
-      />
-    </div>
-
-    <div style="margin-bottom: 16px">
-      <label style="display: block; margin-bottom: 8px; font-weight: 500"><span style="color: #ef4444">*</span> 总经理审批</label>
-      <Select
-        v-model:value="generalManagerId"
-        placeholder="请选择总经理"
-        show-search
-        option-filter-prop="label"
-        style="width: 100%"
-        :options="users.map(u => ({ value: u.id, label: u.username }))"
+        :options="users.map(u => ({ value: u.id, label: u.displayName || u.username }))"
       />
     </div>
 

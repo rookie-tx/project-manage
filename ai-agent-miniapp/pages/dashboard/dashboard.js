@@ -40,9 +40,11 @@ Page({
     const visibleFeatures = ALL_FEATURES.filter(f => permSet.has(f.permission))
     // 供应商用户仅展示供应商相关模块
     const isSupplier = permSet.has('supplier:profile')
-    const features = isSupplier
-      ? visibleFeatures.filter(f => f.key === 'supplier')
-      : visibleFeatures
+    // const features = isSupplier
+    //   ? visibleFeatures.filter(f => f.key === 'supplier')
+    //   : visibleFeatures
+
+    const features = visibleFeatures
 
     this.setData({
       username: user ? (user.name || user.username) : '',
@@ -71,7 +73,7 @@ Page({
       const result = await approvalApi.count()
       const count = (result && typeof result.count === 'number') ? result.count : Number(result && result.count || 0)
       this.setData({ approvalCount: count })
-    } catch {
+    } catch (e) {
       this.setData({ approvalCount: 0 })
     }
   },

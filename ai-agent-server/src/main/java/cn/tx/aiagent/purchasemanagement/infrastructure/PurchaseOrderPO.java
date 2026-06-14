@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Data
 public class PurchaseOrderPO {
     private Long id;
+    private Long purchaseRequestId;
     private String supplierName;
     private String supplierPhone;
     private BigDecimal unitPrice;

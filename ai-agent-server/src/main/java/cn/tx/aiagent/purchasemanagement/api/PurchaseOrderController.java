@@ -9,7 +9,6 @@ import cn.tx.aiagent.file.domain.UploadFile;
 import cn.tx.aiagent.file.domain.UploadFileRepository;
 import cn.tx.aiagent.purchasemanagement.application.PurchaseOrderApplicationService;
 import cn.tx.aiagent.purchasemanagement.application.PurchaseOrderListResponse;
-import cn.tx.aiagent.purchasemanagement.domain.PurchaseOrder;
 import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,26 +31,21 @@ public class PurchaseOrderController {
     @RequirePermission("purchase:create")
     @PostMapping
     public Result<PurchaseOrderResponse> create(@RequestBody @Valid CreatePurchaseOrderRequest request) {
-        Long userId = LoginContextHolder.requireUserId();
-        // 校验文件存在
-        List<UploadFile> files = request.getFileIds().stream()
-                .map(fid -> uploadFileRepository.findById(fid)
-                        .orElseThrow(() -> new BusinessException(ErrorCode.FILE_NOT_FOUND)))
-                .toList();
-
-        PurchaseOrder po = PurchaseOrder.create(
-                request.getSupplierName(), request.getSupplierPhone(),
-                request.getUnitPrice(), request.getTotalAmount(), request.getPurchaseDate(),
-                request.getExpectedArrivalDate(), request.getRemark(), userId);
-        return Result.success(applicationService.create(po, request.getPurchaseRequestIds(), request.getFileIds()));
+        return Result.success(applicationService.create(request.getPurchaseRequestId()));
     }
 
     @GetMapping
     public Result<PurchaseOrderListResponse> list(@RequestParam(required = false) Long projectId,
                                                     @RequestParam(required = false) Integer status,
+                                                    @RequestParam(required = false) String tab,
                                                     @RequestParam(defaultValue = "1") int page,
                                                     @RequestParam(defaultValue = "20") int size) {
-        return Result.success(applicationService.list(projectId, status, page, size));
+        return Result.success(applicationService.list(projectId, status, tab, page, size));
+    }
+
+    @GetMapping("/pending-inbound")
+    public Result<List<PurchaseOrderResponse>> pendingInbound() {
+        return Result.success(applicationService.listPendingInbound());
     }
 
     @GetMapping("/{id}")
@@ -63,11 +57,11 @@ public class PurchaseOrderController {
     @PutMapping("/{id}")
     public Result<PurchaseOrderResponse> update(@PathVariable Long id,
                                                   @RequestBody UpdatePurchaseOrderRequest request) {
-        PurchaseOrder updateData = PurchaseOrder.create(
+        return Result.success(applicationService.update(id,
                 request.getSupplierName(), request.getSupplierPhone(),
-                request.getUnitPrice(), request.getTotalAmount(), request.getPurchaseDate(),
-                request.getExpectedArrivalDate(), null, null);
-        return Result.success(applicationService.update(id, updateData, request.getPurchaseRequestIds(), request.getFileIds()));
+                request.getUnitPrice(), request.getTotalAmount(),
+                request.getPurchaseDate(), request.getExpectedArrivalDate(),
+                request.getRemark(), request.getFileIds()));
     }
 
     @RequirePermission("purchase:update")

@@ -2,8 +2,9 @@
 import { ref, reactive, onMounted } from 'vue'
 import { useStockRecordStore, useWarehouseStore, useMaterialStore } from '@/stores/warehouse'
 import { useAuthStore } from '@/stores/auth'
-import { Table, Button, Select, InputNumber, Input, Form, FormItem, Modal, Alert, Space, Tag, message } from 'ant-design-vue'
+import { Table, Button, Select, InputNumber, Input, Form, FormItem, Modal, Alert, Space, Tag, message, Card } from 'ant-design-vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
+import client from '@/api/client'
 
 const store = useStockRecordStore()
 const whStore = useWarehouseStore()
@@ -15,6 +16,13 @@ const modalVisible = ref(false)
 const submitting = ref(false)
 const error = ref(null)
 const formState = reactive({ warehouseId: null, materialId: null, type: 1, quantity: 1, purchaseRequestId: null, projectId: null })
+
+// Pending inbound PO list
+const pendingPOs = ref([])
+const inboundVisible = ref(false)
+const inboundSubmitting = ref(false)
+const inboundError = ref(null)
+const inboundForm = reactive({ warehouseId: null, materialId: null, quantity: 1, purchaseRequestId: null })
 
 const columns = [
   { title: '时间', dataIndex: 'createdAt', width: 170 },
@@ -30,9 +38,34 @@ function whName(id) { return whStore.warehouses.find(w => w.id === id)?.name || 
 function matName(id) { return matStore.materials.find(m => m.id === id)?.name || '未知' }
 function formatDate(d) { if (!d) return ''; return d.replace('T', ' ').substring(0, 19) }
 
-onMounted(() => { store.fetchAll(); whStore.fetchAll(); matStore.fetchAll() })
+onMounted(() => { store.fetchAll(); whStore.fetchAll(); matStore.fetchAll(); loadPendingInbound() })
 
 function handleSearch() { store.fetchAll(filters) }
+
+async function loadPendingInbound() {
+  try { const { data } = await client.get('/purchase-orders/pending-inbound'); pendingPOs.value = data || [] }
+  catch { pendingPOs.value = [] }
+}
+
+function openInboundFromPO(po) {
+  inboundForm.warehouseId = null; inboundForm.materialId = null; inboundForm.quantity = 1
+  inboundForm.purchaseRequestId = po.purchaseRequestId
+  inboundError.value = null; inboundVisible.value = true
+}
+
+async function handleInboundSubmit() {
+  const f = inboundForm
+  if (!f.warehouseId) { inboundError.value = '请选择仓库'; return }
+  if (!f.materialId) { inboundError.value = '请选择物料'; return }
+  if (!f.quantity || f.quantity <= 0) { inboundError.value = '请输入有效数量'; return }
+  inboundSubmitting.value = true
+  try {
+    await client.post('/stock-records', { type: 1, warehouseId: f.warehouseId, materialId: f.materialId, quantity: f.quantity, purchaseRequestId: f.purchaseRequestId })
+    inboundVisible.value = false; store.fetchAll(filters); loadPendingInbound(); message.success('入库完成')
+  } catch (e) { inboundError.value = e.message }
+  finally { inboundSubmitting.value = false }
+}
+
 function openStock(type) {
   formState.warehouseId = null; formState.materialId = null; formState.type = type; formState.quantity = 1
   formState.purchaseRequestId = null; formState.projectId = null; error.value = null; modalVisible.value = true
@@ -71,6 +104,14 @@ async function handleSubmit() {
       </Select>
     </Space>
 
+    <!-- 待入库列表 -->
+    <Card v-if="pendingPOs.length > 0" title="待入库" size="small" style="margin-bottom:16px">
+      <div v-for="po in pendingPOs" :key="po.id" style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0">
+        <span>{{ po.purchaseRequests?.[0]?.name || '-' }} | {{ po.purchaseRequests?.[0]?.specification || '-' }} | {{ po.purchaseRequests?.[0]?.quantityStr || '-' }}</span>
+        <Button size="small" type="primary" @click="openInboundFromPO(po)">入库</Button>
+      </div>
+    </Card>
+
     <Table :columns="columns" :data-source="store.records" :loading="store.loading" row-key="id" :pagination="false">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'createdAt'">{{ formatDate(record.createdAt) }}</template>
@@ -86,6 +127,16 @@ async function handleSubmit() {
         </template>
       </template>
     </Table>
+
+    <!-- Inbound from PO modal -->
+    <Modal v-model:open="inboundVisible" title="入库操作" :confirm-loading="inboundSubmitting" @ok="handleInboundSubmit">
+      <Alert v-if="inboundError" type="error" :message="inboundError" closable style="margin-bottom:16px" />
+      <Form layout="vertical">
+        <FormItem label="仓库" required><Select v-model:value="inboundForm.warehouseId" placeholder="选择仓库"><Select.Option v-for="w in whStore.warehouses" :key="w.id" :value="w.id">{{ w.name }}</Select.Option></Select></FormItem>
+        <FormItem label="物料" required><Select v-model:value="inboundForm.materialId" placeholder="选择物料"><Select.Option v-for="m in matStore.materials" :key="m.id" :value="m.id">{{ m.name }}</Select.Option></Select></FormItem>
+        <FormItem label="数量" required><InputNumber v-model:value="inboundForm.quantity" :min="0.01" style="width:100%" /></FormItem>
+      </Form>
+    </Modal>
 
     <Modal v-model:open="modalVisible" :title="formState.type===1?'入库':'出库'" :confirm-loading="submitting" @ok="handleSubmit">
       <Alert v-if="error" type="error" :message="error" closable style="margin-bottom:16px" />

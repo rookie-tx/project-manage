@@ -9,9 +9,13 @@ public interface PurchaseOrderRepository {
 
     Optional<PurchaseOrder> findById(Long id);
 
-    List<PurchaseOrder> findByPage(Long projectId, Integer status, int offset, int size);
+    List<PurchaseOrder> findByPage(Long projectId, Integer status, String tab, int offset, int size);
 
-    long countByFilter(Long projectId, Integer status);
+    long countByFilter(Long projectId, Integer status, String tab);
+
+    Optional<PurchaseOrder> findByPRId(Long prId);
+
+    List<PurchaseOrder> findByStatus(Integer status);
 
     void update(PurchaseOrder po);
 
@@ -20,10 +24,4 @@ public interface PurchaseOrderRepository {
     void updateStatus(Long id, PurchaseOrderStatus status);
 
     boolean existsByPurchaseRequestId(Long purchaseRequestId);
-
-    void insertItem(Long orderId, Long requestId);
-
-    List<Long> findRequestIdsByOrderId(Long orderId);
-
-    void deleteItemsByOrderId(Long orderId);
 }

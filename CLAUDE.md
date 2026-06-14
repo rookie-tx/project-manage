@@ -4,11 +4,11 @@
 
 智能管理平台是一个前后端分离的 Web 应用系统。
 
-| 模块     | 目录                  | 技术栈 |
-|--------|---------------------|--------|
-| 前端 SPA | `ai-agent-client/`  | Vue 3 + Vite 8 + Ant Design Vue 4 + Pinia 3 + Vue Router 5 + Axios (JavaScript) |
-| 后端服务   | `ai-agent-server/`  | Java 25 + Spring Boot 3.5.14 + MyBatis 3.0.5 + PostgreSQL + Maven + MapStruct 1.6.3 |
-| 小程序    | `ai-agent-miniapp/` |  |
+| 模块     | 目录                  |
+|--------|---------------------|
+| 前端 SPA | `ai-agent-client/`  |
+| 后端服务   | `ai-agent-server/`  |
+| 小程序    | `ai-agent-miniapp/` |
 
 ## 语言要求
 
@@ -32,26 +32,12 @@
 - 即使出错也返回 HTTP 200，通过 `code` 字段区分
 - `data` 字段始终序列化（null 也输出）
 
-### ErrorCode 范围
-
-| 范围 | 分类 |
-|------|------|
-| 0 | 成功 |
-| 1xxx | 参数/校验错误 |
-| 2xxx | 认证/授权错误 |
-| 5xxx | 系统/服务器错误 |
-| 9xxx | 未知错误 |
-
----
-
-## Git 规范
-
-- Commit 消息：**中文**，带 conventional commit 前缀
-- 格式：`feat: 中文描述` 或 `fix: 中文描述`
-- PR 标题：不超过 70 个字符
-
 ## OpenSpec 工作流
 
 - 流程：Propose → Design → Spec → Tasks → Implement → Archive
 - Spec 使用 Gherkin 风格场景 `openspec/specs/<capability>/spec.md`
 - 已归档变更放在 `openspec/changes/archive/YYYY-MM-DD-change-name/`
+
+## 数据库
+
+使用`mysql`，sql模板也使用mysql

@@ -50,7 +50,7 @@ Page({
           hasMore: formatted.length >= PAGE_SIZE
         })
       }
-    } catch {
+    } catch (e) {
       wx.showToast({ title: '加载失败', icon: 'none' })
     } finally {
       this.setData({ loading: false, refreshing: false })

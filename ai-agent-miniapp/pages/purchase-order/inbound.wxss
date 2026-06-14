@@ -1,0 +1,12 @@
+.inbound-page { min-height: 100vh; background: #f3f4f6; padding: 24rpx; }
+.form-card { background: #fff; border-radius: 16rpx; padding: 32rpx 28rpx; }
+.form-title { font-size: 32rpx; font-weight: 600; color: #1f2937; margin-bottom: 24rpx; }
+.error-msg { background: #fef2f2; color: #dc2626; padding: 14rpx 20rpx; border-radius: 8rpx; font-size: 26rpx; margin-bottom: 20rpx; }
+.form-group { margin-bottom: 24rpx; }
+.form-label { font-size: 26rpx; color: #374151; font-weight: 500; display: block; margin-bottom: 10rpx; }
+.required { color: #ef4444; }
+.picker-box { display: flex; justify-content: space-between; align-items: center; background: #f9fafb; border: 1rpx solid #e5e7eb; border-radius: 10rpx; padding: 20rpx 20rpx; font-size: 28rpx; }
+.picker-box.placeholder { color: #c4c9d0; }
+.arrow { font-size: 28rpx; color: #9ca3af; }
+.form-input { background: #f9fafb; border: 1rpx solid #e5e7eb; border-radius: 10rpx; padding: 20rpx; font-size: 28rpx; }
+.submit-btn { margin-top: 16rpx; background: #6366f1; color: #fff; border-radius: 12rpx; font-size: 30rpx; font-weight: 600; padding: 24rpx 0; }

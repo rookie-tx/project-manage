@@ -33,14 +33,26 @@ public class PurchaseOrderRepositoryImpl implements PurchaseOrderRepository {
     }
 
     @Override
-    public List<PurchaseOrder> findByPage(Long projectId, Integer status, int offset, int size) {
-        return mapper.selectByPage(projectId, status, offset, size).stream()
+    public List<PurchaseOrder> findByPage(Long projectId, Integer status, String tab, int offset, int size) {
+        return mapper.selectByPage(projectId, status, tab, offset, size).stream()
                 .map(poMapper::toDomain).toList();
     }
 
     @Override
-    public long countByFilter(Long projectId, Integer status) {
-        return mapper.countByFilter(projectId, status);
+    public long countByFilter(Long projectId, Integer status, String tab) {
+        return mapper.countByFilter(projectId, status, tab);
+    }
+
+    @Override
+    public Optional<PurchaseOrder> findByPRId(Long prId) {
+        PurchaseOrderPO po = mapper.selectByPRId(prId);
+        return po == null ? Optional.empty() : Optional.of(poMapper.toDomain(po));
+    }
+
+    @Override
+    public List<PurchaseOrder> findByStatus(Integer status) {
+        return mapper.selectByStatus(status).stream()
+                .map(poMapper::toDomain).toList();
     }
 
     @Override
@@ -57,20 +69,5 @@ public class PurchaseOrderRepositoryImpl implements PurchaseOrderRepository {
     @Override
     public boolean existsByPurchaseRequestId(Long purchaseRequestId) {
         return mapper.existsByPurchaseRequestId(purchaseRequestId);
-    }
-
-    @Override
-    public void insertItem(Long orderId, Long requestId) {
-        mapper.insertItem(orderId, requestId);
-    }
-
-    @Override
-    public List<Long> findRequestIdsByOrderId(Long orderId) {
-        return mapper.selectRequestIdsByOrderId(orderId);
-    }
-
-    @Override
-    public void deleteItemsByOrderId(Long orderId) {
-        mapper.deleteItemsByOrderId(orderId);
     }
 }

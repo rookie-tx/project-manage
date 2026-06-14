@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 public class PurchaseOrderResponse {
     private Long id;
+    private Long purchaseRequestId;
     private String purchaseRequestName;
     private String projectName;
     private List<PurchaseRequestInfo> purchaseRequests;

@@ -58,7 +58,7 @@ Page({
         }
       }
       this.setData({ todayRecord: null, isClockedIn: false, isClockedOut: false, clockInTime: '', clockOutTime: '' })
-    } catch {
+    } catch (e) {
       this.setData({ todayRecord: null })
     }
   },
@@ -79,7 +79,7 @@ Page({
         }
       })
       this.setData({ records: formatted })
-    } catch {
+    } catch (e) {
       this.setData({ records: [] })
     } finally {
       this.setData({ recordsLoading: false })

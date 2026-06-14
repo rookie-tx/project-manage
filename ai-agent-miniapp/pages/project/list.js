@@ -63,7 +63,7 @@ Page({
       } else {
         this.setData({ items: this.data.items.concat(items), page: page + 1, hasMore: items.length >= PAGE_SIZE })
       }
-    } catch {
+    } catch (e) {
       wx.showToast({ title: '加载失败', icon: 'none' })
     } finally {
       this.setData({ loading: false, refreshing: false })

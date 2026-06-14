@@ -51,7 +51,7 @@ Page({
         projects: projects || [],
         projectNames: ['全部项目'].concat((projects || []).map(p => p.name))
       })
-    } catch { /* ignore */ }
+    } catch (e) { /* ignore */ }
   },
 
   async loadItems(reset) {
@@ -84,7 +84,7 @@ Page({
           hasMore: items.length >= PAGE_SIZE
         })
       }
-    } catch {
+    } catch (e) {
       wx.showToast({ title: '加载失败', icon: 'none' })
     } finally {
       this.setData({ loading: false, refreshing: false })

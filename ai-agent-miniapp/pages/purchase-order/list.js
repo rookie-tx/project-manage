@@ -2,41 +2,83 @@ const auth = require('../../utils/auth')
 const poApi = require('../../api/purchaseOrder')
 
 const PAGE_SIZE = 20
-const STATUSES = ['全部状态', '采购中', '已采购', '已到货']
+const TAB_PARAMS = {
+  pending: { tab: 'pending' },
+  purchased: { status: 1 },
+  arrived: { status: 2 }
+}
+const STATUS_LABEL = { 0: '待采购', 1: '已采购', 2: '已到货' }
 
 Page({
   data: {
-    canCreate: false, statusIdx: 0,
+    activeTab: 'pending',
     items: [], loading: false, hasMore: true, page: 1, refreshing: false, needRefresh: false
   },
+
   onLoad() {
     if (!auth.isLoggedIn()) { wx.reLaunch({ url: '/pages/login/login' }); return }
-    this.setData({ canCreate: auth.hasPermission('purchase:create') })
     this.loadItems(true)
   },
-  onShow() { if (this.data.needRefresh) { this.setData({ needRefresh: false }); this.loadItems(true) } },
+
+  onShow() {
+    if (this.data.needRefresh) { this.setData({ needRefresh: false }); this.loadItems(true) }
+  },
+
   async loadItems(reset) {
     if (this.data.loading) return
-    const page = reset ? 1 : this.data.page; this.setData({ loading: true })
+    const page = reset ? 1 : this.data.page
+    this.setData({ loading: true })
     try {
-      const params = { page, size: PAGE_SIZE }
-      if (this.data.statusIdx > 0) params.status = this.data.statusIdx - 1
+      const params = { page, size: PAGE_SIZE, ...TAB_PARAMS[this.data.activeTab] }
       const result = await poApi.list(params)
-      const items = (result.items || []).map(r => ({
-        ...r, purchaseDateStr: formatDate(r.purchaseDate), statusLabel: STATUSES[r.statusCode + 1] || '未知',
-        prNames: (r.purchaseRequests || []).map(p => p.code || p.name).join('、') || null,
-        prDetails: (r.purchaseRequests || []).map(p => ({ id: p.id, code: p.code || '', name: p.name, quantityStr: p.quantityStr || '' }))
-      }))
-      if (reset) { this.setData({ items, page: page + 1, hasMore: items.length >= PAGE_SIZE }) }
-      else { this.setData({ items: this.data.items.concat(items), page: page + 1, hasMore: items.length >= PAGE_SIZE }) }
-    } catch { wx.showToast({ title: '加载失败', icon: 'none' }) }
+      const items = (result.items || []).map(r => {
+        const pr = (r.purchaseRequests && r.purchaseRequests[0]) || {}
+        return {
+          ...r,
+          purchaseDateStr: formatDate(r.purchaseDate),
+          statusLabel: STATUS_LABEL[r.statusCode] || '未知',
+          prName: pr.name || '-',
+          prCode: pr.code || '',
+          prSpec: pr.specification || '',
+          prQtyStr: pr.quantityStr || '',
+          prProjectName: pr.projectName || ''
+        }
+      })
+      if (reset) {
+        this.setData({ items, page: page + 1, hasMore: items.length >= PAGE_SIZE })
+      } else {
+        this.setData({ items: this.data.items.concat(items), page: page + 1, hasMore: items.length >= PAGE_SIZE })
+      }
+    } catch (e) { wx.showToast({ title: '加载失败', icon: 'none' }) }
     finally { this.setData({ loading: false, refreshing: false }) }
   },
+
   onPullDownRefresh() { this.setData({ refreshing: true }); this.loadItems(true); wx.stopPullDownRefresh() },
   onReachBottom() { if (!this.data.hasMore || this.data.loading) return; this.loadItems(false) },
-  onStatusChange(e) { this.setData({ statusIdx: parseInt(e.detail.value) }); this.loadItems(true) },
-  handleTap(e) { wx.navigateTo({ url: '/pages/purchase-order/detail?id=' + e.currentTarget.dataset.id }) },
-  handleCreate() { wx.navigateTo({ url: '/pages/purchase-order/form' }) }
+
+  onTabChange(e) {
+    const tab = e.currentTarget.dataset.tab
+    if (tab === this.data.activeTab) return
+    this.setData({ activeTab: tab })
+    this.loadItems(true)
+  },
+
+  // 待采购 → 完善信息
+  handleEdit(e) {
+    const id = e.currentTarget.dataset.id
+    wx.navigateTo({ url: '/pages/purchase-order/form?id=' + id })
+  },
+
+  // 已采购 → 入库
+  handleInbound(e) {
+    const id = e.currentTarget.dataset.id
+    const prId = e.currentTarget.dataset.prId
+    wx.navigateTo({ url: '/pages/purchase-order/inbound?id=' + id + '&prId=' + prId })
+  },
+
+  handleTap(e) {
+    wx.navigateTo({ url: '/pages/purchase-order/detail?id=' + e.currentTarget.dataset.id })
+  }
 })
 
 function formatDate(d) { if (!d) return ''; if (typeof d === 'string' && d.length >= 10) return d.substring(0, 10); return d }

@@ -44,7 +44,7 @@ Page({
         projects: projects || [],
         projectNames: (projects || []).map(p => p.name)
       })
-    } catch {
+    } catch (e) {
       wx.showToast({ title: '加载项目列表失败', icon: 'none' })
     }
   },

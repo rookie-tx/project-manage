@@ -1,43 +1,70 @@
 <view class="po-form-page">
   <view class="error-bar" wx:if="{{error}}"><text class="error-text">{{error}}</text></view>
   <view class="form-container">
-    <!-- 采购申请选择 -->
+    <!-- 供应商名称 -->
     <view class="form-item">
-      <text class="form-label">采购申请 <text class="required">*</text></text>
-      <view class="pr-select-bar" bindtap="togglePRPicker">
-        <text>{{selectedPRIds.length > 0 ? '已选 ' + selectedPRIds.length + ' 项' : '点击选择采购申请'}}</text>
-        <text class="picker-arrow">›</text>
+      <text class="form-label">供应商名称 <text class="required">*</text></text>
+      <input class="form-input" placeholder="供应商公司名称" value="{{form.supplierName}}" data-field="supplierName" bindinput="onInput" />
+    </view>
+    <!-- 供应商电话 -->
+    <view class="form-item">
+      <text class="form-label">供应商电话</text>
+      <input class="form-input" placeholder="供应商联系电话" value="{{form.supplierPhone}}" data-field="supplierPhone" bindinput="onInput" />
+    </view>
+    <!-- 单价 + 总金额 -->
+    <view class="form-row">
+      <view class="form-item form-half">
+        <text class="form-label">采购单价</text>
+        <input class="form-input" type="digit" placeholder="单价" value="{{form.unitPrice}}" data-field="unitPrice" bindinput="onInput" />
       </view>
-      <!-- 选择面板 -->
-      <view class="pr-picker-panel" wx:if="{{showPRPicker}}">
-        <view class="pr-check-item" wx:for="{{availablePRs}}" wx:key="id" data-id="{{item.id}}" bindtap="togglePRCheck">
-          <view class="pr-checkbox {{item.checked ? 'checked' : ''}}">
-            <text wx:if="{{item.checked}}">✓</text>
+      <view class="form-item form-half">
+        <text class="form-label">总金额 <text class="required">*</text></text>
+        <input class="form-input" type="digit" placeholder="总金额" value="{{form.totalAmount}}" data-field="totalAmount" bindinput="onInput" />
+      </view>
+    </view>
+    <!-- 日期 -->
+    <view class="form-row">
+      <view class="form-item form-half">
+        <text class="form-label">采购日期 <text class="required">*</text></text>
+        <picker mode="date" value="{{form.purchaseDate}}" bindchange="onDateChange">
+          <view class="form-picker {{form.purchaseDate ? '' : 'picker-placeholder'}}">
+            <text>{{form.purchaseDate || '选择日期'}}</text>
+            <text class="picker-arrow">›</text>
           </view>
-          <view class="pr-check-info"><text class="pr-check-name">{{item.displayLabel}}</text></view>
-        </view>
-        <view class="pr-picker-close" bindtap="togglePRPicker"><text>完成选择</text></view>
+        </picker>
+      </view>
+      <view class="form-item form-half">
+        <text class="form-label">预计到货</text>
+        <picker mode="date" value="{{form.expectedArrivalDate}}" bindchange="onArrivalDateChange">
+          <view class="form-picker {{form.expectedArrivalDate ? '' : 'picker-placeholder'}}">
+            <text>{{form.expectedArrivalDate || '选择日期'}}</text>
+            <text class="picker-arrow">›</text>
+          </view>
+        </picker>
       </view>
     </view>
-
-    <view class="form-item"><text class="form-label">供应商名称 <text class="required">*</text></text><input class="form-input" placeholder="供应商公司名称" value="{{form.supplierName}}" data-field="supplierName" bindinput="onInput" /></view>
-    <view class="form-item"><text class="form-label">供应商电话</text><input class="form-input" placeholder="供应商联系电话" value="{{form.supplierPhone}}" data-field="supplierPhone" bindinput="onInput" /></view>
-    <view class="form-row">
-      <view class="form-item form-half"><text class="form-label">采购单价</text><input class="form-input" type="digit" placeholder="单价" value="{{form.unitPrice}}" data-field="unitPrice" bindinput="onInput" /></view>
-      <view class="form-item form-half"><text class="form-label">总金额 <text class="required">*</text></text><input class="form-input" type="digit" placeholder="总金额" value="{{form.totalAmount}}" data-field="totalAmount" bindinput="onInput" /></view>
-    </view>
-    <view class="form-row">
-      <view class="form-item form-half"><text class="form-label">采购日期 <text class="required">*</text></text><picker mode="date" value="{{form.purchaseDate}}" bindchange="onDateChange"><view class="form-picker {{form.purchaseDate ? '' : 'picker-placeholder'}}"><text>{{form.purchaseDate || '选择日期'}}</text><text class="picker-arrow">›</text></view></picker></view>
-      <view class="form-item form-half"><text class="form-label">预计到货</text><picker mode="date" value="{{form.expectedArrivalDate}}" bindchange="onArrivalDateChange"><view class="form-picker {{form.expectedArrivalDate ? '' : 'picker-placeholder'}}"><text>{{form.expectedArrivalDate || '选择日期'}}</text><text class="picker-arrow">›</text></view></picker></view>
-    </view>
-    <view class="form-item"><text class="form-label">备注</text><textarea class="form-textarea" placeholder="备注信息" value="{{form.remark}}" data-field="remark" bindinput="onInput" maxlength="500" auto-height /></view>
+    <!-- 备注 -->
     <view class="form-item">
-      <text class="form-label">合同附件<text wx:if="{{!isEdit}}" class="required"> *</text></text>
+      <text class="form-label">备注</text>
+      <textarea class="form-textarea" placeholder="备注信息" value="{{form.remark}}" data-field="remark" bindinput="onInput" maxlength="500" auto-height />
+    </view>
+    <!-- 附件 -->
+    <view class="form-item">
+      <text class="form-label">合同附件</text>
       <view class="photo-grid">
-        <view class="photo-item" wx:for="{{photos}}" wx:key="index"><image class="photo-thumb" src="{{item.filePath}}" mode="aspectFill" /><view class="photo-mask" wx:if="{{item.uploading}}"><text class="mask-text">上传中</text></view><view class="photo-remove" wx:if="{{!item.uploading}}" data-index="{{index}}" bindtap="removePhoto"><text class="remove-icon">✕</text></view></view>
-        <view class="photo-add" wx:if="{{photos.length < 9}}" bindtap="chooseImage"><text class="add-icon">+</text><text class="add-label">拍照/相册</text></view>
+        <view class="photo-item" wx:for="{{photos}}" wx:key="index">
+          <image class="photo-thumb" src="{{item.filePath}}" mode="aspectFill" />
+          <view class="photo-mask" wx:if="{{item.uploading}}"><text class="mask-text">上传中</text></view>
+          <view class="photo-remove" wx:if="{{!item.uploading}}" data-index="{{index}}" bindtap="removePhoto"><text class="remove-icon">✕</text></view>
+        </view>
+        <view class="photo-add" wx:if="{{photos.length < 9}}" bindtap="chooseImage">
+          <text class="add-icon">+</text><text class="add-label">拍照/相册</text>
+        </view>
       </view>
     </view>
-    <view class="submit-bar"><button class="btn-submit" loading="{{submitting}}" bindtap="handleSubmit">{{isEdit ? '保存修改' : '提交记录'}}</button></view>
+    <!-- 提交 -->
+    <view class="submit-bar">
+      <button class="btn-submit" loading="{{submitting}}" bindtap="handleSubmit">确认完成采购</button>
+    </view>
   </view>
 </view>

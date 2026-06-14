@@ -402,11 +402,12 @@ CREATE TRIGGER trg_t_construction_waste_updated_at
 
 CREATE TABLE IF NOT EXISTS t_purchase_order (
     id                  BIGSERIAL       PRIMARY KEY,
-    supplier_name       VARCHAR(100)    NOT NULL,
+    purchase_request_id BIGINT          UNIQUE REFERENCES t_purchase_request(id),
+    supplier_name       VARCHAR(100),
     supplier_phone      VARCHAR(30),
     unit_price           DECIMAL(12,2),
-    total_amount         DECIMAL(14,2)  NOT NULL,
-    purchase_date       DATE            NOT NULL,
+    total_amount         DECIMAL(14,2)  NOT NULL DEFAULT 0,
+    purchase_date       DATE,
     expected_arrival_date DATE,
     status              SMALLINT        NOT NULL DEFAULT 0,
     remark              VARCHAR(500),
@@ -420,20 +421,23 @@ COMMENT ON TABLE t_purchase_order IS '采购记录表';
 COMMENT ON COLUMN t_purchase_order.status IS '0=采购中, 1=已采购, 2=已到货';
 COMMENT ON COLUMN t_purchase_order.is_deleted IS '0=正常, 1=已删除';
 
+-- DDL 增量变更：采购记录 1:1 关联采购申请
+ALTER TABLE t_purchase_order ADD COLUMN IF NOT EXISTS purchase_request_id BIGINT;
+ALTER TABLE t_purchase_order DROP CONSTRAINT IF EXISTS uq_po_pr;
+ALTER TABLE t_purchase_order ADD CONSTRAINT uq_po_pr UNIQUE (purchase_request_id);
+ALTER TABLE t_purchase_order ADD CONSTRAINT fk_po_pr FOREIGN KEY (purchase_request_id) REFERENCES t_purchase_request(id);
+-- DDL 增量变更：供应商名称和采购日期改为可选（自动创建时留空）
+ALTER TABLE t_purchase_order ALTER COLUMN supplier_name DROP NOT NULL;
+ALTER TABLE t_purchase_order ALTER COLUMN purchase_date DROP NOT NULL;
+ALTER TABLE t_purchase_order ALTER COLUMN total_amount SET DEFAULT 0;
+
+-- DDL 清理：删除 t_purchase_order_item 表
+DROP TABLE IF EXISTS t_purchase_order_item;
+
 CREATE TRIGGER trg_t_purchase_order_updated_at
     BEFORE UPDATE ON t_purchase_order
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TABLE IF NOT EXISTS t_purchase_order_item (
-    id                  BIGSERIAL       PRIMARY KEY,
-    purchase_order_id   BIGINT          NOT NULL REFERENCES t_purchase_order(id),
-    purchase_request_id BIGINT          NOT NULL REFERENCES t_purchase_request(id),
-    created_at          TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT uq_item_request UNIQUE (purchase_request_id)
-);
-
-COMMENT ON TABLE t_purchase_order_item IS '采购记录关联的采购申请明细';
 
 -- ============================================================
 -- 供应商管理
@@ -606,5 +610,4 @@ SELECT setval('t_construction_waste_id_seq', COALESCE((SELECT MAX(id) FROM t_con
 SELECT setval('t_user_wechat_id_seq', COALESCE((SELECT MAX(id) FROM t_user_wechat), 1));
 SELECT setval('t_attendance_area_id_seq', COALESCE((SELECT MAX(id) FROM t_attendance_area), 1));
 SELECT setval('t_purchase_order_id_seq', COALESCE((SELECT MAX(id) FROM t_purchase_order), 1));
-SELECT setval('t_purchase_order_item_id_seq', COALESCE((SELECT MAX(id) FROM t_purchase_order_item), 1));
 SELECT setval('t_supplier_id_seq', COALESCE((SELECT MAX(id) FROM t_supplier), 1));

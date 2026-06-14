@@ -45,7 +45,7 @@ function uploadFile(filePath, businessType) {
             return
           }
           reject(new Error(body.msg || '上传失败'))
-        } catch {
+        } catch (e) {
           reject(new Error('服务器响应异常'))
         }
       },

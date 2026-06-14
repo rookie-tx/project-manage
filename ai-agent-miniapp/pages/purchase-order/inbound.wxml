@@ -1,0 +1,33 @@
+<view class="inbound-page">
+  <view class="form-card">
+    <view class="form-title">入库操作</view>
+    <view class="error-msg" wx:if="{{error}}">{{error}}</view>
+
+    <view class="form-group">
+      <text class="form-label">仓库 <text class="required">*</text></text>
+      <picker mode="selector" range="{{warehouseNames}}" value="{{wIdx}}" bindchange="onWChange">
+        <view class="picker-box {{wIdx === -1 ? 'placeholder' : ''}}">
+          <text>{{wIdx === -1 ? '请选择仓库' : warehouseNames[wIdx]}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">物料 <text class="required">*</text></text>
+      <picker mode="selector" range="{{materialNames}}" value="{{mIdx}}" bindchange="onMChange">
+        <view class="picker-box {{mIdx === -1 ? 'placeholder' : ''}}">
+          <text>{{mIdx === -1 ? '请选择物料' : materialNames[mIdx]}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">数量 <text class="required">*</text></text>
+      <input class="form-input" type="digit" placeholder="请输入数量" value="{{form.quantity}}" bindinput="onQtyInput" />
+    </view>
+
+    <button class="submit-btn" loading="{{submitting}}" bindtap="handleSubmit">确认入库</button>
+  </view>
+</view>

@@ -60,7 +60,7 @@ Page({
         projects: projects || [],
         projectNames: (projects || []).map(p => p.name)
       })
-    } catch { /* ignore */ }
+    } catch (e) { /* ignore */ }
   },
 
   async loadDetail(id) {

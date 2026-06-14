@@ -3,18 +3,20 @@ package cn.tx.aiagent.purchasemanagement.application;
 import cn.tx.aiagent.common.api.ErrorCode;
 import cn.tx.aiagent.common.exception.BusinessException;
 import cn.tx.aiagent.file.domain.UploadFile;
+import java.math.BigDecimal;
 import cn.tx.aiagent.file.domain.UploadFileRepository;
+import cn.tx.aiagent.project.domain.ProjectRepository;
 import cn.tx.aiagent.purchasemanagement.api.PurchaseOrderResponse;
 import cn.tx.aiagent.purchasemanagement.domain.PurchaseOrder;
 import cn.tx.aiagent.purchasemanagement.domain.PurchaseOrderRepository;
 import cn.tx.aiagent.purchasemanagement.domain.PurchaseOrderStatus;
-import cn.tx.aiagent.project.domain.ProjectRepository;
 import cn.tx.aiagent.purchaserequest.domain.PurchaseRequestRepository;
 import cn.tx.aiagent.user.domain.User;
 import cn.tx.aiagent.user.domain.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -38,24 +40,43 @@ public class PurchaseOrderApplicationService {
         this.projectRepository = projectRepository;
     }
 
+    /** 自动创建 PO（审批通过时调用） */
     @Transactional
-    public PurchaseOrderResponse create(PurchaseOrder po, List<Long> purchaseRequestIds, List<Long> fileIds) {
+    public PurchaseOrderResponse createAuto(Long purchaseRequestId, Long createdBy) {
+        if (repository.existsByPurchaseRequestId(purchaseRequestId)) {
+            return null; // 已存在则跳过
+        }
+        var pr = purchaseRequestRepository.findById(purchaseRequestId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.PR_NOT_FOUND));
+        PurchaseOrder po = PurchaseOrder.createAuto(purchaseRequestId, pr.getArrivalDate(), createdBy);
         repository.save(po);
-        for (Long prId : purchaseRequestIds) {
-            repository.insertItem(po.getId(), prId);
-        }
-        for (Long fid : fileIds) {
-            uploadFileRepository.updateBusinessId(fid, "purchase_order", po.getId());
-        }
         return toResponse(po);
     }
 
-    public PurchaseOrderListResponse list(Long projectId, Integer status, int page, int size) {
+    /** 手动创建（管理端） */
+    @Transactional
+    public PurchaseOrderResponse create(Long purchaseRequestId) {
+        if (repository.existsByPurchaseRequestId(purchaseRequestId)) {
+            throw new BusinessException(ErrorCode.PO_DUPLICATE);
+        }
+        var pr = purchaseRequestRepository.findById(purchaseRequestId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.PR_NOT_FOUND));
+        PurchaseOrder po = PurchaseOrder.createAuto(purchaseRequestId, pr.getArrivalDate(), null);
+        repository.save(po);
+        return toResponse(po);
+    }
+
+    public PurchaseOrderListResponse list(Long projectId, Integer status, String tab, int page, int size) {
         int offset = (page - 1) * size;
-        List<PurchaseOrder> items = repository.findByPage(projectId, status, offset, size);
-        long total = repository.countByFilter(projectId, status);
+        List<PurchaseOrder> items = repository.findByPage(projectId, status, tab, offset, size);
+        long total = repository.countByFilter(projectId, status, tab);
         List<PurchaseOrderResponse> responses = items.stream().map(this::toResponse).toList();
         return new PurchaseOrderListResponse(responses, total, page, size);
+    }
+
+    public List<PurchaseOrderResponse> listPendingInbound() {
+        return repository.findByStatus(PurchaseOrderStatus.PURCHASED.getCode()).stream()
+                .map(this::toResponse).toList();
     }
 
     public PurchaseOrderResponse detail(Long id) {
@@ -65,23 +86,17 @@ public class PurchaseOrderApplicationService {
     }
 
     @Transactional
-    public PurchaseOrderResponse update(Long id, PurchaseOrder updateData, List<Long> purchaseRequestIds, List<Long> fileIds) {
+    public PurchaseOrderResponse update(Long id, String supplierName, String supplierPhone,
+                                         BigDecimal unitPrice, BigDecimal totalAmount,
+                                         java.time.LocalDate purchaseDate, java.time.LocalDate expectedArrivalDate,
+                                         String remark, List<Long> fileIds) {
         PurchaseOrder po = repository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.UNKNOWN_ERROR, "采购记录不存在"));
         if (po.getStatus() != PurchaseOrderStatus.PURCHASING) {
-            throw new BusinessException(ErrorCode.PR_STATUS_TRANSITION_INVALID);
+            throw new BusinessException(ErrorCode.PO_STATUS_INVALID);
         }
-        po.update(updateData.getSupplierName(), updateData.getSupplierPhone(),
-                updateData.getUnitPrice(), updateData.getTotalAmount(),
-                updateData.getPurchaseDate(), updateData.getExpectedArrivalDate(),
-                updateData.getRemark());
+        po.update(supplierName, supplierPhone, unitPrice, totalAmount, purchaseDate, expectedArrivalDate, remark);
         repository.update(po);
-        if (purchaseRequestIds != null && !purchaseRequestIds.isEmpty()) {
-            repository.deleteItemsByOrderId(id);
-            for (Long prId : purchaseRequestIds) {
-                repository.insertItem(id, prId);
-            }
-        }
         if (fileIds != null) {
             for (Long fid : fileIds) {
                 uploadFileRepository.updateBusinessId(fid, "purchase_order", id);
@@ -94,20 +109,29 @@ public class PurchaseOrderApplicationService {
         PurchaseOrder po = repository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.UNKNOWN_ERROR, "采购记录不存在"));
         if (po.getStatus() != PurchaseOrderStatus.PURCHASING) {
-            throw new BusinessException(ErrorCode.PR_STATUS_TRANSITION_INVALID);
+            throw new BusinessException(ErrorCode.PO_STATUS_INVALID);
         }
         po.markDeleted();
         repository.softDelete(id);
     }
 
+    @Transactional
     public PurchaseOrderResponse changeStatus(Long id, int statusCode) {
         PurchaseOrder po = repository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.UNKNOWN_ERROR, "采购记录不存在"));
         PurchaseOrderStatus target = PurchaseOrderStatus.fromCode(statusCode);
+
+        // 采购中→已采购 需要校验供应商信息已填写
+        if (po.getStatus() == PurchaseOrderStatus.PURCHASING && target == PurchaseOrderStatus.PURCHASED) {
+            if (!po.isSupplierFilled()) {
+                throw new BusinessException(ErrorCode.PO_SUPPLIER_REQUIRED);
+            }
+        }
+
         try {
             po.changeStatus(target);
         } catch (IllegalArgumentException e) {
-            throw new BusinessException(ErrorCode.PR_STATUS_TRANSITION_INVALID);
+            throw new BusinessException(ErrorCode.PO_STATUS_INVALID);
         }
         repository.updateStatus(id, target);
         return toResponse(po);
@@ -116,6 +140,7 @@ public class PurchaseOrderApplicationService {
     private PurchaseOrderResponse toResponse(PurchaseOrder po) {
         PurchaseOrderResponse resp = new PurchaseOrderResponse();
         resp.setId(po.getId());
+        resp.setPurchaseRequestId(po.getPurchaseRequestId());
         resp.setSupplierName(po.getSupplierName());
         resp.setSupplierPhone(po.getSupplierPhone());
         resp.setUnitPrice(po.getUnitPrice());
@@ -130,23 +155,27 @@ public class PurchaseOrderApplicationService {
         resp.setUpdatedAt(po.getUpdatedAt());
 
         if (po.getCreatedBy() != null) {
-            userRepository.findById(po.getCreatedBy()).map(u -> u.getName() != null ? u.getName() : u.getUsername()).ifPresent(resp::setCreatedByName);
+            userRepository.findById(po.getCreatedBy())
+                    .map(u -> u.getName() != null ? u.getName() : u.getUsername())
+                    .ifPresent(resp::setCreatedByName);
         }
-        List<Long> prIds = repository.findRequestIdsByOrderId(po.getId());
-        List<PurchaseOrderResponse.PurchaseRequestInfo> prInfos = prIds.stream().map(prId -> {
-            PurchaseOrderResponse.PurchaseRequestInfo info = new PurchaseOrderResponse.PurchaseRequestInfo();
-            info.setId(prId);
-            purchaseRequestRepository.findById(prId).ifPresent(pr -> {
+
+        // 1:1 关联单个 PR
+        if (po.getPurchaseRequestId() != null) {
+            purchaseRequestRepository.findById(po.getPurchaseRequestId()).ifPresent(pr -> {
+                PurchaseOrderResponse.PurchaseRequestInfo info = new PurchaseOrderResponse.PurchaseRequestInfo();
+                info.setId(pr.getId());
                 info.setCode(pr.getCode());
                 info.setName(pr.getName());
                 info.setSpecification(pr.getSpecification());
                 info.setQuantityStr(pr.getQuantity() + (pr.getUnit() != null ? pr.getUnit().getLabel() : ""));
                 info.setArrivalDate(pr.getArrivalDate() != null ? pr.getArrivalDate().toString() : null);
                 projectRepository.findById(pr.getProjectId()).ifPresent(p -> info.setProjectName(p.getName()));
+                resp.setPurchaseRequests(Collections.singletonList(info));
             });
-            return info;
-        }).toList();
-        resp.setPurchaseRequests(prInfos);
+        } else {
+            resp.setPurchaseRequests(Collections.emptyList());
+        }
 
         List<UploadFile> files = uploadFileRepository.findByBusiness("purchase_order", po.getId());
         resp.setFiles(files.stream().map(f -> {

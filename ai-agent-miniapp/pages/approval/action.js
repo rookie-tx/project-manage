@@ -55,7 +55,7 @@ Page({
     try {
       const records = await approvalApi.history(businessType, businessId)
       this.setData({ history: records || [] })
-    } catch {
+    } catch (e) {
       // 历史加载失败不影响审批操作
     } finally {
       this.setData({ historyLoading: false })

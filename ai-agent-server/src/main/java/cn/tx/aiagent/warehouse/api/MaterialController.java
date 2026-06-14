@@ -5,6 +5,8 @@ import cn.tx.aiagent.common.api.Result;
 import cn.tx.aiagent.common.config.LoginContextHolder;
 import cn.tx.aiagent.common.exception.BusinessException;
 import cn.tx.aiagent.common.security.RequirePermission;
+import cn.tx.aiagent.purchasemanagement.domain.PurchaseOrderRepository;
+import cn.tx.aiagent.purchasemanagement.domain.PurchaseOrderStatus;
 import cn.tx.aiagent.warehouse.application.StockApplicationService;
 import cn.tx.aiagent.warehouse.domain.*;
 import org.springframework.web.bind.annotation.*;
@@ -19,15 +21,18 @@ public class MaterialController {
     private final StockBalanceRepository stockBalanceRepository;
     private final StockRecordRepository stockRecordRepository;
     private final StockApplicationService stockApplicationService;
+    private final PurchaseOrderRepository purchaseOrderRepository;
 
     public MaterialController(MaterialRepository materialRepository,
                                StockBalanceRepository stockBalanceRepository,
                                StockRecordRepository stockRecordRepository,
-                               StockApplicationService stockApplicationService) {
+                               StockApplicationService stockApplicationService,
+                               PurchaseOrderRepository purchaseOrderRepository) {
         this.materialRepository = materialRepository;
         this.stockBalanceRepository = stockBalanceRepository;
         this.stockRecordRepository = stockRecordRepository;
         this.stockApplicationService = stockApplicationService;
+        this.purchaseOrderRepository = purchaseOrderRepository;
     }
 
     @GetMapping("/materials")
@@ -82,6 +87,15 @@ public class MaterialController {
         stockApplicationService.recordStock(request.getWarehouseId(), request.getMaterialId(),
                 StockType.fromCode(request.getType()), request.getQuantity(),
                 request.getPurchaseRequestId(), request.getProjectId(), userId);
+
+        // 入库操作关联采购申请 → PO 流转为已到货
+        if (request.getType() == 1 && request.getPurchaseRequestId() != null) {
+            purchaseOrderRepository.findByPRId(request.getPurchaseRequestId()).ifPresent(po -> {
+                if (po.getStatus() == PurchaseOrderStatus.PURCHASED) {
+                    purchaseOrderRepository.updateStatus(po.getId(), PurchaseOrderStatus.ARRIVED);
+                }
+            });
+        }
         return Result.success();
     }
 

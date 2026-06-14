@@ -3,29 +3,16 @@
 <mapper namespace="cn.tx.aiagent.purchasemanagement.infrastructure.PurchaseOrderMapper">
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO t_purchase_order (supplier_name, supplier_phone,
+        INSERT INTO t_purchase_order (purchase_request_id, supplier_name, supplier_phone,
                                       unit_price, total_amount, purchase_date, expected_arrival_date,
                                       status, remark, is_deleted, created_by)
-        VALUES (#{supplierName}, #{supplierPhone},
+        VALUES (#{purchaseRequestId}, #{supplierName}, #{supplierPhone},
                 #{unitPrice}, #{totalAmount}, #{purchaseDate}, #{expectedArrivalDate},
                 #{status}, #{remark}, #{isDeleted}, #{createdBy})
     </insert>
 
-    <insert id="insertItem">
-        INSERT INTO t_purchase_order_item (purchase_order_id, purchase_request_id)
-        VALUES (#{orderId}, #{requestId})
-    </insert>
-
-    <delete id="deleteItemsByOrderId">
-        DELETE FROM t_purchase_order_item WHERE purchase_order_id = #{orderId}
-    </delete>
-
-    <select id="selectRequestIdsByOrderId" resultType="long">
-        SELECT purchase_request_id FROM t_purchase_order_item WHERE purchase_order_id = #{orderId}
-    </select>
-
     <select id="selectById" resultType="cn.tx.aiagent.purchasemanagement.infrastructure.PurchaseOrderPO">
-        SELECT id, supplier_name, supplier_phone,
+        SELECT id, purchase_request_id, supplier_name, supplier_phone,
                unit_price, total_amount, purchase_date, expected_arrival_date,
                status, remark, is_deleted, created_by, created_at, updated_at
         FROM t_purchase_order
@@ -33,28 +20,32 @@
     </select>
 
     <select id="selectByPage" resultType="cn.tx.aiagent.purchasemanagement.infrastructure.PurchaseOrderPO">
-        SELECT DISTINCT po.id, po.supplier_name, po.supplier_phone,
+        SELECT po.id, po.purchase_request_id, po.supplier_name, po.supplier_phone,
                po.unit_price, po.total_amount, po.purchase_date, po.expected_arrival_date,
                po.status, po.remark, po.is_deleted, po.created_by, po.created_at, po.updated_at
         FROM t_purchase_order po
-        LEFT JOIN t_purchase_order_item poi ON po.id = poi.purchase_order_id
-        LEFT JOIN t_purchase_request pr ON poi.purchase_request_id = pr.id
+        LEFT JOIN t_purchase_request pr ON po.purchase_request_id = pr.id
         WHERE po.is_deleted = 0
         <if test="projectId != null">
             AND pr.project_id = #{projectId}
         </if>
         <if test="status != null">
             AND po.status = #{status}
+        </if>
+        <if test="tab == 'pending'">
+            AND po.supplier_name IS NULL
+        </if>
+        <if test="tab == 'active'">
+            AND po.supplier_name IS NOT NULL
         </if>
         ORDER BY po.id DESC
         LIMIT #{size} OFFSET #{offset}
     </select>
 
     <select id="countByFilter" resultType="long">
-        SELECT COUNT(DISTINCT po.id)
+        SELECT COUNT(po.id)
         FROM t_purchase_order po
-        LEFT JOIN t_purchase_order_item poi ON po.id = poi.purchase_order_id
-        LEFT JOIN t_purchase_request pr ON poi.purchase_request_id = pr.id
+        LEFT JOIN t_purchase_request pr ON po.purchase_request_id = pr.id
         WHERE po.is_deleted = 0
         <if test="projectId != null">
             AND pr.project_id = #{projectId}
@@ -62,6 +53,29 @@
         <if test="status != null">
             AND po.status = #{status}
         </if>
+        <if test="tab == 'pending'">
+            AND po.supplier_name IS NULL
+        </if>
+        <if test="tab == 'active'">
+            AND po.supplier_name IS NOT NULL
+        </if>
+    </select>
+
+    <select id="selectByPRId" resultType="cn.tx.aiagent.purchasemanagement.infrastructure.PurchaseOrderPO">
+        SELECT id, purchase_request_id, supplier_name, supplier_phone,
+               unit_price, total_amount, purchase_date, expected_arrival_date,
+               status, remark, is_deleted, created_by, created_at, updated_at
+        FROM t_purchase_order
+        WHERE purchase_request_id = #{prId} AND is_deleted = 0
+    </select>
+
+    <select id="selectByStatus" resultType="cn.tx.aiagent.purchasemanagement.infrastructure.PurchaseOrderPO">
+        SELECT id, purchase_request_id, supplier_name, supplier_phone,
+               unit_price, total_amount, purchase_date, expected_arrival_date,
+               status, remark, is_deleted, created_by, created_at, updated_at
+        FROM t_purchase_order
+        WHERE status = #{status} AND is_deleted = 0
+        ORDER BY id DESC
     </select>
 
     <update id="update">

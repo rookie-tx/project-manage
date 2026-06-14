@@ -10,7 +10,7 @@ public interface PurchaseOrderPoMapper {
     default PurchaseOrder toDomain(PurchaseOrderPO po) {
         if (po == null) return null;
         return PurchaseOrder.fromPersistence(
-                po.getId(), po.getSupplierName(),
+                po.getId(), po.getPurchaseRequestId(), po.getSupplierName(),
                 po.getSupplierPhone(), po.getUnitPrice(), po.getTotalAmount(),
                 po.getPurchaseDate(), po.getExpectedArrivalDate(),
                 po.getStatus(), po.getRemark(), po.getIsDeleted(),

@@ -33,6 +33,9 @@ public enum ErrorCode {
     PR_PROJECT_NOT_FOUND(4001, "pr.project_not_found"),
     PR_NOT_FOUND(4002, "pr.not_found"),
     PR_STATUS_TRANSITION_INVALID(4003, "pr.status_transition_invalid"),
+    PO_DUPLICATE(4004, "po.duplicate"),
+    PO_STATUS_INVALID(4005, "po.status_invalid"),
+    PO_SUPPLIER_REQUIRED(4006, "po.supplier_required"),
     // 用户管理错误 7xxx
     USER_NOT_FOUND(7001, "user.not_found"),
     USERNAME_DUPLICATE(7002, "user.username_duplicate"),

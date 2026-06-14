@@ -20,9 +20,7 @@ Page({
     canSubmit: false,
     users: [],
     userNames: [],
-    deptMgrIdx: -1,
-    financeMgrIdx: -1,
-    generalMgrIdx: -1,
+    pmUserIdx: -1,
     submittingApproval: false,
 
     // 格式化字段
@@ -74,7 +72,7 @@ Page({
     try {
       const records = await approvalApi.history('PURCHASE_REQUEST', this.data.id)
       this.setData({ history: records || [] })
-    } catch { /* ignore */ }
+    } catch (e) { /* ignore */ }
     finally { this.setData({ historyLoading: false }) }
   },
 
@@ -85,22 +83,15 @@ Page({
         users: users || [],
         userNames: (users || []).map(u => u.name || u.username)
       })
-    } catch { /* ignore */ }
+    } catch (e) { /* ignore */ }
   },
 
-  onDeptMgrChange(e) { this.setData({ deptMgrIdx: parseInt(e.detail.value) }) },
-  onFinanceMgrChange(e) { this.setData({ financeMgrIdx: parseInt(e.detail.value) }) },
-  onGeneralMgrChange(e) { this.setData({ generalMgrIdx: parseInt(e.detail.value) }) },
+  onPmUserChange(e) { this.setData({ pmUserIdx: parseInt(e.detail.value) }) },
 
   async handleSubmitApproval() {
-    const { users, deptMgrIdx, financeMgrIdx, generalMgrIdx } = this.data
-    const selectedIds = []
-    if (deptMgrIdx >= 0) selectedIds.push(users[deptMgrIdx].id)
-    if (financeMgrIdx >= 0) selectedIds.push(users[financeMgrIdx].id)
-    if (generalMgrIdx >= 0) selectedIds.push(users[generalMgrIdx].id)
-
-    if (deptMgrIdx < 0 || financeMgrIdx < 0 || generalMgrIdx < 0) {
-      wx.showToast({ title: '三个审批人均为必选', icon: 'none' })
+    const { users, pmUserIdx } = this.data
+    if (pmUserIdx < 0) {
+      wx.showToast({ title: '请选择项目经理', icon: 'none' })
       return
     }
 
@@ -111,9 +102,7 @@ Page({
         businessType: 'PURCHASE_REQUEST',
         businessId: this.data.id,
         variables: {
-          deptManagerId: deptMgrIdx >= 0 ? users[deptMgrIdx].id : null,
-          financeManagerId: financeMgrIdx >= 0 ? users[financeMgrIdx].id : null,
-          generalManagerId: generalMgrIdx >= 0 ? users[generalMgrIdx].id : null
+          pmUserId: users[pmUserIdx].id
         }
       })
       wx.showToast({ title: '提交审批成功', icon: 'success' })

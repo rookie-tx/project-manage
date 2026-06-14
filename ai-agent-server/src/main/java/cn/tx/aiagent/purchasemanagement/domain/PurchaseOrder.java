@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class PurchaseOrder {
 
     private Long id;
+    private Long purchaseRequestId;
     private String supplierName;
     private String supplierPhone;
     private BigDecimal unitPrice;
@@ -25,10 +26,28 @@ public class PurchaseOrder {
 
     private PurchaseOrder() {}
 
-    public static PurchaseOrder create(String supplierName, String supplierPhone,
+    /** 自动创建（审批通过时），基本信息留空 */
+    public static PurchaseOrder createAuto(Long purchaseRequestId, LocalDate expectedArrivalDate, Long createdBy) {
+        PurchaseOrder po = new PurchaseOrder();
+        po.purchaseRequestId = purchaseRequestId;
+        po.supplierName = null;
+        po.supplierPhone = null;
+        po.unitPrice = null;
+        po.totalAmount = BigDecimal.ZERO;
+        po.purchaseDate = null;
+        po.expectedArrivalDate = expectedArrivalDate;
+        po.status = PurchaseOrderStatus.PURCHASING;
+        po.isDeleted = 0;
+        po.createdBy = createdBy;
+        return po;
+    }
+
+    /** 手动创建（管理员用） */
+    public static PurchaseOrder create(Long purchaseRequestId, String supplierName, String supplierPhone,
                                         BigDecimal unitPrice, BigDecimal totalAmount, LocalDate purchaseDate,
                                         LocalDate expectedArrivalDate, String remark, Long createdBy) {
         PurchaseOrder po = new PurchaseOrder();
+        po.purchaseRequestId = purchaseRequestId;
         po.supplierName = supplierName;
         po.supplierPhone = supplierPhone;
         po.unitPrice = unitPrice;
@@ -42,13 +61,14 @@ public class PurchaseOrder {
         return po;
     }
 
-    public static PurchaseOrder fromPersistence(Long id, String supplierName,
+    public static PurchaseOrder fromPersistence(Long id, Long purchaseRequestId, String supplierName,
                                                   String supplierPhone, BigDecimal unitPrice, BigDecimal totalAmount,
                                                   LocalDate purchaseDate, LocalDate expectedArrivalDate,
                                                   int statusCode, String remark, Integer isDeleted,
                                                   Long createdBy, LocalDateTime createdAt, LocalDateTime updatedAt) {
         PurchaseOrder po = new PurchaseOrder();
         po.id = id;
+        po.purchaseRequestId = purchaseRequestId;
         po.supplierName = supplierName;
         po.supplierPhone = supplierPhone;
         po.unitPrice = unitPrice;
@@ -74,6 +94,10 @@ public class PurchaseOrder {
         if (purchaseDate != null) this.purchaseDate = purchaseDate;
         if (expectedArrivalDate != null) this.expectedArrivalDate = expectedArrivalDate;
         if (remark != null) this.remark = remark;
+    }
+
+    public boolean isSupplierFilled() {
+        return supplierName != null && !supplierName.isEmpty();
     }
 
     public void changeStatus(PurchaseOrderStatus target) {

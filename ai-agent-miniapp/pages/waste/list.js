@@ -51,7 +51,7 @@ Page({
         projects: projects || [],
         projectNames: ['全部项目'].concat((projects || []).map(p => p.name))
       })
-    } catch {
+    } catch (e) {
       // 项目列表加载失败不影响列表查询
     }
   },
@@ -88,7 +88,7 @@ Page({
           hasMore: formatted.length >= PAGE_SIZE
         })
       }
-    } catch {
+    } catch (e) {
       wx.showToast({ title: '加载失败', icon: 'none' })
     } finally {
       this.setData({ loading: false, refreshing: false })

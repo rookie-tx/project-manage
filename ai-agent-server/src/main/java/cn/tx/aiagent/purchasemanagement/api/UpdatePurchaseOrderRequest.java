@@ -15,7 +15,5 @@ public class UpdatePurchaseOrderRequest {
     private LocalDate expectedArrivalDate;
     private String remark;
 
-    private List<Long> purchaseRequestIds;
-
     private List<Long> fileIds;
 }

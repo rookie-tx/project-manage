@@ -54,28 +54,10 @@
     <view class="detail-card" wx:if="{{isPending && canSubmit}}" id="submitArea">
       <text class="card-title">提交审批</text>
       <view class="form-item">
-        <text class="form-label">部门经理 <text class="required">*</text></text>
-        <picker mode="selector" range="{{userNames}}" value="{{deptMgrIdx}}" bindchange="onDeptMgrChange">
-          <view class="form-picker {{deptMgrIdx === -1 ? 'picker-placeholder' : ''}}">
-            <text>{{deptMgrIdx === -1 ? '请选择部门经理' : userNames[deptMgrIdx]}}</text>
-            <text class="picker-arrow">›</text>
-          </view>
-        </picker>
-      </view>
-      <view class="form-item">
-        <text class="form-label">财务审批 <text class="required">*</text></text>
-        <picker mode="selector" range="{{userNames}}" value="{{financeMgrIdx}}" bindchange="onFinanceMgrChange">
-          <view class="form-picker {{financeMgrIdx === -1 ? 'picker-placeholder' : ''}}">
-            <text>{{financeMgrIdx === -1 ? '请选择财务经理' : userNames[financeMgrIdx]}}</text>
-            <text class="picker-arrow">›</text>
-          </view>
-        </picker>
-      </view>
-      <view class="form-item">
-        <text class="form-label">总经理 <text class="required">*</text></text>
-        <picker mode="selector" range="{{userNames}}" value="{{generalMgrIdx}}" bindchange="onGeneralMgrChange">
-          <view class="form-picker {{generalMgrIdx === -1 ? 'picker-placeholder' : ''}}">
-            <text>{{generalMgrIdx === -1 ? '请选择总经理' : userNames[generalMgrIdx]}}</text>
+        <text class="form-label">项目经理 <text class="required">*</text></text>
+        <picker mode="selector" range="{{userNames}}" value="{{pmUserIdx}}" bindchange="onPmUserChange">
+          <view class="form-picker {{pmUserIdx === -1 ? 'picker-placeholder' : ''}}">
+            <text>{{pmUserIdx === -1 ? '请选择项目经理' : userNames[pmUserIdx]}}</text>
             <text class="picker-arrow">›</text>
           </view>
         </picker>

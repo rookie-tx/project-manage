@@ -362,11 +362,12 @@ CREATE TABLE IF NOT EXISTS t_construction_waste (
 -- ============================================================
 CREATE TABLE IF NOT EXISTS t_purchase_order (
     id                    BIGINT        NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '主键',
-    supplier_name         VARCHAR(100)  NOT NULL COMMENT '供应商名称',
+    purchase_request_id   BIGINT        COMMENT '关联采购申请ID，1:1',
+    supplier_name         VARCHAR(100)  COMMENT '供应商名称',
     supplier_phone        VARCHAR(30)   COMMENT '供应商电话',
     unit_price            DECIMAL(12,2) COMMENT '单价',
-    total_amount          DECIMAL(14,2) NOT NULL COMMENT '总金额',
-    purchase_date         DATE          NOT NULL COMMENT '采购日期',
+    total_amount          DECIMAL(14,2) NOT NULL DEFAULT 0 COMMENT '总金额',
+    purchase_date         DATE          COMMENT '采购日期',
     expected_arrival_date DATE          COMMENT '预计到货日期',
     status                SMALLINT      NOT NULL DEFAULT 0  COMMENT '0=采购中, 1=已采购, 2=已到货',
     remark                VARCHAR(500)  COMMENT '备注',
@@ -376,20 +377,19 @@ CREATE TABLE IF NOT EXISTS t_purchase_order (
     updated_at            TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     INDEX idx_po_status (status),
     INDEX idx_po_is_deleted (is_deleted),
-    CONSTRAINT fk_po_created_by FOREIGN KEY (created_by) REFERENCES t_user(id)
+    UNIQUE INDEX idx_po_pr (purchase_request_id),
+    CONSTRAINT fk_po_created_by FOREIGN KEY (created_by) REFERENCES t_user(id),
+    CONSTRAINT fk_po_pr FOREIGN KEY (purchase_request_id) REFERENCES t_purchase_request(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='采购记录表';
 
--- 采购记录关联的采购申请明细
-CREATE TABLE IF NOT EXISTS t_purchase_order_item (
-    id                  BIGINT    NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '主键',
-    purchase_order_id   BIGINT    NOT NULL COMMENT '采购记录ID',
-    purchase_request_id BIGINT    NOT NULL COMMENT '采购申请ID',
-    created_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    UNIQUE INDEX uq_item_request (purchase_request_id),
-    INDEX idx_poi_order (purchase_order_id),
-    CONSTRAINT fk_poi_order FOREIGN KEY (purchase_order_id) REFERENCES t_purchase_order(id),
-    CONSTRAINT fk_poi_request FOREIGN KEY (purchase_request_id) REFERENCES t_purchase_request(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='采购记录关联的采购申请明细';
+-- DDL 增量变更：采购记录 1:1 关联采购申请（幂等，已有表时生效）
+CALL proc_add_column_if_not_exists('t_purchase_order', 'purchase_request_id', 'purchase_request_id BIGINT COMMENT \'关联采购申请ID，1:1\'');
+-- 为已有表补建索引和外键（若已存在则忽略错误）
+ALTER TABLE t_purchase_order MODIFY COLUMN supplier_name VARCHAR(100) NULL COMMENT '供应商名称';
+ALTER TABLE t_purchase_order MODIFY COLUMN purchase_date DATE NULL COMMENT '采购日期';
+ALTER TABLE t_purchase_order MODIFY COLUMN total_amount DECIMAL(14,2) NOT NULL DEFAULT 0 COMMENT '总金额';
+-- 清理旧关联表
+DROP TABLE IF EXISTS t_purchase_order_item;
 
 -- ============================================================
 -- 供应商管理
