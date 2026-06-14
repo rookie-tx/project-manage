@@ -13,6 +13,10 @@
       微信一键登录
     </button>
 
+    <view class="register-link" bindtap="handleGoRegister">
+      <text>注册为供应商</text>
+    </view>
+
     <text class="login-tip">首次登录后将自动创建账号</text>
   </view>
 

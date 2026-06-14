@@ -65,6 +65,9 @@ public enum ErrorCode {
     WASTE_PHOTO_REQUIRED(9001, "waste.photo_required"),
     WASTE_NOT_FOUND(9002, "waste.not_found"),
 
+    // 供应商管理错误 11xxx
+    SUPPLIER_NOT_FOUND(11001, "supplier.not_found"),
+
     // 微信认证错误 10xxx
     WECHAT_CODE_INVALID(10001, "wechat.code_invalid"),
     WECHAT_API_ERROR(10002, "wechat.api_error"),

@@ -158,6 +158,12 @@ const routes = [
         meta: { requiresAuth: true, permission: 'purchase:update' },
       },
       {
+        path: 'suppliers',
+        name: 'SupplierList',
+        component: () => import('@/views/supplier/SupplierListPage.vue'),
+        meta: { requiresAuth: true, permission: 'supplier:read' },
+      },
+      {
         path: 'settings',
         name: 'Settings',
         component: () => import('@/views/settings/SettingsPage.vue'),

@@ -1,0 +1,103 @@
+<view class="reg-page">
+  <!-- 顶部渐变 Header -->
+  <view class="reg-hero">
+    <view class="hero-bg"></view>
+    <view class="hero-content">
+      <text class="hero-icon">🏢</text>
+      <text class="hero-title">供应商入驻</text>
+      <text class="hero-desc">填写企业信息，即刻开启合作</text>
+    </view>
+  </view>
+
+  <!-- 表单卡片 -->
+  <view class="reg-body">
+    <view class="error-bar" wx:if="{{error}}">
+      <text class="error-icon">⚠️</text>
+      <text class="error-text">{{error}}</text>
+    </view>
+
+    <view class="form-section">
+      <!-- 企业信息分组 -->
+      <view class="section-header">
+        <view class="section-icon">
+          <text>📋</text>
+        </view>
+        <text class="section-title">企业信息</text>
+      </view>
+
+      <view class="input-row">
+        <view class="input-prefix">
+          <text class="prefix-icon">🏭</text>
+        </view>
+        <input class="input-field" placeholder="公司名称" value="{{form.companyName}}" data-field="companyName" bindinput="onInput" placeholder-class="placeholder" />
+      </view>
+      <view class="input-required" wx:if="{{form.companyName === '' && submitted}}">
+        <text>请填写公司名称</text>
+      </view>
+
+      <view class="input-row">
+        <view class="input-prefix">
+          <text class="prefix-icon">🆔</text>
+        </view>
+        <input class="input-field" placeholder="统一社会信用代码（选填）" value="{{form.licenseNo}}" data-field="licenseNo" bindinput="onInput" placeholder-class="placeholder" />
+      </view>
+    </view>
+
+    <view class="form-divider"></view>
+
+    <!-- 联系人信息分组 -->
+    <view class="form-section">
+      <view class="section-header">
+        <view class="section-icon">
+          <text>👤</text>
+        </view>
+        <text class="section-title">联系人信息</text>
+      </view>
+
+      <view class="input-row">
+        <view class="input-prefix">
+          <text class="prefix-icon">👤</text>
+        </view>
+        <input class="input-field" placeholder="联系人姓名" value="{{form.contactPerson}}" data-field="contactPerson" bindinput="onInput" placeholder-class="placeholder" />
+      </view>
+      <view class="input-required" wx:if="{{form.contactPerson === '' && submitted}}">
+        <text>请填写联系人</text>
+      </view>
+
+      <view class="input-row">
+        <view class="input-prefix">
+          <text class="prefix-icon">📞</text>
+        </view>
+        <input class="input-field" type="number" placeholder="手机号码" value="{{form.contactPhone}}" data-field="contactPhone" bindinput="onInput" maxlength="11" placeholder-class="placeholder" />
+      </view>
+      <view class="input-required" wx:if="{{form.contactPhone === '' && submitted}}">
+        <text>请填写联系电话</text>
+      </view>
+
+      <view class="input-row">
+        <view class="input-prefix">
+          <text class="prefix-icon">📍</text>
+        </view>
+        <input class="input-field" placeholder="公司地址（选填）" value="{{form.address}}" data-field="address" bindinput="onInput" placeholder-class="placeholder" />
+      </view>
+    </view>
+
+    <!-- 协议勾选 -->
+    <view class="agreement-row">
+      <view class="checkbox {{agreed ? 'checked' : ''}}" bindtap="toggleAgree">
+        <text wx:if="{{agreed}}">✓</text>
+      </view>
+      <text class="agreement-text">我已阅读并同意</text>
+      <text class="agreement-link">《平台服务协议》</text>
+    </view>
+
+    <!-- 提交按钮 -->
+    <button class="submit-btn" loading="{{loading}}" bindtap="handleSubmit">立即入驻</button>
+
+    <!-- 底部提示 -->
+    <view class="footer-tip">
+      <text>已有账号？</text>
+      <text class="footer-link" bindtap="goLogin">返回登录</text>
+    </view>
+  </view>
+</view>

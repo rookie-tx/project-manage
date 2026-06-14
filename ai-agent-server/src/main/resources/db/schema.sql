@@ -436,6 +436,40 @@ CREATE TABLE IF NOT EXISTS t_purchase_order_item (
 COMMENT ON TABLE t_purchase_order_item IS '采购记录关联的采购申请明细';
 
 -- ============================================================
+-- 供应商管理
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS t_supplier (
+    id              BIGSERIAL    PRIMARY KEY,
+    user_id         BIGINT       NOT NULL UNIQUE REFERENCES t_user(id),
+    company_name    VARCHAR(200) NOT NULL,
+    license_no      VARCHAR(100),
+    contact_person  VARCHAR(50)  NOT NULL,
+    contact_phone   VARCHAR(30)  NOT NULL,
+    address         VARCHAR(300),
+    status          SMALLINT     NOT NULL DEFAULT 1,
+    remark          VARCHAR(500),
+    is_deleted      SMALLINT     NOT NULL DEFAULT 0,
+    created_at      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+COMMENT ON TABLE t_supplier IS '供应商表';
+COMMENT ON COLUMN t_supplier.user_id IS '关联用户ID，1:1关系';
+COMMENT ON COLUMN t_supplier.company_name IS '公司名称';
+COMMENT ON COLUMN t_supplier.license_no IS '统一社会信用代码';
+COMMENT ON COLUMN t_supplier.contact_person IS '联系人';
+COMMENT ON COLUMN t_supplier.contact_phone IS '联系电话';
+COMMENT ON COLUMN t_supplier.address IS '公司地址';
+COMMENT ON COLUMN t_supplier.status IS '1=正常, 0=禁用';
+COMMENT ON COLUMN t_supplier.is_deleted IS '0=正常, 1=已删除';
+
+CREATE TRIGGER trg_t_supplier_updated_at
+    BEFORE UPDATE ON t_supplier
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- ============================================================
 -- 预置种子数据：角色、权限、角色-权限关联
 -- ============================================================
 
@@ -445,7 +479,8 @@ INSERT INTO t_role (code, name, description, is_protected) VALUES
     ('project_manager', '项目经理', '负责项目管理', 0),
     ('finance', '财务', '负责采购审批和财务管理', 0),
     ('user', '普通用户', '基础查看权限', 0),
-    ('temp_worker', '临时工', '临时工，仅可登录和打卡', 0)
+    ('temp_worker', '临时工', '临时工，仅可登录和打卡', 0),
+    ('supplier', '供应商', '供应商，可注册和管理自身企业资料', 0)
 ON CONFLICT (code) DO NOTHING;
 
 -- 如果 admin 角色已存在，确保 is_protected=1
@@ -491,7 +526,13 @@ INSERT INTO t_permission (code, name, description) VALUES
     ('purchase:read', '查看采购记录', '查看采购记录列表和详情'),
     ('purchase:create', '创建采购记录', '创建新采购记录'),
     ('purchase:update', '编辑采购记录', '编辑采购记录信息和状态'),
-    ('purchase:delete', '删除采购记录', '删除采购记录及关联文件')
+    ('purchase:delete', '删除采购记录', '删除采购记录及关联文件'),
+    ('supplier:read', '查看供应商', '查看供应商列表和详情'),
+    ('supplier:create', '创建供应商', '手动创建供应商'),
+    ('supplier:update', '编辑供应商', '编辑供应商信息'),
+    ('supplier:delete', '删除供应商', '删除供应商'),
+    ('supplier:register', '供应商注册', '通过小程序注册为供应商'),
+    ('supplier:profile', '供应商资料', '查看和编辑自己的供应商资料')
 ON CONFLICT (code) DO NOTHING;
 
 -- 角色-权限关联
@@ -535,6 +576,13 @@ BEGIN
         ) ON CONFLICT DO NOTHING;
     END LOOP;
 
+    -- supplier: 注册权限 + 自身资料管理
+    FOR perm IN SELECT id FROM t_permission WHERE code IN ('supplier:register', 'supplier:profile') LOOP
+        INSERT INTO t_role_permission (role_id, permission_id) VALUES (
+            (SELECT id FROM t_role WHERE code = 'supplier'), perm.id
+        ) ON CONFLICT DO NOTHING;
+    END LOOP;
+
     -- 用户-角色关联：给已有的 admin 用户分配管理员角色
     INSERT INTO t_user_role (user_id, role_id)
     SELECT u.id, admin_id
@@ -559,3 +607,4 @@ SELECT setval('t_user_wechat_id_seq', COALESCE((SELECT MAX(id) FROM t_user_wecha
 SELECT setval('t_attendance_area_id_seq', COALESCE((SELECT MAX(id) FROM t_attendance_area), 1));
 SELECT setval('t_purchase_order_id_seq', COALESCE((SELECT MAX(id) FROM t_purchase_order), 1));
 SELECT setval('t_purchase_order_item_id_seq', COALESCE((SELECT MAX(id) FROM t_purchase_order_item), 1));
+SELECT setval('t_supplier_id_seq', COALESCE((SELECT MAX(id) FROM t_supplier), 1));

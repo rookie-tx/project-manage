@@ -16,7 +16,9 @@
     "pages/project/detail",
     "pages/purchase-order/list",
     "pages/purchase-order/form",
-    "pages/purchase-order/detail"
+    "pages/purchase-order/detail",
+    "pages/supplier/register/register",
+    "pages/supplier/profile/profile"
   ],
   "window": {
     "navigationBarTextStyle": "black",

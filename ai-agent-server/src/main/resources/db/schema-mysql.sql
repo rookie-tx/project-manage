@@ -392,6 +392,28 @@ CREATE TABLE IF NOT EXISTS t_purchase_order_item (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='采购记录关联的采购申请明细';
 
 -- ============================================================
+-- 供应商管理
+-- ============================================================
+CREATE TABLE IF NOT EXISTS t_supplier (
+    id              BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '主键',
+    user_id         BIGINT       NOT NULL COMMENT '关联用户ID，1:1关系',
+    company_name    VARCHAR(200) NOT NULL COMMENT '公司名称',
+    license_no      VARCHAR(100) COMMENT '统一社会信用代码',
+    contact_person  VARCHAR(50)  NOT NULL COMMENT '联系人',
+    contact_phone   VARCHAR(30)  NOT NULL COMMENT '联系电话',
+    address         VARCHAR(300) COMMENT '公司地址',
+    status          SMALLINT     NOT NULL DEFAULT 1  COMMENT '1=正常, 0=禁用',
+    remark          VARCHAR(500) COMMENT '备注',
+    is_deleted      SMALLINT     NOT NULL DEFAULT 0  COMMENT '0=正常, 1=已删除',
+    created_at      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    UNIQUE INDEX idx_supplier_user (user_id),
+    INDEX idx_supplier_company (company_name),
+    INDEX idx_supplier_status (status),
+    CONSTRAINT fk_supplier_user FOREIGN KEY (user_id) REFERENCES t_user(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='供应商表';
+
+-- ============================================================
 -- 预置种子数据：角色、权限、角色-权限关联
 -- ============================================================
 
@@ -401,7 +423,8 @@ INSERT IGNORE INTO t_role (code, name, description, is_protected) VALUES
     ('project_manager',  '项目经理', '负责项目管理',            0),
     ('finance',          '财务',     '负责采购审批和财务管理',   0),
     ('user',             '普通用户', '基础查看权限',            0),
-    ('temp_worker',      '临时工',   '临时工，仅可登录和打卡',   0);
+    ('temp_worker',      '临时工',   '临时工，仅可登录和打卡',   0),
+    ('supplier',         '供应商',   '供应商，可注册和管理自身企业资料', 0);
 
 -- 权限
 INSERT IGNORE INTO t_permission (code, name, description) VALUES
@@ -443,7 +466,13 @@ INSERT IGNORE INTO t_permission (code, name, description) VALUES
     ('purchase:read',            '查看采购记录',     '查看采购记录列表和详情'),
     ('purchase:create',          '创建采购记录',     '创建新采购记录'),
     ('purchase:update',          '编辑采购记录',     '编辑采购记录信息和状态'),
-    ('purchase:delete',          '删除采购记录',     '删除采购记录及关联文件');
+    ('purchase:delete',          '删除采购记录',     '删除采购记录及关联文件'),
+    ('supplier:read',            '查看供应商',       '查看供应商列表和详情'),
+    ('supplier:create',          '创建供应商',       '手动创建供应商'),
+    ('supplier:update',          '编辑供应商',       '编辑供应商信息'),
+    ('supplier:delete',          '删除供应商',       '删除供应商'),
+    ('supplier:register',        '供应商注册',       '通过小程序注册为供应商'),
+    ('supplier:profile',         '供应商资料',       '查看和编辑自己的供应商资料');
 
 -- -----------------------------------------------------------
 -- 种子数据：角色-权限关联 存储过程
@@ -458,6 +487,7 @@ BEGIN
     DECLARE v_finance_id      BIGINT;
     DECLARE v_user_id         BIGINT;
     DECLARE v_temp_worker_id  BIGINT;
+    DECLARE v_supplier_id     BIGINT;
     DECLARE v_done            INT DEFAULT FALSE;
     DECLARE v_perm_id         BIGINT;
 
@@ -470,6 +500,7 @@ BEGIN
     SELECT id INTO v_finance_id     FROM t_role WHERE code = 'finance';
     SELECT id INTO v_user_id        FROM t_role WHERE code = 'user';
     SELECT id INTO v_temp_worker_id FROM t_role WHERE code = 'temp_worker';
+    SELECT id INTO v_supplier_id    FROM t_role WHERE code = 'supplier';
 
     -- admin: 所有权限
     OPEN perm_cursor;
@@ -501,6 +532,11 @@ BEGIN
     INSERT IGNORE INTO t_role_permission (role_id, permission_id)
     SELECT v_temp_worker_id, id FROM t_permission
     WHERE code IN ('user:read', 'attendance:clock-in', 'attendance:clock-out');
+
+    -- supplier: 注册权限 + 自身资料管理
+    INSERT IGNORE INTO t_role_permission (role_id, permission_id)
+    SELECT v_supplier_id, id FROM t_permission
+    WHERE code IN ('supplier:register', 'supplier:profile');
 
     -- 用户-角色关联：给已有的 admin 用户分配管理员角色
     INSERT IGNORE INTO t_user_role (user_id, role_id)

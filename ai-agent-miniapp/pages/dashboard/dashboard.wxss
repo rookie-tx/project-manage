@@ -107,6 +107,18 @@
 }
 .card-badge-text { font-size: 20rpx; color: #fff; font-weight: 600; }
 
+/* ===== 空状态 ===== */
+.empty-features {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80rpx 48rpx;
+}
+
+.empty-icon { font-size: 80rpx; margin-bottom: 20rpx; }
+.empty-title { font-size: 30rpx; font-weight: 600; color: #6b7280; margin-bottom: 10rpx; }
+.empty-desc { font-size: 24rpx; color: #9ca3af; text-align: center; line-height: 1.6; }
+
 /* ===== 底部 ===== */
 .footer { padding: 50rpx 0 30rpx; display: flex; justify-content: center; }
 .footer-text { font-size: 22rpx; color: #d1d5db; }

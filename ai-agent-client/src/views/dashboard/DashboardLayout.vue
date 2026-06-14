@@ -3,7 +3,7 @@ import { ref, watch, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useApprovalStore } from '@/stores/approval'
 import { useRouter, useRoute } from 'vue-router'
-import { UserOutlined, LogoutOutlined, DashboardOutlined, ProjectOutlined, ShoppingOutlined, SettingOutlined, CheckSquareOutlined, TeamOutlined, SafetyOutlined, HomeOutlined, DeleteOutlined } from '@ant-design/icons-vue'
+import { UserOutlined, LogoutOutlined, DashboardOutlined, ProjectOutlined, ShoppingOutlined, SettingOutlined, CheckSquareOutlined, TeamOutlined, SafetyOutlined, HomeOutlined, DeleteOutlined, ShopOutlined } from '@ant-design/icons-vue'
 
 const auth = useAuthStore()
 const approval = useApprovalStore()
@@ -37,6 +37,8 @@ watch(() => route.path, (path) => {
     selectedKeys.value = ['construction-wastes']
   } else if (path.startsWith('/purchase-orders')) {
     selectedKeys.value = ['purchase-orders']
+  } else if (path.startsWith('/suppliers')) {
+    selectedKeys.value = ['suppliers']
   } else if (path === '/dashboard') {
     selectedKeys.value = ['dashboard']
   }
@@ -69,6 +71,8 @@ function handleMenuClick({ key }) {
     router.push('/construction-wastes')
   } else if (key === 'purchase-orders') {
     router.push('/purchase-orders')
+  } else if (key === 'suppliers') {
+    router.push('/suppliers')
   } else if (key === 'dashboard') {
     router.push('/dashboard')
   }
@@ -134,6 +138,10 @@ async function handleLogout() {
           <a-menu-item v-if="auth.hasPermission('purchase:read')" key="purchase-orders">
             <ShoppingOutlined />
             <span>采购管理</span>
+          </a-menu-item>
+          <a-menu-item v-if="auth.hasPermission('supplier:read')" key="suppliers">
+            <ShopOutlined />
+            <span>供应商管理</span>
           </a-menu-item>
           <a-menu-item key="settings">
             <SettingOutlined />

@@ -3,16 +3,16 @@
   <view class="greeting-section">
     <view class="greeting-left">
       <text class="greeting-text">{{greetingText}}</text>
-      <text class="greeting-user">{{username}}</text>
+      <text class="greeting-user">{{displayName}}</text>
     </view>
     <view class="greeting-avatar" bindtap="handleLogout">
       <text class="avatar-text">{{username[0]}}</text>
     </view>
   </view>
 
-  <!-- 概览卡片 -->
-  <view class="overview-row">
-    <view class="overview-card overview-blue" bindtap="handleOverviewTap" data-type="checkin">
+  <!-- 概览卡片（按权限展示） -->
+  <view class="overview-row" wx:if="{{showCheckinOverview || showApprovalOverview}}">
+    <view class="overview-card overview-blue" wx:if="{{showCheckinOverview}}" bindtap="handleOverviewTap" data-type="checkin">
       <view class="overview-icon-wrap">
         <text class="overview-icon">⏱️</text>
       </view>
@@ -22,7 +22,7 @@
       </view>
       <text class="overview-arrow">›</text>
     </view>
-    <view class="overview-card overview-red" bindtap="handleOverviewTap" data-type="approval">
+    <view class="overview-card overview-red" wx:if="{{showApprovalOverview}}" bindtap="handleOverviewTap" data-type="approval">
       <view class="overview-icon-wrap">
         <text class="overview-icon">✅</text>
       </view>
@@ -34,16 +34,16 @@
     </view>
   </view>
 
-  <!-- 功能入口 -->
-  <view class="section-header">
+  <!-- 供应商专属空状态提示 -->
+  <view class="section-header" wx:if="{{features.length > 0}}">
     <text class="section-title">功能服务</text>
   </view>
 
-  <view class="feature-grid">
+  <view class="feature-grid" wx:if="{{features.length > 0}}">
     <view
-      class="feature-card {{item.active ? 'card-active' : 'card-disabled'}}"
+      class="feature-card card-active"
       wx:for="{{features}}"
-      wx:key="name"
+      wx:key="key"
       data-index="{{index}}"
       bindtap="handleFeatureTap"
     >
@@ -56,6 +56,13 @@
         <text class="card-badge-text">{{approvalCount > 99 ? '99+' : approvalCount}}</text>
       </view>
     </view>
+  </view>
+
+  <!-- 无可用模块时的提示 -->
+  <view class="empty-features" wx:if="{{features.length === 0}}">
+    <text class="empty-icon">🔒</text>
+    <text class="empty-title">暂无可用功能</text>
+    <text class="empty-desc">您的账号尚未分配业务权限，请联系管理员</text>
   </view>
 
   <!-- 版本信息 -->

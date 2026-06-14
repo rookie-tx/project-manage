@@ -1,0 +1,77 @@
+<view class="profile-page">
+  <view class="loading-box" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+  <block wx:elif="{{supplier}}">
+    <!-- 查看模式 -->
+    <view class="profile-card" wx:if="{{!editing}}">
+      <view class="profile-header">
+        <text class="profile-icon">🏢</text>
+        <text class="profile-company">{{supplier.companyName}}</text>
+        <text class="profile-status" wx:if="{{supplier.status===1}}">已认证</text>
+      </view>
+
+      <view class="info-list">
+        <view class="info-item">
+          <text class="info-label">统一社会信用代码</text>
+          <text class="info-value">{{supplier.licenseNo || '-'}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">联系人</text>
+          <text class="info-value">{{supplier.contactPerson}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">联系电话</text>
+          <text class="info-value">{{supplier.contactPhone}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">公司地址</text>
+          <text class="info-value">{{supplier.address || '-'}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">注册时间</text>
+          <text class="info-value">{{supplier.createdAt}}</text>
+        </view>
+      </view>
+
+      <button class="edit-btn" bindtap="startEdit">编辑资料</button>
+    </view>
+
+    <!-- 编辑模式 -->
+    <view class="profile-card" wx:else>
+      <view class="profile-header">
+        <text class="profile-icon">✏️</text>
+        <text class="profile-title">编辑资料</text>
+        <text class="profile-hint">公司名称和信用代码不可修改</text>
+      </view>
+
+      <view class="error-msg" wx:if="{{error}}">{{error}}</view>
+
+      <view class="edit-form">
+        <view class="form-group">
+          <text class="form-label"><text class="label-required">*</text> 联系人</text>
+          <input class="form-input" placeholder="请输入联系人" value="{{form.contactPerson}}" data-field="contactPerson" bindinput="onInput" />
+        </view>
+        <view class="form-group">
+          <text class="form-label"><text class="label-required">*</text> 联系电话</text>
+          <input class="form-input" type="number" placeholder="请输入手机号码" value="{{form.contactPhone}}" data-field="contactPhone" bindinput="onInput" maxlength="11" />
+        </view>
+        <view class="form-group">
+          <text class="form-label form-label-optional">公司地址（选填）</text>
+          <input class="form-input" placeholder="请输入公司地址" value="{{form.address}}" data-field="address" bindinput="onInput" />
+        </view>
+      </view>
+
+      <view class="edit-actions">
+        <button class="save-btn" loading="{{submitting}}" bindtap="handleSave">保存</button>
+        <button class="cancel-btn" bindtap="cancelEdit">取消</button>
+      </view>
+    </view>
+  </block>
+
+  <view class="empty-box" wx:else>
+    <text class="empty-icon">📋</text>
+    <text class="empty-text">暂无供应商资料</text>
+  </view>
+</view>

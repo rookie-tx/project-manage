@@ -1,20 +1,31 @@
 const auth = require('../../utils/auth')
 const approvalApi = require('../../api/approval')
 
+/**
+ * 所有可用功能模块的注册表。
+ * 每个模块声明所需的权限；无权限的模块自动隐藏。
+ * 当用户拥有 supplier:profile 权限时，不展示其他业务模块（供应商专属视图）。
+ */
+const ALL_FEATURES = [
+  { key: 'supplier', icon: '🏢', name: '我的供应商', tip: '查看资料', url: '/pages/supplier/profile/profile', color: '#eef2ff', permission: 'supplier:profile' },
+  { key: 'waste',    icon: '📷', name: '废渣管理',   tip: '记录运出', url: '/pages/waste/list',             color: '#eff6ff', permission: 'waste:read' },
+  { key: 'purchase', icon: '📦', name: '采购申请',   tip: '提交申请', url: '/pages/purchase/list',           color: '#fef3c7', permission: 'pr:read' },
+  { key: 'purchaseOrder', icon: '📋', name: '采购管理', tip: '采购记录', url: '/pages/purchase-order/list',  color: '#fef3c7', permission: 'purchase:read' },
+  { key: 'checkin',  icon: '⏱️', name: '考勤打卡',   tip: '上班签到', url: '/pages/checkin/checkin',         color: '#dbeafe', permission: 'attendance:clock-in' },
+  { key: 'approval', icon: '✅', name: '待办审批',   tip: '处理任务', url: '/pages/approval/list',           color: '#fce7f3', permission: 'task:read' },
+  { key: 'project',  icon: '🏗️', name: '项目管理',   tip: '查看项目', url: '/pages/project/list',            color: '#f3f4f6', permission: 'project:read' }
+]
+
 Page({
   data: {
     username: '',
+    displayName: '',
     greetingText: '',
     checkedIn: false,
     approvalCount: 0,
-    features: [
-      { icon: '📷', name: '废渣管理', tip: '点击使用', active: true, url: '/pages/waste/list', color: '#eff6ff' },
-      { icon: '📦', name: '采购申请', tip: '点击使用', active: true, url: '/pages/purchase/list', color: '#fef3c7' },
-      { icon: '⏱️', name: '考勤打卡', tip: '点击使用', active: true, url: '/pages/checkin/checkin', color: '#dbeafe' },
-      { icon: '✅', name: '待办审批', tip: '点击使用', active: true, url: '/pages/approval/list', badge: true, color: '#fce7f3' },
-      { icon: '📋', name: '项目管理', tip: '点击使用', active: true, url: '/pages/project/list', color: '#f3f4f6' },
-      { icon: '📦', name: '采购管理', tip: '点击使用', active: true, url: '/pages/purchase-order/list', color: '#fef3c7' }
-    ]
+    features: [],
+    showApprovalOverview: true,
+    showCheckinOverview: true
   },
 
   onLoad() {
@@ -23,15 +34,36 @@ Page({
       return
     }
     const user = auth.getUser()
+    const permSet = new Set(user.permissions || [])
+
+    // 按权限过滤模块
+    const visibleFeatures = ALL_FEATURES.filter(f => permSet.has(f.permission))
+    // 供应商用户仅展示供应商相关模块
+    const isSupplier = permSet.has('supplier:profile')
+    const features = isSupplier
+      ? visibleFeatures.filter(f => f.key === 'supplier')
+      : visibleFeatures
+
     this.setData({
-      username: user ? (user.name || user.username) : '未知',
-      greetingText: getGreeting()
+      username: user ? (user.name || user.username) : '',
+      displayName: user ? (user.name || user.username) : '未知',
+      greetingText: getGreeting(),
+      features,
+      showApprovalOverview: permSet.has('task:read'),
+      showCheckinOverview: permSet.has('attendance:clock-in')
     })
-    this.loadApprovalCount()
+
+    // 只有可查看审批时才去拉取待办数
+    if (permSet.has('task:read')) {
+      this.loadApprovalCount()
+    }
   },
 
   onShow() {
-    this.loadApprovalCount()
+    const user = auth.getUser()
+    if (user && new Set(user.permissions || []).has('task:read')) {
+      this.loadApprovalCount()
+    }
   },
 
   async loadApprovalCount() {

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tx.aiagent.supplier.infrastructure.SupplierMapper">
+
+    <select id="selectAll" resultType="cn.tx.aiagent.supplier.infrastructure.SupplierPO">
+        SELECT id, user_id, company_name, license_no, contact_person, contact_phone,
+               address, status, remark, is_deleted, created_at, updated_at
+        FROM t_supplier
+        WHERE is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            AND company_name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+        ORDER BY id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT COUNT(*) FROM t_supplier
+        WHERE is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            AND company_name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+    </select>
+
+    <select id="selectById" resultType="cn.tx.aiagent.supplier.infrastructure.SupplierPO">
+        SELECT id, user_id, company_name, license_no, contact_person, contact_phone,
+               address, status, remark, is_deleted, created_at, updated_at
+        FROM t_supplier
+        WHERE id = #{id} AND is_deleted = 0
+    </select>
+
+    <select id="selectByUserId" resultType="cn.tx.aiagent.supplier.infrastructure.SupplierPO">
+        SELECT id, user_id, company_name, license_no, contact_person, contact_phone,
+               address, status, remark, is_deleted, created_at, updated_at
+        FROM t_supplier
+        WHERE user_id = #{userId} AND is_deleted = 0
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_supplier (user_id, company_name, license_no, contact_person,
+            contact_phone, address, status, remark, is_deleted, created_at, updated_at)
+        VALUES (#{userId}, #{companyName}, #{licenseNo}, #{contactPerson},
+            #{contactPhone}, #{address}, #{status}, #{remark}, #{isDeleted}, NOW(), NOW())
+    </insert>
+
+    <update id="update">
+        UPDATE t_supplier
+        SET company_name = #{companyName}, license_no = #{licenseNo},
+            contact_person = #{contactPerson}, contact_phone = #{contactPhone},
+            address = #{address}, status = #{status}, remark = #{remark},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="softDelete">
+        UPDATE t_supplier SET is_deleted = 1, updated_at = NOW() WHERE id = #{id}
+    </update>
+
+</mapper>

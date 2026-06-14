@@ -1,0 +1,231 @@
+/* ========== 页面基础 ========== */
+.reg-page {
+  min-height: 100vh;
+  background: #f0f2f5;
+}
+
+/* ========== 顶部渐变 Hero ========== */
+.reg-hero {
+  position: relative;
+  padding: 80rpx 48rpx 64rpx;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  top: -80rpx;
+  left: -40rpx;
+  right: -40rpx;
+  bottom: 0;
+  background: linear-gradient(160deg, #4f46e5 0%, #6366f1 40%, #818cf8 100%);
+  border-radius: 0 0 60rpx 60rpx;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+  filter: drop-shadow(0 4rpx 8rpx rgba(0,0,0,0.1));
+}
+
+.hero-title {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 4rpx;
+  margin-bottom: 12rpx;
+}
+
+.hero-desc {
+  font-size: 26rpx;
+  color: rgba(255,255,255,0.8);
+}
+
+/* ========== 表单主体 ========== */
+.reg-body {
+  margin: -32rpx 28rpx 40rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 40rpx 32rpx 48rpx;
+  box-shadow: 0 8rpx 32rpx rgba(99,102,241,0.08);
+  position: relative;
+  z-index: 2;
+}
+
+/* ========== 错误提示条 ========== */
+.error-bar {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 18rpx 24rpx;
+  background: #fef2f2;
+  border: 1rpx solid #fecaca;
+  border-radius: 14rpx;
+  margin-bottom: 32rpx;
+}
+
+.error-icon { font-size: 28rpx; }
+.error-text { font-size: 26rpx; color: #dc2626; flex: 1; }
+
+/* ========== 表单区块 ========== */
+.form-section {
+  margin-bottom: 8rpx;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.section-icon {
+  width: 52rpx;
+  height: 52rpx;
+  background: #eef2ff;
+  border-radius: 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* ========== 输入行 ========== */
+.input-row {
+  display: flex;
+  align-items: center;
+  background: #f9fafb;
+  border: 2rpx solid #f3f4f6;
+  border-radius: 16rpx;
+  margin-bottom: 8rpx;
+  transition: border-color 0.2s;
+}
+
+.input-row:focus-within {
+  border-color: #818cf8;
+  background: #ffffff;
+}
+
+.input-prefix {
+  width: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 2rpx solid #f3f4f6;
+  padding: 24rpx 0;
+}
+
+.prefix-icon {
+  font-size: 32rpx;
+}
+
+.input-field {
+  flex: 1;
+  padding: 24rpx 20rpx;
+  font-size: 28rpx;
+  color: #1f2937;
+}
+
+.placeholder {
+  color: #c4c9d0;
+}
+
+.input-required {
+  padding: 0 0 8rpx 92rpx;
+}
+
+.input-required text {
+  font-size: 22rpx;
+  color: #ef4444;
+}
+
+/* ========== 分隔线 ========== */
+.form-divider {
+  height: 1rpx;
+  background: #f3f4f6;
+  margin: 4rpx 0 16rpx;
+}
+
+/* ========== 协议行 ========== */
+.agreement-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 24rpx 0 8rpx;
+}
+
+.checkbox {
+  width: 36rpx;
+  height: 36rpx;
+  border: 2rpx solid #d1d5db;
+  border-radius: 8rpx;
+  margin-right: 10rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  color: transparent;
+  transition: all 0.15s;
+}
+
+.checkbox.checked {
+  background: #6366f1;
+  border-color: #6366f1;
+  color: #ffffff;
+}
+
+.agreement-text {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+.agreement-link {
+  font-size: 24rpx;
+  color: #6366f1;
+}
+
+/* ========== 提交按钮 ========== */
+.submit-btn {
+  width: 100%;
+  margin-top: 32rpx;
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 600;
+  border-radius: 16rpx;
+  padding: 26rpx 0;
+  letter-spacing: 4rpx;
+  box-shadow: 0 8rpx 24rpx rgba(99,102,241,0.35);
+  transition: transform 0.15s;
+}
+
+.submit-btn:active {
+  transform: scale(0.98);
+}
+
+/* ========== 底部提示 ========== */
+.footer-tip {
+  text-align: center;
+  margin-top: 28rpx;
+  font-size: 26rpx;
+  color: #9ca3af;
+}
+
+.footer-link {
+  color: #6366f1;
+  font-weight: 500;
+  margin-left: 4rpx;
+}

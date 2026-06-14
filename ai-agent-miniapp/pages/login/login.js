@@ -85,5 +85,10 @@ Page({
 
   // 输入绑定
   onUsernameInput(e) { this.setData({ username: e.detail.value }) },
-  onPasswordInput(e) { this.setData({ password: e.detail.value }) }
+  onPasswordInput(e) { this.setData({ password: e.detail.value }) },
+
+  // 跳转到供应商注册
+  handleGoRegister() {
+    wx.navigateTo({ url: '/pages/supplier/register/register' })
+  }
 })
