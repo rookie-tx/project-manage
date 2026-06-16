@@ -4,6 +4,7 @@ import { useMaterialStore, useWarehouseStore } from '@/stores/warehouse'
 import { useAuthStore } from '@/stores/auth'
 import { Table, Button, Tag, Modal, Form, FormItem, Input, Select, Alert, Space, message } from 'ant-design-vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
+import { getDictOptions, getDict } from '@/utils/dictCache'
 
 const store = useMaterialStore()
 const whStore = useWarehouseStore()
@@ -16,6 +17,8 @@ const error = ref(null)
 const stockModal = ref(false)
 const stockData = ref([])
 const stockWarehouse = ref('')
+const unitOptions = ref([])
+const unitLabelMap = ref({})
 const columns = [
   { title: 'ID', dataIndex: 'id', width: 80 },
   { title: '编码', dataIndex: 'code' },
@@ -24,11 +27,6 @@ const columns = [
   { title: '单位', dataIndex: 'unit', width: 80 },
   { title: '操作', key: 'action', width: 200 },
 ]
-const unitOptions = [
-  { value: 0, label: '个' }, { value: 1, label: '台' }, { value: 2, label: '套' },
-  { value: 3, label: '米' }, { value: 4, label: '吨' }, { value: 5, label: '立方米' },
-  { value: 6, label: '卷' }, { value: 7, label: '桶' }, { value: 8, label: '箱' }, { value: 9, label: '其他' },
-]
 const rules = {
   code: [{ required: true, message: '请输入编码' }],
   name: [{ required: true, message: '请输入名称' }],
@@ -36,11 +34,18 @@ const rules = {
   unit: [{ required: true, message: '请选择单位' }],
 }
 
-onMounted(() => { store.fetchAll(); whStore.fetchAll() })
+onMounted(async () => {
+  store.fetchAll(); whStore.fetchAll()
+  unitOptions.value = await getDictOptions('UNIT')
+  const items = await getDict('UNIT')
+  const map = {}
+  items.forEach(item => { map[item.code] = item.label })
+  unitLabelMap.value = map
+})
 
 function openCreate() { editingId.value = null; formState.code = ''; formState.name = ''; formState.spec = ''; formState.unit = null; error.value = null; modalVisible.value = true }
 function openEdit(record) { editingId.value = record.id; formState.code = record.code; formState.name = record.name; formState.spec = record.spec || ''; formState.unit = record.unit != null ? record.unit : null; modalVisible.value = true }
-function getUnitLabel(code) { const opt = unitOptions.find(o => o.value === code); return opt ? opt.label : code }
+function getUnitLabel(code) { return unitLabelMap.value[code] || code }
 async function handleSubmit() {
   error.value = null; submitting.value = true
   try {

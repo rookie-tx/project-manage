@@ -136,6 +136,7 @@ onMounted(() => {
   initFromQuery()
   loadProjectOptions()
   loadData()
+  store.initUnitDict()
 })
 </script>
 

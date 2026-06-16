@@ -2,6 +2,7 @@ package cn.tx.aiagent.purchasemanagement.application;
 
 import cn.tx.aiagent.common.api.ErrorCode;
 import cn.tx.aiagent.common.exception.BusinessException;
+import cn.tx.aiagent.dict.infrastructure.DictMapper;
 import cn.tx.aiagent.file.domain.UploadFile;
 import java.math.BigDecimal;
 import cn.tx.aiagent.file.domain.UploadFileRepository;
@@ -29,19 +30,22 @@ public class PurchaseOrderApplicationService {
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final MaterialRepository materialRepository;
+    private final DictMapper dictMapper;
 
     public PurchaseOrderApplicationService(PurchaseOrderRepository repository,
                                             PurchaseRequestRepository purchaseRequestRepository,
                                             UploadFileRepository uploadFileRepository,
                                             UserRepository userRepository,
                                             ProjectRepository projectRepository,
-                                            MaterialRepository materialRepository) {
+                                            MaterialRepository materialRepository,
+                                            DictMapper dictMapper) {
         this.repository = repository;
         this.purchaseRequestRepository = purchaseRequestRepository;
         this.uploadFileRepository = uploadFileRepository;
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
         this.materialRepository = materialRepository;
+        this.dictMapper = dictMapper;
     }
 
     /** 自动创建 PO（审批通过时调用） */
@@ -172,7 +176,13 @@ public class PurchaseOrderApplicationService {
                 info.setCode(pr.getCode());
                 info.setName(pr.getName());
                 info.setSpecification(pr.getSpecification());
-                info.setQuantityStr(pr.getQuantity() + (pr.getUnit() != null ? pr.getUnit().getLabel() : ""));
+                String unitLabel = "";
+                if (pr.getUnit() != null) {
+                    unitLabel = dictMapper.selectByType("UNIT", true).stream()
+                            .filter(d -> d.getCode().equals(pr.getUnit()))
+                            .findFirst().map(d -> d.getLabel()).orElse(pr.getUnit());
+                }
+                info.setQuantityStr(pr.getQuantity() + (unitLabel.isEmpty() ? "" : " " + unitLabel));
                 info.setArrivalDate(pr.getArrivalDate() != null ? pr.getArrivalDate().toString() : null);
                 info.setMaterialId(pr.getMaterialId());
                 projectRepository.findById(pr.getProjectId()).ifPresent(p -> info.setProjectName(p.getName()));

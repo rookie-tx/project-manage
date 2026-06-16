@@ -17,7 +17,7 @@ public class PurchaseRequest {
     private String specification;
     private String brand;
     private BigDecimal quantity;
-    private Unit unit;
+    private String unit;
     private LocalDate arrivalDate;
     private PurchaseRequestStatus status;
     private String remark;
@@ -29,7 +29,7 @@ public class PurchaseRequest {
     private PurchaseRequest() {}
 
     public static PurchaseRequest create(Long projectId, Long materialId, String name, String specification,
-                                          String brand, BigDecimal quantity, Unit unit,
+                                          String brand, BigDecimal quantity, String unit,
                                           LocalDate arrivalDate, String remark, Long createdBy) {
         PurchaseRequest pr = new PurchaseRequest();
         pr.projectId = projectId;
@@ -49,7 +49,7 @@ public class PurchaseRequest {
 
     public static PurchaseRequest fromPersistence(Long id, String code, Long projectId, Long materialId,
                                                    String name, String specification, String brand,
-                                                   BigDecimal quantity, Unit unit,
+                                                   BigDecimal quantity, String unit,
                                                    LocalDate arrivalDate,
                                                    PurchaseRequestStatus status, String remark,
                                                    Integer isDeleted, Long createdBy,
@@ -75,7 +75,7 @@ public class PurchaseRequest {
     }
 
     public void update(Long materialId, String name, String specification, String brand,
-                       BigDecimal quantity, Unit unit, LocalDate arrivalDate,
+                       BigDecimal quantity, String unit, LocalDate arrivalDate,
                        String remark) {
         if (materialId != null) this.materialId = materialId;
         if (name != null) this.name = name;

@@ -1,6 +1,7 @@
 const auth = require('../../utils/auth')
 const purchaseApi = require('../../api/purchase')
 const client = require('../../api/client')
+const dictCache = require('../../utils/dictCache')
 
 Page({
   data: {
@@ -9,6 +10,9 @@ Page({
     title: '新建采购申请',
     submitting: false,
     error: '',
+
+    // 单位标签映射
+    unitLabelMap: {},
 
     // 项目选择器
     projects: [],
@@ -43,11 +47,21 @@ Page({
     }
     this.loadProjects()
     this.loadMaterials()
+    this.loadUnitLabels()
 
     if (options.id) {
       this.setData({ isEdit: true, editId: parseInt(options.id), title: '编辑采购申请' })
       this.loadDetail(options.id)
     }
+  },
+
+  async loadUnitLabels() {
+    try {
+      const items = await dictCache.getDict('UNIT')
+      const map = {}
+      items.forEach(item => { map[item.code] = item.label })
+      this.setData({ unitLabelMap: map })
+    } catch (e) { /* ignore */ }
   },
 
   async loadProjects() {
@@ -87,7 +101,7 @@ Page({
         selectedProjectIdx: projIdx,
         selectedMaterialIdx: matIdx,
         materialSpec: detail.materialSpec || detail.specification || '',
-        materialUnitLabel: detail.materialUnit || '',
+        materialUnitLabel: this.data.unitLabelMap[detail.unitCode] || detail.materialUnit || '',
         form: {
           projectId: detail.projectId,
           materialId: detail.materialId,
@@ -113,12 +127,11 @@ Page({
     const idx = parseInt(e.detail.value)
     const material = this.data.materials[idx]
     if (material) {
-      const unitLabels = ['个', '台', '套', '米', '吨', '立方米', '卷', '桶', '箱', '其他']
       this.setData({
         selectedMaterialIdx: idx,
         'form.materialId': material.id,
         materialSpec: material.spec || '',
-        materialUnitLabel: material.unit != null ? (unitLabels[material.unit] || '未知') : ''
+        materialUnitLabel: this.data.unitLabelMap[material.unit] || material.unit || ''
       })
     }
   },

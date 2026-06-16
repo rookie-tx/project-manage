@@ -12,9 +12,13 @@
 | 工具 | Lombok, MapStruct 1.6.3, Spring Security Crypto (BCrypt) |
 | 对象映射 | MapStruct (PO↔Domain 用 default 方法 + 表达式, DTO↔Domain/Command 自动生成) |
 
+## 更多规范
+* 数据库规范：`./rules/database.md`
+
+
 ## 分层架构 (DDD 四层)
 
-每个业务模块严格遵循依赖方向：**api → application → domain ← infrastructure**
+* 每个业务模块严格遵循依赖方向：**api → application → domain ← infrastructure**
 
 ```
 cn.tx.aiagent.<module>.
@@ -23,8 +27,6 @@ cn.tx.aiagent.<module>.
 ├── domain/           # 领域实体、值对象、领域服务、仓储接口
 └── infrastructure/   # 领域接口实现、MyBatis Mapper、PO 对象
 ```
-
-**关键原则：domain 层零框架注解** — 不允许出现 `@Service`, `@Component`, `@Repository`, MyBatis 注解等。
 
 ## 包命名与职责
 

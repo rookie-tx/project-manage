@@ -1,16 +1,12 @@
 const auth = require('../../utils/auth')
 const purchaseApi = require('../../api/purchase')
 const approvalApi = require('../../api/approval')
+const dictCache = require('../../utils/dictCache')
 
 const PAGE_SIZE = 20
 
 const STATUS_MAP = {
   0: '待提交', 1: '审批中', 2: '已通过', 3: '已驳回', 4: '已取消'
-}
-
-const UNIT_MAP = {
-  0: '个', 1: '台', 2: '套', 3: '米', 4: '吨',
-  5: '立方米', 6: '卷', 7: '桶', 8: '箱', 9: '其他'
 }
 
 Page({
@@ -24,7 +20,8 @@ Page({
     hasMore: true,
     page: 1,
     refreshing: false,
-    needRefresh: false
+    needRefresh: false,
+    unitLabelMap: {}
   },
 
   onLoad() {
@@ -34,7 +31,7 @@ Page({
     }
     this.setData({ canCreate: auth.hasPermission('pr:create') })
     this.loadProjects()
-    this.loadItems(true)
+    this.loadUnitLabels().then(() => this.loadItems(true))
   },
 
   onShow() {
@@ -42,6 +39,19 @@ Page({
       this.setData({ needRefresh: false })
       this.loadItems(true)
     }
+  },
+
+  async loadUnitLabels() {
+    try {
+      const items = await dictCache.getDict('UNIT')
+      const map = {}
+      items.forEach(item => { map[item.code] = item.label })
+      this.setData({ unitLabelMap: map })
+    } catch (e) { /* ignore */ }
+  },
+
+  getUnitLabel(code) {
+    return this.data.unitLabelMap[code] || code || ''
   },
 
   async loadProjects() {
@@ -70,7 +80,7 @@ Page({
       const items = (result.items || []).map(r => ({
         ...r,
         arrivalDateStr: formatDate(r.arrivalDate),
-        quantityStr: r.quantity + (UNIT_MAP[r.unitCode] || ''),
+        quantityStr: r.quantity + (this.getUnitLabel(r.unitCode) ? ' ' + this.getUnitLabel(r.unitCode) : ''),
         statusLabel: STATUS_MAP[r.statusCode] || '未知',
         isPending: r.statusCode === 0
       }))

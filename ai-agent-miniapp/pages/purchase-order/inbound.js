@@ -1,5 +1,6 @@
 const auth = require('../../utils/auth')
 const client = require('../../api/client')
+const dictCache = require('../../utils/dictCache')
 
 Page({
   data: {
@@ -13,7 +14,8 @@ Page({
     form: { warehouseId: null, quantity: 0 },
     warehouseNames: [],
     wIdx: -1,
-    submitting: false, error: ''
+    submitting: false, error: '',
+    unitLabelMap: {}
   },
 
   onLoad(options) {
@@ -27,18 +29,22 @@ Page({
 
   async loadData() {
     try {
-      const [wRes, prDetail] = await Promise.all([
+      const [wRes, prDetail, unitItems] = await Promise.all([
         client.get('/warehouses'),
-        this.data.prId ? client.get('/purchase-requests/' + this.data.prId) : Promise.resolve(null)
+        this.data.prId ? client.get('/purchase-requests/' + this.data.prId) : Promise.resolve(null),
+        dictCache.getDict('UNIT')
       ])
       const warehouses = wRes || []
+      const unitLabelMap = {}
+      ;(unitItems || []).forEach(item => { unitLabelMap[item.code] = item.label })
       this.setData({
         warehouses,
         warehouseNames: warehouses.map(w => w.name),
         materialId: prDetail ? prDetail.materialId : null,
         materialLabel: prDetail ? (prDetail.materialName || prDetail.name || '') : '',
         materialSpec: prDetail ? (prDetail.materialSpec || prDetail.specification || '') : '',
-        materialUnit: prDetail ? (prDetail.materialUnit || '') : '',
+        materialUnit: prDetail ? (unitLabelMap[prDetail.unitCode] || prDetail.materialUnit || '') : '',
+        unitLabelMap,
         'form.quantity': prDetail ? prDetail.quantity : 0
       })
     } catch (e) { /* ignore */ }

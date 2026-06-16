@@ -143,7 +143,7 @@ CREATE TABLE IF NOT EXISTS t_purchase_request (
     specification VARCHAR(200) COMMENT '规格型号',
     brand         VARCHAR(100) COMMENT '品牌',
     quantity      DOUBLE       NOT NULL DEFAULT 0  COMMENT '数量',
-    unit          SMALLINT     NOT NULL COMMENT '单位',
+    unit          VARCHAR(32)  NOT NULL COMMENT '单位字典code',
     arrival_date  DATE         COMMENT '预计到货日期',
     status        SMALLINT     NOT NULL DEFAULT 0  COMMENT '0=待提交,1=审批中,2=已通过,3=已驳回,4=已取消',
     remark        VARCHAR(500) COMMENT '备注',
@@ -201,7 +201,7 @@ CREATE TABLE IF NOT EXISTS t_material (
     code       VARCHAR(50)  NOT NULL COMMENT '物料编码',
     name       VARCHAR(100) NOT NULL COMMENT '物料名称',
     spec       VARCHAR(100) NOT NULL COMMENT '规格型号',
-    unit       INTEGER     NOT NULL COMMENT '单位：0=个,1=台,2=套,3=米,4=吨,5=立方米,6=卷,7=桶,8=箱,9=其他',
+    unit       VARCHAR(32)  NOT NULL COMMENT '单位字典code',
     is_deleted SMALLINT     NOT NULL DEFAULT 0  COMMENT '0=正常, 1=已删除',
     created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -558,6 +558,19 @@ DELIMITER ;
 CALL proc_seed_role_permissions();
 DROP PROCEDURE IF EXISTS proc_seed_role_permissions;
 
+-- ============================================================
+-- 通用字典表
+-- ============================================================
+CREATE TABLE IF NOT EXISTS t_dict (
+    id       BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '主键',
+    type     VARCHAR(32)  NOT NULL COMMENT '字典类型，如 UNIT',
+    code     VARCHAR(32)  NOT NULL COMMENT '项编码，如 TON',
+    label    VARCHAR(64)  NOT NULL COMMENT '显示名，如 吨',
+    sort     INT          NOT NULL DEFAULT 0 COMMENT '排序权重',
+    enabled  TINYINT      NOT NULL DEFAULT 1 COMMENT '0=禁用, 1=启用',
+    UNIQUE KEY uk_type_code (type, code)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='通用字典表';
+
 -- -----------------------------------------------------------
 -- 清理辅助存储过程
 -- -----------------------------------------------------------
@@ -568,6 +581,19 @@ VALUES ('admin', 'admin','$2a$10$E2s24RNIXqcNlEY/WDzx2.JxAa7TaxuOTgL0J.XZO6M6.VZ
 
 INSERT INTO t_user_role(user_id, role_id, created_at)
 VALUES (1, 1, now());
+
+-- 种子数据：单位字典
+INSERT IGNORE INTO t_dict (type, code, label, sort) VALUES
+('UNIT', 'PIECE',       '个',     1),
+('UNIT', 'UNIT',        '台',     2),
+('UNIT', 'SET',         '套',     3),
+('UNIT', 'METER',       '米',     4),
+('UNIT', 'TON',         '吨',     5),
+('UNIT', 'CUBIC_METER', '立方米',  6),
+('UNIT', 'ROLL',        '卷',     7),
+('UNIT', 'BUCKET',      '桶',     8),
+('UNIT', 'BOX',         '箱',     9),
+('UNIT', 'OTHER',       '其他',  99);
 -- ============================================================
 -- MySQL 说明：
 -- 1. BIGINT AUTO_INCREMENT 替代 PostgreSQL 的 BIGSERIAL，无需手动管理序列

@@ -18,7 +18,7 @@ public class PurchaseRequestPO {
     private String specification;
     private String brand;
     private Double quantity;
-    private Integer unit;
+    private String unit;
     private LocalDate arrivalDate;
     private Integer status;
     private String remark;

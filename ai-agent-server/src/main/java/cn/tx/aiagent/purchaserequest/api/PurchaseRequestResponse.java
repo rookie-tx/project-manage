@@ -22,8 +22,7 @@ public class PurchaseRequestResponse {
     private String specification;
     private String brand;
     private BigDecimal quantity;
-    private Integer unitCode;
-    private String unitLabel;
+    private String unitCode;
     private LocalDate arrivalDate;
     private Integer statusCode;
     private String statusLabel;

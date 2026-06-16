@@ -10,7 +10,6 @@ import cn.tx.aiagent.purchaserequest.domain.PurchaseRequest;
 import cn.tx.aiagent.purchaserequest.domain.PurchaseRequestDomainService;
 import cn.tx.aiagent.purchaserequest.domain.PurchaseRequestRepository;
 import cn.tx.aiagent.purchaserequest.domain.PurchaseRequestStatus;
-import cn.tx.aiagent.purchaserequest.domain.Unit;
 import cn.tx.aiagent.task.application.TaskApplicationService;
 import cn.tx.aiagent.task.domain.BusinessType;
 import cn.tx.aiagent.warehouse.domain.Material;
@@ -101,7 +100,7 @@ public class PurchaseRequestApplicationService {
         // 若 materialId 变更，重新从物料库获取 name/spec/unit
         String materialName = updateData.getName();
         String materialSpec = updateData.getSpecification();
-        Unit materialUnit = updateData.getUnit();
+        String materialUnit = updateData.getUnit();
         if (updateData.getMaterialId() != null) {
             Material material = materialRepository.findById(updateData.getMaterialId())
                     .orElseThrow(() -> new BusinessException(ErrorCode.MATERIAL_NOT_FOUND));
@@ -143,7 +142,7 @@ public class PurchaseRequestApplicationService {
             resp.setMaterialId(m.getId());
             resp.setMaterialName(m.getName());
             resp.setMaterialSpec(m.getSpec());
-            resp.setMaterialUnit(m.getUnit() != null ? m.getUnit().getLabel() : null);
+            resp.setMaterialUnit(m.getUnit());
         });
         if (pr.getCreatedBy() != null) {
             userRepository.findById(pr.getCreatedBy())

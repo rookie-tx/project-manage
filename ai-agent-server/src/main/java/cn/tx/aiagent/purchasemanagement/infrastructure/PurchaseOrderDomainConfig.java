@@ -1,5 +1,6 @@
 package cn.tx.aiagent.purchasemanagement.infrastructure;
 
+import cn.tx.aiagent.dict.infrastructure.DictMapper;
 import cn.tx.aiagent.file.domain.UploadFileRepository;
 import cn.tx.aiagent.project.domain.ProjectRepository;
 import cn.tx.aiagent.purchasemanagement.application.PurchaseOrderApplicationService;
@@ -20,8 +21,9 @@ public class PurchaseOrderDomainConfig {
             UploadFileRepository uploadFileRepository,
             UserRepository userRepository,
             ProjectRepository projectRepository,
-            MaterialRepository materialRepository) {
+            MaterialRepository materialRepository,
+            DictMapper dictMapper) {
         return new PurchaseOrderApplicationService(repository, purchaseRequestRepository,
-                uploadFileRepository, userRepository, projectRepository, materialRepository);
+                uploadFileRepository, userRepository, projectRepository, materialRepository, dictMapper);
     }
 }

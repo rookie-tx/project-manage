@@ -1,13 +1,6 @@
 const auth = require('../../utils/auth')
 const materialApi = require('../../api/material')
-
-const UNITS = [
-  { code: 0, label: '个' }, { code: 1, label: '台' },
-  { code: 2, label: '套' }, { code: 3, label: '米' },
-  { code: 4, label: '吨' }, { code: 5, label: '立方米' },
-  { code: 6, label: '卷' }, { code: 7, label: '桶' },
-  { code: 8, label: '箱' }, { code: 9, label: '其他' }
-]
+const dictCache = require('../../utils/dictCache')
 
 Page({
   data: {
@@ -17,7 +10,8 @@ Page({
     submitting: false,
     error: '',
 
-    unitNames: UNITS.map(u => u.label),
+    units: [],
+    unitNames: [],
     selectedUnitIdx: -1,
 
     form: {
@@ -34,16 +28,28 @@ Page({
       return
     }
 
+    this.loadUnits()
+
     if (options.id) {
       this.setData({ isEdit: true, editId: parseInt(options.id), title: '编辑物料' })
       this.loadDetail(options.id)
     }
   },
 
+  async loadUnits() {
+    try {
+      const items = await dictCache.getDictOptions('UNIT')
+      this.setData({
+        units: items,
+        unitNames: items.map(u => u.label)
+      })
+    } catch (e) { /* ignore */ }
+  },
+
   async loadDetail(id) {
     try {
       const detail = await materialApi.detail(id)
-      const unitIdx = UNITS.findIndex(u => u.code === detail.unit)
+      const unitIdx = this.data.units.findIndex(u => u.code === detail.unit)
       this.setData({
         selectedUnitIdx: unitIdx,
         form: {
@@ -61,7 +67,8 @@ Page({
 
   onUnitChange(e) {
     const idx = parseInt(e.detail.value)
-    this.setData({ selectedUnitIdx: idx, 'form.unit': UNITS[idx].code })
+    const unit = this.data.units[idx]
+    this.setData({ selectedUnitIdx: idx, 'form.unit': unit ? unit.code : null })
   },
 
   onInput(e) {

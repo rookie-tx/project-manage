@@ -14,5 +14,5 @@ public class CreateMaterialRequest {
     @NotBlank @Size(max = 100)
     private String spec;
     @NotNull
-    private Integer unit;
+    private String unit;
 }

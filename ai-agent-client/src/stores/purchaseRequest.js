@@ -1,19 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import client from '@/api/client'
-
-const UNIT_MAP = {
-  0: '个',
-  1: '台',
-  2: '套',
-  3: '米',
-  4: '吨',
-  5: '立方米',
-  6: '卷',
-  7: '桶',
-  8: '箱',
-  9: '其他',
-}
+import { getDict } from '@/utils/dictCache'
 
 const STATUS_MAP = {
   0: '待提交',
@@ -29,6 +17,15 @@ export const usePurchaseRequestStore = defineStore('purchaseRequest', () => {
   const current = ref(null)
   const loading = ref(false)
   const error = ref(null)
+  const unitLabelMap = ref({})
+
+  async function initUnitDict() {
+    if (Object.keys(unitLabelMap.value).length > 0) return
+    const items = await getDict('UNIT')
+    const map = {}
+    items.forEach(item => { map[item.code] = item.label })
+    unitLabelMap.value = map
+  }
 
   async function fetchList(params = {}) {
     loading.value = true
@@ -134,18 +131,17 @@ export const usePurchaseRequestStore = defineStore('purchaseRequest', () => {
   }
 
   function getUnitLabel(code) {
-    return UNIT_MAP[code] || '未知'
+    if (code == null) return ''
+    return unitLabelMap.value[code] || code
   }
 
   function getStatusLabel(code) {
     return STATUS_MAP[code] || '未知'
   }
 
-  function getUnitOptions() {
-    return Object.entries(UNIT_MAP).map(([value, label]) => ({
-      value: Number(value),
-      label,
-    }))
+  async function getUnitOptions() {
+    const dict = await getDict('UNIT')
+    return dict.map(d => ({ value: d.code, label: d.label }))
   }
 
   return {
@@ -154,6 +150,8 @@ export const usePurchaseRequestStore = defineStore('purchaseRequest', () => {
     current,
     loading,
     error,
+    unitLabelMap,
+    initUnitDict,
     fetchList,
     fetchDetail,
     create,

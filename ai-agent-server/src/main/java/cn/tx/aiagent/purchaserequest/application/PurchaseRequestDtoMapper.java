@@ -4,15 +4,13 @@ import cn.tx.aiagent.purchaserequest.api.CreatePurchaseRequestRequest;
 import cn.tx.aiagent.purchaserequest.api.PurchaseRequestResponse;
 import cn.tx.aiagent.purchaserequest.api.UpdatePurchaseRequestRequest;
 import cn.tx.aiagent.purchaserequest.domain.PurchaseRequest;
-import cn.tx.aiagent.purchaserequest.domain.Unit;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface PurchaseRequestDtoMapper {
 
-    @Mapping(target = "unitCode", expression = "java(pr.getUnit() != null ? pr.getUnit().getCode() : null)")
-    @Mapping(target = "unitLabel", expression = "java(pr.getUnit() != null ? pr.getUnit().getLabel() : null)")
+    @Mapping(target = "unitCode", expression = "java(pr.getUnit())")
     @Mapping(target = "statusCode", expression = "java(pr.getStatus() != null ? pr.getStatus().getCode() : null)")
     @Mapping(target = "statusLabel", expression = "java(pr.getStatus() != null ? pr.getStatus().getLabel() : null)")
     @Mapping(target = "projectCode", ignore = true)

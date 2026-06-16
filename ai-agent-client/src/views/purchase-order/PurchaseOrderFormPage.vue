@@ -32,7 +32,7 @@ onMounted(async () => {
         selectedRequestIds.value = (c.purchaseRequests || []).map(pr => pr.id)
         // 编辑时把已关联的PR补充到选项中（available API 不会返回）
         const linkedPRs = (c.purchaseRequests || []).filter(pr => !approvedPRs.value.some(a => a.id === pr.id))
-        approvedPRs.value = [...approvedPRs.value, ...linkedPRs.map(pr => ({ id: pr.id, code: pr.code, name: pr.name, projectName: pr.projectName||'', specification: pr.specification||'', quantity: pr.quantityStr||'', unitLabel: '', arrivalDate: pr.arrivalDate||'' }))]
+        approvedPRs.value = [...approvedPRs.value, ...linkedPRs.map(pr => ({ id: pr.id, code: pr.code, name: pr.name, projectName: pr.projectName||'', specification: pr.specification||'', quantity: pr.quantityStr||'', arrivalDate: pr.arrivalDate||'' }))]
         formState.supplierName = c.supplierName; formState.supplierPhone = c.supplierPhone || ''
         formState.unitPrice = c.unitPrice; formState.totalAmount = c.totalAmount
         formState.purchaseDate = c.purchaseDate ? dayjs(c.purchaseDate) : null
@@ -106,7 +106,7 @@ function handleRemove(file) { fileList.value = fileList.value.filter(f => f !== 
     <Form layout="vertical" style="max-width:640px">
       <FormItem label="采购申请" required>
         <Select v-model:value="selectedRequestIds" mode="multiple" placeholder="选择已通过的采购申请" show-search option-filter-prop="label" style="width:100%"
-          :options="approvedPRs.map(p => ({ value: p.id, label: p.code + ' ' + p.name + ' | ' + (p.projectName||'') + ' | ' + (p.specification||'-') + ' | ' + p.quantity + (p.unitLabel||'') + ' | ' + (p.arrivalDate||'') }))" />
+          :options="approvedPRs.map(p => ({ value: p.id, label: p.code + ' ' + p.name + ' | ' + (p.projectName||'') + ' | ' + (p.specification||'-') + ' | ' + p.quantity + ' | ' + (p.arrivalDate||'') }))" />
       </FormItem>
       <FormItem label="供应商名称" required><Input v-model:value="formState.supplierName" placeholder="供应商公司名称" /></FormItem>
       <FormItem label="供应商电话"><Input v-model:value="formState.supplierPhone" placeholder="供应商联系电话" /></FormItem>

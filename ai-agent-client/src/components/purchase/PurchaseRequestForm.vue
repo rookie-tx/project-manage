@@ -58,7 +58,7 @@ watch(
         ...vals,
         materialId: vals.materialId ?? null,
         materialSpec: vals.materialSpec ?? '',
-        materialUnitLabel: vals.materialUnit ?? '',
+        materialUnitLabel: store.getUnitLabel(vals.unitCode) || vals.materialUnit || '',
         arrivalDate: toDayjs(vals.arrivalDate),
       })
       if (vals.materialId) {
@@ -110,6 +110,7 @@ onMounted(async () => {
     const { data } = await client.get('/materials')
     materials.value = data || []
   } catch { /* ignore */ }
+  store.initUnitDict()
 })
 </script>
 

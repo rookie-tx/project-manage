@@ -1,20 +1,14 @@
 const auth = require('../../utils/auth')
 const materialApi = require('../../api/material')
-
-const UNITS = [
-  { code: 0, label: '个' }, { code: 1, label: '台' },
-  { code: 2, label: '套' }, { code: 3, label: '米' },
-  { code: 4, label: '吨' }, { code: 5, label: '立方米' },
-  { code: 6, label: '卷' }, { code: 7, label: '桶' },
-  { code: 8, label: '箱' }, { code: 9, label: '其他' }
-]
+const dictCache = require('../../utils/dictCache')
 
 Page({
   data: {
     items: [],
     loading: false,
     canCreate: false,
-    canDelete: false
+    canDelete: false,
+    unitLabelMap: {}
   },
 
   onLoad() {
@@ -26,7 +20,7 @@ Page({
       canCreate: auth.hasPermission('material:create'),
       canDelete: auth.hasPermission('material:delete')
     })
-    this.loadItems()
+    this.loadUnits().then(() => { this.loadItems() })
   },
 
   onShow() {
@@ -36,14 +30,24 @@ Page({
     }
   },
 
+  async loadUnits() {
+    try {
+      const items = await dictCache.getDict('UNIT')
+      const map = {}
+      items.forEach(item => { map[item.code] = item.label })
+      this.setData({ unitLabelMap: map })
+    } catch (e) { /* ignore */ }
+  },
+
   async loadItems() {
     if (this.data.loading) return
     this.setData({ loading: true })
     try {
       const items = await materialApi.list()
+      const map = this.data.unitLabelMap
       const enriched = (items || []).map(item => ({
         ...item,
-        unitLabel: this.getUnitLabel(item.unit)
+        unitLabel: map[item.unit] || item.unit || ''
       }))
       this.setData({ items: enriched })
     } catch {
@@ -54,8 +58,7 @@ Page({
   },
 
   getUnitLabel(code) {
-    const u = UNITS.find(u => u.code === code)
-    return u ? u.label : '未知'
+    return this.data.unitLabelMap[code] || code || ''
   },
 
   handleCreate() {

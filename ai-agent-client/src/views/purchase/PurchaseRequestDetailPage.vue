@@ -14,6 +14,7 @@ const submitDialogVisible = ref(false)
 onMounted(async () => {
   try {
     await store.fetchDetail(route.params.id)
+    store.initUnitDict()
   } catch {
     // error is in store
   }

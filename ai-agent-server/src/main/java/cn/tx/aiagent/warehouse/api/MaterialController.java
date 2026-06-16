@@ -7,7 +7,6 @@ import cn.tx.aiagent.common.exception.BusinessException;
 import cn.tx.aiagent.common.security.RequirePermission;
 import cn.tx.aiagent.purchasemanagement.domain.PurchaseOrderRepository;
 import cn.tx.aiagent.purchasemanagement.domain.PurchaseOrderStatus;
-import cn.tx.aiagent.purchaserequest.domain.Unit;
 import cn.tx.aiagent.warehouse.application.StockApplicationService;
 import cn.tx.aiagent.warehouse.domain.*;
 import org.springframework.web.bind.annotation.*;
@@ -50,8 +49,7 @@ public class MaterialController {
     @RequirePermission("material:create")
     @PostMapping("/materials")
     public Result<Material> create(@RequestBody CreateMaterialRequest request) {
-        Unit unit = Unit.fromCode(request.getUnit());
-        Material m = Material.create(request.getCode(), request.getName(), request.getSpec(), unit);
+        Material m = Material.create(request.getCode(), request.getName(), request.getSpec(), request.getUnit());
         return Result.success(materialRepository.save(m));
     }
 
@@ -60,8 +58,7 @@ public class MaterialController {
     public Result<Void> update(@PathVariable Long id, @RequestBody UpdateMaterialRequest request) {
         Material m = materialRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MATERIAL_NOT_FOUND, id));
-        Unit unit = Unit.fromCode(request.getUnit());
-        m = Material.fromPersistence(m.getId(), m.getCode(), request.getName(), request.getSpec(), unit,
+        m = Material.fromPersistence(m.getId(), m.getCode(), request.getName(), request.getSpec(), request.getUnit(),
                 m.getIsDeleted(), m.getCreatedAt(), m.getUpdatedAt());
         materialRepository.update(m);
         return Result.success();

@@ -1,8 +1,8 @@
 const auth = require('../../utils/auth')
 const purchaseApi = require('../../api/purchase')
 const approvalApi = require('../../api/approval')
+const dictCache = require('../../utils/dictCache')
 
-const UNIT_MAP = { 0: '个', 1: '台', 2: '套', 3: '米', 4: '吨', 5: '立方米', 6: '卷', 7: '桶', 8: '箱', 9: '其他' }
 const STATUS_MAP = { 0: '待提交', 1: '审批中', 2: '已通过', 3: '已驳回', 4: '已取消' }
 
 Page({
@@ -27,7 +27,10 @@ Page({
     quantityStr: '',
     arrivalDateStr: '',
     statusLabel: '',
-    createdAtStr: ''
+    createdAtStr: '',
+
+    // 单位标签映射
+    unitLabelMap: {}
   },
 
   onLoad(options) {
@@ -43,7 +46,20 @@ Page({
       // 从列表"提交审批"按钮跳转，自动滚动到审批区
       this.setData({ focusSubmit: true })
     }
-    this.loadDetail()
+    this.loadUnitLabels().then(() => this.loadDetail())
+  },
+
+  async loadUnitLabels() {
+    try {
+      const items = await dictCache.getDict('UNIT')
+      const map = {}
+      items.forEach(item => { map[item.code] = item.label })
+      this.setData({ unitLabelMap: map })
+    } catch (e) { /* ignore */ }
+  },
+
+  getUnitLabel(code) {
+    return this.data.unitLabelMap[code] || code || ''
   },
 
   async loadDetail() {
@@ -53,7 +69,7 @@ Page({
       this.setData({
         record: record,
         isPending: record.statusCode === 0,
-        quantityStr: (record.quantity || '') + ' ' + (UNIT_MAP[record.unitCode] || ''),
+        quantityStr: (record.quantity || '') + ' ' + this.getUnitLabel(record.unitCode),
         arrivalDateStr: formatDate(record.arrivalDate),
         statusLabel: STATUS_MAP[record.statusCode] || '未知',
         createdAtStr: formatDateTime(record.createdAt)
