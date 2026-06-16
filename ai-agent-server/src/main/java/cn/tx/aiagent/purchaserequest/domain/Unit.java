@@ -1,5 +1,7 @@
 package cn.tx.aiagent.purchaserequest.domain;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum Unit {
 
     PIECE(0, "个"),
@@ -21,6 +23,7 @@ public enum Unit {
         this.label = label;
     }
 
+    @JsonValue
     public int getCode() { return code; }
 
     public String getLabel() { return label; }

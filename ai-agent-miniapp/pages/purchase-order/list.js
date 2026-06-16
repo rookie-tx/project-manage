@@ -72,8 +72,8 @@ Page({
   // 已采购 → 入库
   handleInbound(e) {
     const id = e.currentTarget.dataset.id
-    const prId = e.currentTarget.dataset.prId
-    wx.navigateTo({ url: '/pages/purchase-order/inbound?id=' + id + '&prId=' + prId })
+    const prId = e.currentTarget.dataset.prid
+    wx.navigateTo({ url: '/pages/purchase-order/inbound?id=' + id + '&prId=' + (prId || '') })
   },
 
   handleTap(e) {

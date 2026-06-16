@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, watch } from 'vue'
+import { ref, reactive, watch, onMounted } from 'vue'
 import dayjs from 'dayjs'
 import {
   Form,
@@ -13,6 +13,7 @@ import {
 } from 'ant-design-vue'
 import ProjectSelect from '@/components/common/ProjectSelect.vue'
 import { usePurchaseRequestStore } from '@/stores/purchaseRequest'
+import client from '@/api/client'
 
 const props = defineProps({
   mode: {
@@ -29,13 +30,16 @@ const emit = defineEmits(['submit', 'cancel'])
 
 const store = usePurchaseRequestStore()
 
+const materials = ref([])
+const selectedMaterial = ref(null)
+
 const formState = reactive({
   projectId: null,
-  name: '',
-  specification: '',
+  materialId: null,
+  materialSpec: '',
+  materialUnitLabel: '',
   brand: '',
   quantity: null,
-  unit: null,
   arrivalDate: null,
   status: null,
   remark: '',
@@ -52,9 +56,14 @@ watch(
     if (vals && Object.keys(vals).length > 0) {
       Object.assign(formState, {
         ...vals,
-        unit: vals.unitCode ?? null,
+        materialId: vals.materialId ?? null,
+        materialSpec: vals.materialSpec ?? '',
+        materialUnitLabel: vals.materialUnit ?? '',
         arrivalDate: toDayjs(vals.arrivalDate),
       })
+      if (vals.materialId) {
+        selectedMaterial.value = materials.value.find(m => m.id === vals.materialId) || null
+      }
     }
   },
   { immediate: true, deep: true },
@@ -62,20 +71,31 @@ watch(
 
 const rules = {
   projectId: [{ required: true, message: '请选择项目' }],
-  name: [{ required: true, message: '请输入物料名称' }],
+  materialId: [{ required: true, message: '请选择物料' }],
   quantity: [{ required: true, message: '请输入数量' }],
-  unit: [{ required: true, message: '请选择单位' }],
   arrivalDate: [{ required: true, message: '请选择到场时间' }],
+}
+
+function handleMaterialChange(materialId) {
+  formState.materialId = materialId
+  const mat = materials.value.find(m => m.id === materialId)
+  if (mat) {
+    selectedMaterial.value = mat
+    formState.materialSpec = mat.spec || ''
+    formState.materialUnitLabel = store.getUnitLabel(mat.unit)
+  } else {
+    selectedMaterial.value = null
+    formState.materialSpec = ''
+    formState.materialUnitLabel = ''
+  }
 }
 
 function buildSubmitData() {
   return {
     projectId: formState.projectId,
-    name: formState.name,
-    specification: formState.specification || undefined,
+    materialId: formState.materialId,
     brand: formState.brand || undefined,
     quantity: formState.quantity,
-    unit: formState.unit,
     arrivalDate: formState.arrivalDate?.format?.('YYYY-MM-DD') || formState.arrivalDate,
     remark: formState.remark || undefined,
   }
@@ -84,6 +104,13 @@ function buildSubmitData() {
 function handleFinish() {
   emit('submit', buildSubmitData())
 }
+
+onMounted(async () => {
+  try {
+    const { data } = await client.get('/materials')
+    materials.value = data || []
+  } catch { /* ignore */ }
+})
 </script>
 
 <template>
@@ -99,12 +126,23 @@ function handleFinish() {
       <ProjectSelect v-model:value="formState.projectId" />
     </FormItem>
 
-    <FormItem label="物料名称" name="name">
-      <Input v-model:value="formState.name" placeholder="请输入物料名称" />
+    <FormItem label="物料" name="materialId">
+      <Select
+        v-model:value="formState.materialId"
+        placeholder="请选择物料"
+        show-search
+        :filter-option="(input, option) => option.label.includes(input)"
+        :options="materials.map(m => ({ value: m.id, label: `${m.code} ${m.name}` }))"
+        @change="handleMaterialChange"
+      />
     </FormItem>
 
-    <FormItem label="规格" name="specification">
-      <Input v-model:value="formState.specification" placeholder="请输入规格" />
+    <FormItem label="规格">
+      <Input v-model:value="formState.materialSpec" disabled placeholder="选择物料后自动带出" />
+    </FormItem>
+
+    <FormItem label="单位">
+      <Input v-model:value="formState.materialUnitLabel" disabled placeholder="选择物料后自动带出" />
     </FormItem>
 
     <FormItem label="品牌" name="brand">
@@ -113,14 +151,6 @@ function handleFinish() {
 
     <FormItem label="数量" name="quantity">
       <InputNumber v-model:value="formState.quantity" :min="0" :precision="2" style="width: 100%" placeholder="请输入数量" />
-    </FormItem>
-
-    <FormItem label="单位" name="unit">
-      <Select
-        v-model:value="formState.unit"
-        placeholder="请选择单位"
-        :options="store.getUnitOptions()"
-      />
     </FormItem>
 
     <FormItem label="到场时间" name="arrivalDate">

@@ -10,15 +10,11 @@ public class UpdatePurchaseRequestRequest {
 
     private Long projectId;
 
-    private String name;
-
-    private String specification;
+    private Long materialId;
 
     private String brand;
 
     private BigDecimal quantity;
-
-    private Integer unit;
 
     private LocalDate arrivalDate;
 

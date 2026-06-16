@@ -14,6 +14,10 @@ public class PurchaseRequestResponse {
     private Long projectId;
     private String projectCode;
     private String projectName;
+    private Long materialId;
+    private String materialName;
+    private String materialSpec;
+    private String materialUnit;
     private String name;
     private String specification;
     private String brand;

@@ -38,6 +38,9 @@ public class PurchaseOrderResponse {
         private String quantityStr;
         private String arrivalDate;
         private String projectName;
+        private Long materialId;
+        private String materialName;
+        private String materialSpec;
     }
 
     @Data

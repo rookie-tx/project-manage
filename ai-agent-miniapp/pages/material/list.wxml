@@ -1,0 +1,36 @@
+<view class="material-list-page">
+  <!-- 顶部操作栏 -->
+  <view class="top-bar" wx:if="{{canCreate}}">
+    <button class="btn-create" bindtap="handleCreate">+ 新建物料</button>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="state-box" wx:if="{{loading}}">
+    <text class="state-text">加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="state-box" wx:elif="{{items.length === 0}}">
+    <text class="state-text">暂无物料数据</text>
+  </view>
+
+  <!-- 物料列表 -->
+  <view class="card-list" wx:else>
+    <view class="card" wx:for="{{items}}" wx:key="id">
+      <view class="card-body">
+        <view class="card-row">
+          <text class="card-code">{{item.code}}</text>
+          <text class="card-name">{{item.name}}</text>
+        </view>
+        <view class="card-row">
+          <text class="card-spec">规格: {{item.spec || '-'}}</text>
+          <text class="card-unit">单位: {{item.unitLabel || '-'}}</text>
+        </view>
+      </view>
+      <view class="card-actions">
+        <text class="action-btn" wx:if="{{canDelete}}" bindtap="handleEdit" data-id="{{item.id}}">编辑</text>
+        <text class="action-btn danger" wx:if="{{canDelete}}" bindtap="handleDelete" data-id="{{item.id}}">删除</text>
+      </view>
+    </view>
+  </view>
+</view>

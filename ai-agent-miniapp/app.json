@@ -8,6 +8,8 @@
     "pages/waste/detail",
     "pages/approval/list",
     "pages/approval/action",
+    "pages/material/list",
+    "pages/material/form",
     "pages/purchase/list",
     "pages/purchase/form",
     "pages/purchase/detail",

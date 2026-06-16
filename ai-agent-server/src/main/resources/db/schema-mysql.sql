@@ -156,6 +156,13 @@ CREATE TABLE IF NOT EXISTS t_purchase_request (
     INDEX idx_pr_is_deleted (is_deleted)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='采购申请表';
 
+-- DDL 增量变更：采购申请关联物料
+CALL proc_add_column_if_not_exists('t_purchase_request', 'material_id', 'material_id BIGINT NOT NULL COMMENT \'物料ID\'');
+-- 为已有表补建索引（忽略重复索引错误）
+ALTER TABLE t_purchase_request ADD INDEX idx_pr_material (material_id);
+-- 为已有表补建外键（忽略重复外键错误）
+ALTER TABLE t_purchase_request ADD CONSTRAINT fk_pr_material FOREIGN KEY (material_id) REFERENCES t_material(id);
+
 -- ============================================================
 -- 工作流实例关联表
 -- ============================================================
@@ -193,8 +200,8 @@ CREATE TABLE IF NOT EXISTS t_material (
     id         BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '主键',
     code       VARCHAR(50)  NOT NULL COMMENT '物料编码',
     name       VARCHAR(100) NOT NULL COMMENT '物料名称',
-    spec       VARCHAR(100) COMMENT '规格型号',
-    unit       VARCHAR(20)  COMMENT '单位',
+    spec       VARCHAR(100) NOT NULL COMMENT '规格型号',
+    unit       INTEGER     NOT NULL COMMENT '单位：0=个,1=台,2=套,3=米,4=吨,5=立方米,6=卷,7=桶,8=箱,9=其他',
     is_deleted SMALLINT     NOT NULL DEFAULT 0  COMMENT '0=正常, 1=已删除',
     created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

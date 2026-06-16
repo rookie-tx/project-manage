@@ -2,7 +2,6 @@ package cn.tx.aiagent.purchaserequest.application;
 
 import cn.tx.aiagent.common.api.ErrorCode;
 import cn.tx.aiagent.common.exception.BusinessException;
-import cn.tx.aiagent.user.domain.User;
 import cn.tx.aiagent.user.domain.UserRepository;
 import cn.tx.aiagent.project.domain.ProjectRepository;
 import cn.tx.aiagent.purchaserequest.api.PurchaseRequestListResponse;
@@ -11,8 +10,11 @@ import cn.tx.aiagent.purchaserequest.domain.PurchaseRequest;
 import cn.tx.aiagent.purchaserequest.domain.PurchaseRequestDomainService;
 import cn.tx.aiagent.purchaserequest.domain.PurchaseRequestRepository;
 import cn.tx.aiagent.purchaserequest.domain.PurchaseRequestStatus;
+import cn.tx.aiagent.purchaserequest.domain.Unit;
 import cn.tx.aiagent.task.application.TaskApplicationService;
 import cn.tx.aiagent.task.domain.BusinessType;
+import cn.tx.aiagent.warehouse.domain.Material;
+import cn.tx.aiagent.warehouse.domain.MaterialRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,19 +28,22 @@ public class PurchaseRequestApplicationService {
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final TaskApplicationService taskApplicationService;
+    private final MaterialRepository materialRepository;
 
     public PurchaseRequestApplicationService(PurchaseRequestDomainService domainService,
                                               PurchaseRequestRepository repository,
                                               PurchaseRequestDtoMapper dtoMapper,
                                               ProjectRepository projectRepository,
                                               UserRepository userRepository,
-                                              TaskApplicationService taskApplicationService) {
+                                              TaskApplicationService taskApplicationService,
+                                              MaterialRepository materialRepository) {
         this.domainService = domainService;
         this.repository = repository;
         this.dtoMapper = dtoMapper;
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
         this.taskApplicationService = taskApplicationService;
+        this.materialRepository = materialRepository;
     }
 
     public String generateCode() {
@@ -55,6 +60,16 @@ public class PurchaseRequestApplicationService {
     public PurchaseRequestResponse create(PurchaseRequest pr) {
         projectRepository.findById(pr.getProjectId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.PR_PROJECT_NOT_FOUND));
+        // 根据 materialId 查询物料，自动填入 name、spec、unit
+        Material material = materialRepository.findById(pr.getMaterialId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.MATERIAL_NOT_FOUND));
+        String code = pr.getCode();
+        Long createdBy = pr.getCreatedBy();
+        pr = PurchaseRequest.create(pr.getProjectId(), pr.getMaterialId(),
+                material.getName(), material.getSpec(), pr.getBrand(),
+                pr.getQuantity(), material.getUnit(), pr.getArrivalDate(),
+                pr.getRemark(), createdBy);
+        pr.setCode(code);
         domainService.create(pr);
         return toResponse(pr);
     }
@@ -83,8 +98,20 @@ public class PurchaseRequestApplicationService {
             throw new BusinessException(ErrorCode.PR_STATUS_TRANSITION_INVALID);
         }
 
-        pr.update(updateData.getName(), updateData.getSpecification(), updateData.getBrand(),
-                updateData.getQuantity(), updateData.getUnit(), updateData.getArrivalDate(),
+        // 若 materialId 变更，重新从物料库获取 name/spec/unit
+        String materialName = updateData.getName();
+        String materialSpec = updateData.getSpecification();
+        Unit materialUnit = updateData.getUnit();
+        if (updateData.getMaterialId() != null) {
+            Material material = materialRepository.findById(updateData.getMaterialId())
+                    .orElseThrow(() -> new BusinessException(ErrorCode.MATERIAL_NOT_FOUND));
+            materialName = material.getName();
+            materialSpec = material.getSpec();
+            materialUnit = material.getUnit();
+        }
+
+        pr.update(updateData.getMaterialId(), materialName, materialSpec, updateData.getBrand(),
+                updateData.getQuantity(), materialUnit, updateData.getArrivalDate(),
                 updateData.getRemark());
 
         domainService.update(pr);
@@ -110,6 +137,13 @@ public class PurchaseRequestApplicationService {
         projectRepository.findById(pr.getProjectId()).ifPresent(p -> {
             resp.setProjectCode(p.getCode());
             resp.setProjectName(p.getName());
+        });
+        // 填充物料信息
+        materialRepository.findById(pr.getMaterialId()).ifPresent(m -> {
+            resp.setMaterialId(m.getId());
+            resp.setMaterialName(m.getName());
+            resp.setMaterialSpec(m.getSpec());
+            resp.setMaterialUnit(m.getUnit() != null ? m.getUnit().getLabel() : null);
         });
         if (pr.getCreatedBy() != null) {
             userRepository.findById(pr.getCreatedBy())

@@ -19,23 +19,24 @@ public interface PurchaseRequestDtoMapper {
     @Mapping(target = "projectName", ignore = true)
     @Mapping(target = "createdByName", ignore = true)
     @Mapping(target = "currentApprovalNode", ignore = true)
+    @Mapping(target = "materialName", ignore = true)
+    @Mapping(target = "materialSpec", ignore = true)
+    @Mapping(target = "materialUnit", ignore = true)
     PurchaseRequestResponse toResponse(PurchaseRequest pr);
 
     default PurchaseRequest toDomain(CreatePurchaseRequestRequest request) {
         if (request == null) return null;
-        Unit unit = request.getUnit() != null ? Unit.fromCode(request.getUnit()) : null;
         return PurchaseRequest.create(
-                request.getProjectId(), request.getName(), request.getSpecification(),
-                request.getBrand(), request.getQuantity(), unit,
+                request.getProjectId(), request.getMaterialId(), null, null,
+                request.getBrand(), request.getQuantity(), null,
                 request.getArrivalDate(), request.getRemark(), null);
     }
 
     default PurchaseRequest toDomain(UpdatePurchaseRequestRequest request) {
         if (request == null) return null;
-        Unit unit = request.getUnit() != null ? Unit.fromCode(request.getUnit()) : null;
         return PurchaseRequest.create(
-                request.getProjectId(), request.getName(), request.getSpecification(),
-                request.getBrand(), request.getQuantity(), unit,
+                request.getProjectId(), request.getMaterialId(), null, null,
+                request.getBrand(), request.getQuantity(), null,
                 request.getArrivalDate(), request.getRemark(), null);
     }
 }

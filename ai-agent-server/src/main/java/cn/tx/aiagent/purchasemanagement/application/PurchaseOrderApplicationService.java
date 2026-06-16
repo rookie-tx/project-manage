@@ -13,6 +13,7 @@ import cn.tx.aiagent.purchasemanagement.domain.PurchaseOrderStatus;
 import cn.tx.aiagent.purchaserequest.domain.PurchaseRequestRepository;
 import cn.tx.aiagent.user.domain.User;
 import cn.tx.aiagent.user.domain.UserRepository;
+import cn.tx.aiagent.warehouse.domain.MaterialRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,17 +28,20 @@ public class PurchaseOrderApplicationService {
     private final UploadFileRepository uploadFileRepository;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
+    private final MaterialRepository materialRepository;
 
     public PurchaseOrderApplicationService(PurchaseOrderRepository repository,
                                             PurchaseRequestRepository purchaseRequestRepository,
                                             UploadFileRepository uploadFileRepository,
                                             UserRepository userRepository,
-                                            ProjectRepository projectRepository) {
+                                            ProjectRepository projectRepository,
+                                            MaterialRepository materialRepository) {
         this.repository = repository;
         this.purchaseRequestRepository = purchaseRequestRepository;
         this.uploadFileRepository = uploadFileRepository;
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
+        this.materialRepository = materialRepository;
     }
 
     /** 自动创建 PO（审批通过时调用） */
@@ -170,7 +174,15 @@ public class PurchaseOrderApplicationService {
                 info.setSpecification(pr.getSpecification());
                 info.setQuantityStr(pr.getQuantity() + (pr.getUnit() != null ? pr.getUnit().getLabel() : ""));
                 info.setArrivalDate(pr.getArrivalDate() != null ? pr.getArrivalDate().toString() : null);
+                info.setMaterialId(pr.getMaterialId());
                 projectRepository.findById(pr.getProjectId()).ifPresent(p -> info.setProjectName(p.getName()));
+                // 物料信息
+                if (pr.getMaterialId() != null) {
+                    materialRepository.findById(pr.getMaterialId()).ifPresent(m -> {
+                        info.setMaterialName(m.getName());
+                        info.setMaterialSpec(m.getSpec());
+                    });
+                }
                 resp.setPurchaseRequests(Collections.singletonList(info));
             });
         } else {

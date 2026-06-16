@@ -9,7 +9,7 @@ public class MaterialPO {
     private String code;
     private String name;
     private String spec;
-    private String unit;
+    private Integer unit;
     private Integer isDeleted;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

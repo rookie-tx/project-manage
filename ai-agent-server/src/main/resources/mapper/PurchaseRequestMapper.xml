@@ -3,21 +3,21 @@
 <mapper namespace="cn.tx.aiagent.purchaserequest.infrastructure.PurchaseRequestMapper">
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO t_purchase_request (code, project_id, name, specification, brand, quantity, unit,
+        INSERT INTO t_purchase_request (code, project_id, material_id, name, specification, brand, quantity, unit,
                                         arrival_date, status, remark, is_deleted, created_by)
-        VALUES (#{code}, #{projectId}, #{name}, #{specification}, #{brand}, #{quantity}, #{unit},
+        VALUES (#{code}, #{projectId}, #{materialId}, #{name}, #{specification}, #{brand}, #{quantity}, #{unit},
                 #{arrivalDate}, #{status}, #{remark}, #{isDeleted}, #{createdBy})
     </insert>
 
     <select id="selectById" resultType="cn.tx.aiagent.purchaserequest.infrastructure.PurchaseRequestPO">
-        SELECT id, code, project_id, name, specification, brand, quantity, unit,
+        SELECT id, code, project_id, material_id, name, specification, brand, quantity, unit,
                arrival_date, status, remark, is_deleted, created_by, created_at, updated_at
         FROM t_purchase_request
         WHERE id = #{id} AND is_deleted = 0
     </select>
 
     <select id="selectByPage" resultType="cn.tx.aiagent.purchaserequest.infrastructure.PurchaseRequestPO">
-        SELECT id, code, project_id, name, specification, brand, quantity, unit,
+        SELECT id, code, project_id, material_id, name, specification, brand, quantity, unit,
                arrival_date, status, remark, is_deleted, created_by, created_at, updated_at
         FROM t_purchase_request
         WHERE is_deleted = 0
@@ -45,7 +45,8 @@
 
     <update id="update">
         UPDATE t_purchase_request
-        SET name = #{name},
+        SET material_id = #{materialId},
+            name = #{name},
             specification = #{specification},
             brand = #{brand},
             quantity = #{quantity},
@@ -65,7 +66,7 @@
     </update>
 
     <select id="findMaxCodeByPrefix" resultType="string">
-        SELECT MAX(code) FROM t_purchase_request WHERE code LIKE #{prefix} || '%'
+        SELECT MAX(code) FROM t_purchase_request WHERE code LIKE CONCAT(#{prefix}, '%')
     </select>
 
     <select id="existsInPurchaseOrder" resultType="boolean">
@@ -73,7 +74,7 @@
     </select>
 
     <select id="selectAvailable" resultType="cn.tx.aiagent.purchaserequest.infrastructure.PurchaseRequestPO">
-        SELECT id, code, project_id, name, specification, brand, quantity, unit,
+        SELECT id, code, project_id, material_id, name, specification, brand, quantity, unit,
                arrival_date, status, remark, is_deleted, created_by, created_at, updated_at
         FROM t_purchase_request
         WHERE status = 2 AND is_deleted = 0

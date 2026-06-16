@@ -298,7 +298,7 @@ class LoginControllerTest {
 
 ```sql
 CREATE TABLE IF NOT EXISTS t_<name> (
-    id          BIGSERIAL    PRIMARY KEY,
+    id          BIGINT    PRIMARY KEY,
     -- 业务字段...
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -307,23 +307,16 @@ CREATE TABLE IF NOT EXISTS t_<name> (
 -- 序列由 BIGSERIAL 自动创建并关联，无需手动管理
 ```
 
-- **主键**：必须使用 `BIGSERIAL`（PostgreSQL 自增），禁止使用 `INTEGER` 或手动管理序列
+- **主键**：必须使用MySQL自增，禁止使用 `INTEGER` 或手动管理序列
 - **时间戳**：所有表必须包含 `created_at` + `updated_at`，`updated_at` 通过触发器自动更新
 - **状态字段**：使用 `SMALLINT` 类型，Java 侧通过枚举映射（`fromCode()` / `getCode()`）
 - **软删除**：需要软删除的表加 `is_deleted SMALLINT NOT NULL DEFAULT 0`（0=正常, 1=已删除）
 - **表名**：统一 `t_` 前缀 + 下划线分隔小写（如 `t_user_role`）
 - **MyBatis 配置**：`map-underscore-to-camel-case: true`（自动下划线转驼峰）
 
-### 序列维护规范
+### 存储路径
 
-`schema.sql` 末尾必须包含序列校准语句，确保序列值与表中已有数据一致：
-
-```sql
--- 每个 BIGSERIAL 主键表对应一行
-SELECT setval('t_<name>_id_seq', COALESCE((SELECT MAX(id) FROM t_<name>), 1));
-```
-
-原因：如果表中已有手动插入的数据（如初始化脚本），序列不会自动感知，后续通过应用 INSERT 会因主键冲突失败。新增表时必须同步添加对应的 `setval` 语句。
+当前项目使用MySQL，sql存储在`schema-mysql.sql`中
 
 ## 审批流程规范
 

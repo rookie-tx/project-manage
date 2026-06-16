@@ -13,6 +13,7 @@ public class PurchaseRequestPO {
     private Long id;
     private String code;
     private Long projectId;
+    private Long materialId;
     private String name;
     private String specification;
     private String brand;

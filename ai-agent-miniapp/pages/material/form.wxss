@@ -1,0 +1,81 @@
+.material-form-page {
+  min-height: 100vh;
+  background: #f3f4f6;
+}
+
+.error-bar {
+  background: #fef2f2;
+  padding: 16rpx 24rpx;
+}
+
+.error-text {
+  color: #dc2626;
+  font-size: 26rpx;
+}
+
+.form-container {
+  padding: 24rpx;
+}
+
+.form-item {
+  margin-bottom: 24rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  color: #374151;
+  margin-bottom: 12rpx;
+}
+
+.required {
+  color: #dc2626;
+}
+
+.form-input {
+  background: #fff;
+  border-radius: 10rpx;
+  padding: 20rpx 16rpx;
+  font-size: 28rpx;
+  border: 1rpx solid #e5e7eb;
+}
+
+.form-picker {
+  background: #fff;
+  border-radius: 10rpx;
+  padding: 20rpx 16rpx;
+  font-size: 28rpx;
+  border: 1rpx solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.picker-placeholder {
+  color: #9ca3af;
+}
+
+.picker-arrow {
+  font-size: 36rpx;
+  color: #9ca3af;
+}
+
+.form-static {
+  font-size: 28rpx;
+  color: #6b7280;
+  background: #f9fafb;
+  border-radius: 10rpx;
+  padding: 20rpx 16rpx;
+  display: block;
+}
+
+.submit-bar {
+  padding: 16rpx 0 40rpx;
+}
+
+.btn-submit {
+  background: #6366f1;
+  color: #fff;
+  font-size: 30rpx;
+  border-radius: 10rpx;
+}

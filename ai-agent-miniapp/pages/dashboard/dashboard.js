@@ -11,6 +11,7 @@ const ALL_FEATURES = [
   { key: 'waste',    icon: '📷', name: '废渣管理',   tip: '记录运出', url: '/pages/waste/list',             color: '#eff6ff', permission: 'waste:read' },
   { key: 'purchase', icon: '📦', name: '采购申请',   tip: '提交申请', url: '/pages/purchase/list',           color: '#fef3c7', permission: 'pr:read' },
   { key: 'purchaseOrder', icon: '📋', name: '采购管理', tip: '采购记录', url: '/pages/purchase-order/list',  color: '#fef3c7', permission: 'purchase:read' },
+  { key: 'material', icon: '🔧', name: '物料管理',   tip: '管理物料', url: '/pages/material/list',           color: '#dcfce7', permission: 'material:read' },
   { key: 'checkin',  icon: '⏱️', name: '考勤打卡',   tip: '上班签到', url: '/pages/checkin/checkin',         color: '#dbeafe', permission: 'attendance:clock-in' },
   { key: 'approval', icon: '✅', name: '待办审批',   tip: '处理任务', url: '/pages/approval/list',           color: '#fce7f3', permission: 'task:read' },
   { key: 'project',  icon: '🏗️', name: '项目管理',   tip: '查看项目', url: '/pages/project/list',            color: '#f3f4f6', permission: 'project:read' }

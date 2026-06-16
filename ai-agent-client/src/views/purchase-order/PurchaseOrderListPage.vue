@@ -2,7 +2,7 @@
 import { ref, reactive, onMounted, computed } from 'vue'
 import { usePurchaseOrderStore } from '@/stores/purchaseOrder'
 import { useAuthStore } from '@/stores/auth'
-import { Table, Button, Space, Modal, Form, FormItem, InputNumber, DatePicker, Tabs, message } from 'ant-design-vue'
+import { Table, Button, Space, Modal, Form, FormItem, Input, InputNumber, Select, DatePicker, Tabs, Alert, message } from 'ant-design-vue'
 import client from '@/api/client'
 import dayjs from 'dayjs'
 
@@ -28,8 +28,7 @@ const editSubmitting = ref(false)
 const inboundVisible = ref(false)
 const inboundPO = ref(null)
 const warehouses = ref([])
-const materials = ref([])
-const inboundForm = reactive({ warehouseId: null, materialId: null, quantity: 1 })
+const inboundForm = reactive({ warehouseId: null, materialId: null, materialLabel: '', materialSpec: '', quantity: 1 })
 const inboundError = ref(null)
 const inboundSubmitting = ref(false)
 
@@ -107,18 +106,23 @@ async function handleEdit() {
 // --- Inbound ---
 async function openInbound(record) {
   inboundPO.value = record
-  inboundForm.warehouseId = null; inboundForm.materialId = null; inboundForm.quantity = 1
+  // 物料从采购申请自动带入
+  inboundForm.warehouseId = null
+  inboundForm.materialId = prField(record, 'materialId') || null
+  inboundForm.materialLabel = prField(record, 'materialName') || prField(record, 'name') || '-'
+  inboundForm.materialSpec = prField(record, 'materialSpec') || prField(record, 'specification') || ''
+  inboundForm.quantity = 1
   inboundError.value = null
   try {
-    const [wRes, mRes] = await Promise.all([client.get('/warehouses'), client.get('/materials')])
-    warehouses.value = wRes.data || []; materials.value = mRes.data || []
-  } catch { warehouses.value = []; materials.value = [] }
+    const { data } = await client.get('/warehouses')
+    warehouses.value = data || []
+  } catch { warehouses.value = [] }
   inboundVisible.value = true
 }
 async function handleInbound() {
   const f = inboundForm
   if (!f.warehouseId) { inboundError.value = '请选择仓库'; return }
-  if (!f.materialId) { inboundError.value = '请选择物料'; return }
+  if (!f.materialId) { inboundError.value = '采购申请未关联物料'; return }
   if (!f.quantity || f.quantity <= 0) { inboundError.value = '请输入有效数量'; return }
   inboundSubmitting.value = true
   try {
@@ -163,24 +167,26 @@ async function handleInbound() {
 
     <!-- Edit Modal -->
     <Modal v-model:open="editVisible" title="完善采购信息" :confirm-loading="editSubmitting" okText="确认完成" @ok="handleEdit" width="520px">
-      <Space v-if="editError" style="color:#ff4d4f;margin-bottom:12px">{{ editError }}</Space>
+      <Alert v-if="editError" type="error" :message="editError" closable style="margin-bottom:16px" />
       <Form layout="vertical">
-        <FormItem label="供应商名称" required><Input v-model:value="editForm.supplierName" /></FormItem>
-        <FormItem label="供应商电话"><Input v-model:value="editForm.supplierPhone" /></FormItem>
+        <FormItem label="供应商名称" required><Input v-model:value="editForm.supplierName" style="width:100%" /></FormItem>
+        <FormItem label="供应商电话"><Input v-model:value="editForm.supplierPhone" style="width:100%" /></FormItem>
         <FormItem label="单价"><InputNumber v-model:value="editForm.unitPrice" :min="0" :precision="2" style="width:100%" /></FormItem>
         <FormItem label="总金额" required><InputNumber v-model:value="editForm.totalAmount" :min="0" :precision="2" style="width:100%" /></FormItem>
         <FormItem label="采购日期"><DatePicker v-model:value="editForm.purchaseDate" style="width:100%" /></FormItem>
         <FormItem label="预计到货日期"><DatePicker v-model:value="editForm.expectedArrivalDate" style="width:100%" /></FormItem>
-        <FormItem label="备注"><Input v-model:value="editForm.remark" /></FormItem>
+        <FormItem label="备注"><Input v-model:value="editForm.remark" style="width:100%" /></FormItem>
       </Form>
     </Modal>
 
     <!-- Inbound Modal -->
     <Modal v-model:open="inboundVisible" title="入库操作" :confirm-loading="inboundSubmitting" @ok="handleInbound">
-      <Space v-if="inboundError" style="color:#ff4d4f;margin-bottom:12px">{{ inboundError }}</Space>
+      <Alert v-if="inboundError" type="error" :message="inboundError" closable style="margin-bottom:16px" />
       <Form layout="vertical">
-        <FormItem label="仓库" required><Select v-model:value="inboundForm.warehouseId" placeholder="选择仓库"><Select.Option v-for="w in warehouses" :key="w.id" :value="w.id">{{ w.name }}</Select.Option></Select></FormItem>
-        <FormItem label="物料" required><Select v-model:value="inboundForm.materialId" placeholder="选择物料"><Select.Option v-for="m in materials" :key="m.id" :value="m.id">{{ m.name }}</Select.Option></Select></FormItem>
+        <FormItem label="仓库" required><Select v-model:value="inboundForm.warehouseId" placeholder="选择仓库" style="width:100%"><Select.Option v-for="w in warehouses" :key="w.id" :value="w.id">{{ w.name }}</Select.Option></Select></FormItem>
+        <FormItem label="物料">
+          <Input :value="`${inboundForm.materialLabel}${inboundForm.materialSpec ? ' / ' + inboundForm.materialSpec : ''}`" disabled placeholder="从采购申请自动带入" style="width:100%" />
+        </FormItem>
         <FormItem label="数量" required><InputNumber v-model:value="inboundForm.quantity" :min="0.01" style="width:100%" /></FormItem>
       </Form>
     </Modal>

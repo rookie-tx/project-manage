@@ -12,6 +12,7 @@ public class PurchaseRequest {
     private Long id;
     private String code;
     private Long projectId;
+    private Long materialId;
     private String name;
     private String specification;
     private String brand;
@@ -27,11 +28,12 @@ public class PurchaseRequest {
 
     private PurchaseRequest() {}
 
-    public static PurchaseRequest create(Long projectId, String name, String specification,
+    public static PurchaseRequest create(Long projectId, Long materialId, String name, String specification,
                                           String brand, BigDecimal quantity, Unit unit,
                                           LocalDate arrivalDate, String remark, Long createdBy) {
         PurchaseRequest pr = new PurchaseRequest();
         pr.projectId = projectId;
+        pr.materialId = materialId;
         pr.name = name;
         pr.specification = specification;
         pr.brand = brand;
@@ -45,8 +47,8 @@ public class PurchaseRequest {
         return pr;
     }
 
-    public static PurchaseRequest fromPersistence(Long id, String code, Long projectId, String name,
-                                                   String specification, String brand,
+    public static PurchaseRequest fromPersistence(Long id, String code, Long projectId, Long materialId,
+                                                   String name, String specification, String brand,
                                                    BigDecimal quantity, Unit unit,
                                                    LocalDate arrivalDate,
                                                    PurchaseRequestStatus status, String remark,
@@ -56,6 +58,7 @@ public class PurchaseRequest {
         pr.id = id;
         pr.code = code;
         pr.projectId = projectId;
+        pr.materialId = materialId;
         pr.name = name;
         pr.specification = specification;
         pr.brand = brand;
@@ -71,9 +74,10 @@ public class PurchaseRequest {
         return pr;
     }
 
-    public void update(String name, String specification, String brand,
+    public void update(Long materialId, String name, String specification, String brand,
                        BigDecimal quantity, Unit unit, LocalDate arrivalDate,
                        String remark) {
+        if (materialId != null) this.materialId = materialId;
         if (name != null) this.name = name;
         if (specification != null) this.specification = specification;
         if (brand != null) this.brand = brand;

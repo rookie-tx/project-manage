@@ -20,39 +20,39 @@
       </picker>
     </view>
 
-    <!-- 物料名称 -->
+    <!-- 物料选择 -->
     <view class="form-item">
-      <text class="form-label">物料名称 <text class="required">*</text></text>
-      <input class="form-input" placeholder="请输入物料名称" value="{{form.name}}" data-field="name" bindinput="onInput" />
+      <text class="form-label">物料 <text class="required">*</text></text>
+      <picker mode="selector" range="{{materialNames}}" value="{{selectedMaterialIdx}}" bindchange="onMaterialChange">
+        <view class="form-picker {{selectedMaterialIdx === -1 ? 'picker-placeholder' : ''}}">
+          <text>{{selectedMaterialIdx === -1 ? '请选择物料' : materialNames[selectedMaterialIdx]}}</text>
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
     </view>
 
-    <!-- 规格 + 品牌 -->
+    <!-- 规格 + 单位（只读，物料自动带出） -->
     <view class="form-row">
       <view class="form-item form-half">
         <text class="form-label">规格</text>
-        <input class="form-input" placeholder="如：φ25 螺纹钢" value="{{form.specification}}" data-field="specification" bindinput="onInput" />
+        <text class="form-static">{{materialSpec || '选择物料后自动带出'}}</text>
       </view>
       <view class="form-item form-half">
-        <text class="form-label">品牌</text>
-        <input class="form-input" placeholder="如：鞍钢" value="{{form.brand}}" data-field="brand" bindinput="onInput" />
+        <text class="form-label">单位</text>
+        <text class="form-static">{{materialUnitLabel || '选择物料后自动带出'}}</text>
       </view>
     </view>
 
-    <!-- 数量 + 单位 -->
-    <view class="form-row">
-      <view class="form-item form-half">
-        <text class="form-label">数量 <text class="required">*</text></text>
-        <input class="form-input" type="digit" placeholder="数量" value="{{form.quantity}}" data-field="quantity" bindinput="onInput" />
-      </view>
-      <view class="form-item form-half">
-        <text class="form-label">单位 <text class="required">*</text></text>
-        <picker mode="selector" range="{{unitNames}}" value="{{selectedUnitIdx}}" bindchange="onUnitChange">
-          <view class="form-picker {{selectedUnitIdx === -1 ? 'picker-placeholder' : ''}}">
-            <text>{{selectedUnitIdx === -1 ? '选择单位' : unitNames[selectedUnitIdx]}}</text>
-            <text class="picker-arrow">›</text>
-          </view>
-        </picker>
-      </view>
+    <!-- 品牌 -->
+    <view class="form-item">
+      <text class="form-label">品牌</text>
+      <input class="form-input" placeholder="如：鞍钢" value="{{form.brand}}" data-field="brand" bindinput="onInput" />
+    </view>
+
+    <!-- 数量 -->
+    <view class="form-item">
+      <text class="form-label">数量 <text class="required">*</text></text>
+      <input class="form-input" type="digit" placeholder="数量" value="{{form.quantity}}" data-field="quantity" bindinput="onInput" />
     </view>
 
     <!-- 到场时间 -->

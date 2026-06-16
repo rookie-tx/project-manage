@@ -58,7 +58,7 @@
           <text class="card-date">{{item.purchaseDateStr || '-'}}</text>
           <view class="card-actions">
             <button wx:if="{{activeTab === 'pending'}}" class="btn-action btn-edit" data-id="{{item.id}}" catchtap="handleEdit">采购完成</button>
-            <button wx:if="{{activeTab === 'purchased'}}" class="btn-action btn-inbound" data-id="{{item.id}}" data-pr-id="{{item.purchaseRequestId}}" catchtap="handleInbound">入库</button>
+            <button wx:if="{{activeTab === 'purchased'}}" class="btn-action btn-inbound" data-id="{{item.id}}" data-prid="{{item.purchaseRequestId}}" catchtap="handleInbound">入库</button>
           </view>
         </view>
       </view>

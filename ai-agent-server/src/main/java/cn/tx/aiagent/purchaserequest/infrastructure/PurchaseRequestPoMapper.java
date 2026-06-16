@@ -14,8 +14,8 @@ public interface PurchaseRequestPoMapper {
     default PurchaseRequest toDomain(PurchaseRequestPO po) {
         if (po == null) return null;
         return PurchaseRequest.fromPersistence(
-                po.getId(), po.getCode(), po.getProjectId(), po.getName(),
-                po.getSpecification(), po.getBrand(),
+                po.getId(), po.getCode(), po.getProjectId(), po.getMaterialId(),
+                po.getName(), po.getSpecification(), po.getBrand(),
                 po.getQuantity() != null ? BigDecimal.valueOf(po.getQuantity()) : null,
                 po.getUnit() != null ? Unit.fromCode(po.getUnit()) : null,
                 po.getArrivalDate(),

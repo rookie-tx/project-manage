@@ -1,13 +1,6 @@
 const auth = require('../../utils/auth')
 const purchaseApi = require('../../api/purchase')
-
-const UNITS = [
-  { code: 0, label: '个' }, { code: 1, label: '台' },
-  { code: 2, label: '套' }, { code: 3, label: '米' },
-  { code: 4, label: '吨' }, { code: 5, label: '立方米' },
-  { code: 6, label: '卷' }, { code: 7, label: '桶' },
-  { code: 8, label: '箱' }, { code: 9, label: '其他' }
-]
+const client = require('../../api/client')
 
 Page({
   data: {
@@ -22,19 +15,22 @@ Page({
     projectNames: [],
     selectedProjectIdx: -1,
 
-    // 单位选择器
-    unitNames: UNITS.map(u => u.label),
-    selectedUnitIdx: -1,
+    // 物料选择器
+    materials: [],
+    materialNames: [],
+    selectedMaterialIdx: -1,
+
+    // 规格和单位（只读，物料自动带出）
+    materialSpec: '',
+    materialUnitLabel: '',
 
     recordCode: '',
     // 表单字段
     form: {
       projectId: null,
-      name: '',
-      specification: '',
+      materialId: null,
       brand: '',
       quantity: '',
-      unit: null,
       arrivalDate: '',
       remark: ''
     }
@@ -46,6 +42,7 @@ Page({
       return
     }
     this.loadProjects()
+    this.loadMaterials()
 
     if (options.id) {
       this.setData({ isEdit: true, editId: parseInt(options.id), title: '编辑采购申请' })
@@ -63,6 +60,17 @@ Page({
     } catch (e) { /* ignore */ }
   },
 
+  async loadMaterials() {
+    try {
+      const res = await client.get('/materials')
+      const materials = res || []
+      this.setData({
+        materials: materials,
+        materialNames: materials.map(m => `${m.code} ${m.name}`)
+      })
+    } catch (e) { /* ignore */ }
+  },
+
   async loadDetail(id) {
     try {
       const detail = await purchaseApi.detail(id)
@@ -71,21 +79,20 @@ Page({
         setTimeout(() => wx.navigateBack(), 1000)
         return
       }
-      const projects = this.data.projects
-      const projIdx = projects.findIndex(p => p.id === detail.projectId)
-      const unitIdx = UNITS.findIndex(u => u.code === detail.unitCode)
+      const projIdx = this.data.projects.findIndex(p => p.id === detail.projectId)
+      const matIdx = this.data.materials.findIndex(m => m.id === detail.materialId)
 
       this.setData({
         recordCode: detail.code || '',
         selectedProjectIdx: projIdx,
-        selectedUnitIdx: unitIdx,
+        selectedMaterialIdx: matIdx,
+        materialSpec: detail.materialSpec || detail.specification || '',
+        materialUnitLabel: detail.materialUnit || '',
         form: {
           projectId: detail.projectId,
-          name: detail.name || '',
-          specification: detail.specification || '',
+          materialId: detail.materialId,
           brand: detail.brand || '',
           quantity: detail.quantity != null ? String(detail.quantity) : '',
-          unit: detail.unitCode != null ? detail.unitCode : null,
           arrivalDate: detail.arrivalDate || '',
           remark: detail.remark || ''
         }
@@ -102,9 +109,18 @@ Page({
     this.setData({ selectedProjectIdx: idx, 'form.projectId': project ? project.id : null })
   },
 
-  onUnitChange(e) {
+  onMaterialChange(e) {
     const idx = parseInt(e.detail.value)
-    this.setData({ selectedUnitIdx: idx, 'form.unit': UNITS[idx].code })
+    const material = this.data.materials[idx]
+    if (material) {
+      const unitLabels = ['个', '台', '套', '米', '吨', '立方米', '卷', '桶', '箱', '其他']
+      this.setData({
+        selectedMaterialIdx: idx,
+        'form.materialId': material.id,
+        materialSpec: material.spec || '',
+        materialUnitLabel: material.unit != null ? (unitLabels[material.unit] || '未知') : ''
+      })
+    }
   },
 
   onInput(e) {
@@ -119,9 +135,8 @@ Page({
   validate() {
     const { form } = this.data
     if (!form.projectId) { this.setData({ error: '请选择项目' }); return false }
-    if (!form.name.trim()) { this.setData({ error: '请输入物料名称' }); return false }
+    if (!form.materialId) { this.setData({ error: '请选择物料' }); return false }
     if (!form.quantity || parseFloat(form.quantity) <= 0) { this.setData({ error: '请输入有效数量' }); return false }
-    if (form.unit == null) { this.setData({ error: '请选择单位' }); return false }
     if (!form.arrivalDate) { this.setData({ error: '请选择到场时间' }); return false }
     return true
   },
@@ -134,11 +149,9 @@ Page({
     const { form, isEdit, editId } = this.data
     const payload = {
       projectId: form.projectId,
-      name: form.name.trim(),
-      specification: form.specification.trim() || null,
+      materialId: form.materialId,
       brand: form.brand.trim() || null,
       quantity: parseFloat(form.quantity),
-      unit: form.unit,
       arrivalDate: form.arrivalDate,
       remark: form.remark.trim() || null
     }
@@ -150,7 +163,6 @@ Page({
         await purchaseApi.create(payload)
       }
       wx.showToast({ title: isEdit ? '修改成功' : '创建成功', icon: 'success' })
-      // 通知列表页刷新
       const pages = getCurrentPages()
       const prevPage = pages[pages.length - 2]
       if (prevPage) prevPage.setData({ needRefresh: true })
