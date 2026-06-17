@@ -37,7 +37,3 @@
 - 流程：Propose → Design → Spec → Tasks → Implement → Archive
 - Spec 使用 Gherkin 风格场景 `openspec/specs/<capability>/spec.md`
 - 已归档变更放在 `openspec/changes/archive/YYYY-MM-DD-change-name/`
-
-## 数据库
-
-使用`mysql`，sql模板也使用mysql

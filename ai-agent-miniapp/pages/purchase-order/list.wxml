@@ -1,17 +1,4 @@
 <view class="po-list-page">
-  <!-- Tab 切换 -->
-  <view class="tab-bar">
-    <view class="tab-item {{activeTab === 'pending' ? 'tab-active' : ''}}" data-tab="pending" bindtap="onTabChange">
-      <text>待采购</text>
-    </view>
-    <view class="tab-item {{activeTab === 'purchased' ? 'tab-active' : ''}}" data-tab="purchased" bindtap="onTabChange">
-      <text>已采购</text>
-    </view>
-    <view class="tab-item {{activeTab === 'arrived' ? 'tab-active' : ''}}" data-tab="arrived" bindtap="onTabChange">
-      <text>已到货</text>
-    </view>
-  </view>
-
   <!-- 加载中 -->
   <view wx:if="{{loading && items.length === 0}}" class="state-box">
     <text class="state-text">加载中...</text>
@@ -27,39 +14,34 @@
   <view wx:else class="items-list">
     <view class="po-card" wx:for="{{items}}" wx:key="id" data-id="{{item.id}}" bindtap="handleTap">
       <view class="card-body">
-        <!-- 顶部：名称 + 状态 -->
+        <!-- 顶部：规格 名称 + 状态 -->
         <view class="card-top">
-          <text class="card-name">{{item.prName || '采购记录'}}</text>
+          <text class="card-name">{{item.prSpec ? item.prSpec + ' ' : ''}}{{item.prName || '采购记录'}}</text>
           <text class="card-status status-{{item.statusCode}}">{{item.statusLabel}}</text>
         </view>
-        <!-- 编号 · 规格 -->
-        <view class="card-row" wx:if="{{item.prCode || item.prSpec}}">
-          <text class="card-label">编号</text>
-          <text class="card-value">{{item.prCode || '-'}}{{item.prCode && item.prSpec ? ' · ' : ''}}{{item.prSpec || ''}}</text>
+        <view class="card-row" wx:if="{{item.prCode}}">
+          <text class="card-label">采购申请编号</text>
+          <text class="card-value">{{item.prCode}}</text>
         </view>
-        <!-- 项目 -->
         <view class="card-row" wx:if="{{item.prProjectName}}">
           <text class="card-label">项目</text>
           <text class="card-value">{{item.prProjectName}}</text>
         </view>
-        <!-- 数量 + 到场日期 -->
         <view class="card-row">
           <text class="card-label">数量</text>
           <text class="card-value">{{item.prQtyStr || '-'}}</text>
         </view>
-        <!-- 供应商 + 金额 -->
         <view class="card-row">
           <text class="card-label">供应商</text>
           <text class="card-value">{{item.supplierName || '待填写'}}</text>
-          <text class="card-amount">{{item.totalAmount != null ? '¥' + item.totalAmount : '-'}}</text>
         </view>
-        <!-- 底部：日期 + 操作 -->
+        <view class="card-row">
+          <text class="card-label">总价</text>
+          <text class="card-value">{{item.totalAmount != null ? '¥' + item.totalAmount : '-'}}</text>
+        </view>
+        <!-- 底部：日期 -->
         <view class="card-bottom">
           <text class="card-date">{{item.purchaseDateStr || '-'}}</text>
-          <view class="card-actions">
-            <button wx:if="{{activeTab === 'pending'}}" class="btn-action btn-edit" data-id="{{item.id}}" catchtap="handleEdit">采购完成</button>
-            <button wx:if="{{activeTab === 'purchased'}}" class="btn-action btn-inbound" data-id="{{item.id}}" data-prid="{{item.purchaseRequestId}}" catchtap="handleInbound">入库</button>
-          </view>
         </view>
       </view>
     </view>

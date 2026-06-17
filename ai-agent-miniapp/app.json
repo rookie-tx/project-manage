@@ -20,6 +20,9 @@
     "pages/purchase-order/form",
     "pages/purchase-order/detail",
     "pages/purchase-order/inbound",
+    "pages/purchase-order/pending",
+    "pages/purchase-order/purchased",
+    "pages/purchase-order/arrived",
     "pages/supplier/register/register",
     "pages/supplier/profile/profile"
   ],

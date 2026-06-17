@@ -1,0 +1,54 @@
+<view class="po-list-page">
+  <!-- 加载中 -->
+  <view wx:if="{{loading && items.length === 0}}" class="state-box">
+    <text class="state-text">加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:elif="{{items.length === 0}}" class="state-box">
+    <text class="state-icon">📦</text>
+    <text class="state-text">暂无已采购记录</text>
+  </view>
+
+  <!-- 列表 -->
+  <view wx:else class="items-list">
+    <view class="po-card" wx:for="{{items}}" wx:key="id" data-id="{{item.id}}" bindtap="handleTap">
+      <view class="card-body">
+        <view class="card-top">
+          <text class="card-name">{{item.prSpec ? item.prSpec + ' ' : ''}}{{item.prName || '采购记录'}}</text>
+          <text class="card-status status-{{item.statusCode}}">{{item.statusLabel}}</text>
+        </view>
+        <view class="card-row" wx:if="{{item.prCode}}">
+          <text class="card-label">采购申请编号</text>
+          <text class="card-value">{{item.prCode}}</text>
+        </view>
+        <view class="card-row" wx:if="{{item.prProjectName}}">
+          <text class="card-label">项目</text>
+          <text class="card-value">{{item.prProjectName}}</text>
+        </view>
+        <view class="card-row">
+          <text class="card-label">数量</text>
+          <text class="card-value">{{item.prQtyStr || '-'}}</text>
+        </view>
+        <view class="card-row">
+          <text class="card-label">供应商</text>
+          <text class="card-value">{{item.supplierName || '待填写'}}</text>
+        </view>
+        <view class="card-row">
+          <text class="card-label">总价</text>
+          <text class="card-value">{{item.totalAmount != null ? '¥' + item.totalAmount : '-'}}</text>
+        </view>
+        <view class="card-bottom">
+          <text class="card-date">{{item.purchaseDateStr || '-'}}</text>
+          <view class="card-actions">
+            <button class="btn-action btn-inbound" data-id="{{item.id}}" data-prid="{{item.purchaseRequestId}}" catchtap="handleInbound">入库</button>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="load-more">
+      <text wx:if="{{loading}}">加载中...</text>
+      <text wx:elif="{{!hasMore}}">— 没有更多了 —</text>
+    </view>
+  </view>
+</view>

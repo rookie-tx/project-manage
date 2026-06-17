@@ -35,7 +35,13 @@ watch(() => route.path, (path) => {
     selectedKeys.value = ['settings']
   } else if (path.startsWith('/construction-wastes')) {
     selectedKeys.value = ['construction-wastes']
-  } else if (path.startsWith('/purchase-orders')) {
+  } else if (path === '/purchase-orders/pending') {
+    selectedKeys.value = ['purchase-orders-pending']
+  } else if (path === '/purchase-orders/purchased') {
+    selectedKeys.value = ['purchase-orders-purchased']
+  } else if (path === '/purchase-orders/arrived') {
+    selectedKeys.value = ['purchase-orders-arrived']
+  } else if (path === '/purchase-orders' || path.startsWith('/purchase-orders/')) {
     selectedKeys.value = ['purchase-orders']
   } else if (path.startsWith('/suppliers')) {
     selectedKeys.value = ['suppliers']
@@ -71,6 +77,12 @@ function handleMenuClick({ key }) {
     router.push('/construction-wastes')
   } else if (key === 'purchase-orders') {
     router.push('/purchase-orders')
+  } else if (key === 'purchase-orders-pending') {
+    router.push('/purchase-orders/pending')
+  } else if (key === 'purchase-orders-purchased') {
+    router.push('/purchase-orders/purchased')
+  } else if (key === 'purchase-orders-arrived') {
+    router.push('/purchase-orders/arrived')
   } else if (key === 'suppliers') {
     router.push('/suppliers')
   } else if (key === 'dashboard') {
@@ -137,7 +149,19 @@ async function handleLogout() {
           </a-menu-item>
           <a-menu-item v-if="auth.hasPermission('purchase:read')" key="purchase-orders">
             <ShoppingOutlined />
-            <span>采购管理</span>
+            <span>采购汇总</span>
+          </a-menu-item>
+          <a-menu-item v-if="auth.hasPermission('purchase:pending:read')" key="purchase-orders-pending">
+            <ShoppingOutlined />
+            <span>待采购</span>
+          </a-menu-item>
+          <a-menu-item v-if="auth.hasPermission('purchase:purchased:read')" key="purchase-orders-purchased">
+            <ShoppingOutlined />
+            <span>已采购</span>
+          </a-menu-item>
+          <a-menu-item v-if="auth.hasPermission('purchase:arrived:read')" key="purchase-orders-arrived">
+            <ShoppingOutlined />
+            <span>已到货</span>
           </a-menu-item>
           <a-menu-item v-if="auth.hasPermission('supplier:read')" key="suppliers">
             <ShopOutlined />

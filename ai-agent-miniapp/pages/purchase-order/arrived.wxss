@@ -1,0 +1,27 @@
+.po-list-page { min-height: 100vh; background: #f3f4f6; padding-bottom: 20rpx; }
+
+.state-box { display: flex; flex-direction: column; align-items: center; padding: 180rpx 0; }
+.state-icon { font-size: 72rpx; margin-bottom: 20rpx; }
+.state-text { font-size: 28rpx; color: #9ca3af; }
+
+.items-list { padding: 16rpx 20rpx; }
+.po-card { background: #fff; border-radius: 16rpx; margin-bottom: 16rpx; overflow: hidden; box-shadow: 0 1rpx 4rpx rgba(0,0,0,0.04); }
+.card-body { padding: 24rpx; }
+.card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8rpx; }
+.card-name { font-size: 30rpx; font-weight: 600; color: #1f2937; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 12rpx; }
+.card-status { font-size: 22rpx; padding: 4rpx 14rpx; border-radius: 8rpx; flex-shrink: 0; }
+.card-sub { margin-bottom: 12rpx; }
+.card-sub-text { font-size: 24rpx; color: #6b7280; }
+.status-0 { color: #d97706; background: #fef3c7; }
+.status-1 { color: #2563eb; background: #dbeafe; }
+.status-2 { color: #16a34a; background: #dcfce7; }
+
+.card-row { display: flex; align-items: center; margin-bottom: 6rpx; }
+.card-label { font-size: 24rpx; color: #9ca3af; width: 160rpx; flex-shrink: 0; }
+.card-value { font-size: 24rpx; color: #374151; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.card-amount { font-size: 26rpx; font-weight: 600; color: #1f2937; flex-shrink: 0; }
+
+.card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 8rpx; }
+.card-date { font-size: 22rpx; color: #9ca3af; }
+
+.load-more { text-align: center; padding: 30rpx 0; font-size: 24rpx; color: #d1d5db; }

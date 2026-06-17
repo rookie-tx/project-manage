@@ -20,6 +20,9 @@
         <view class="grid-item" wx:if="{{prInfo}}">
           <text class="grid-label">规格</text><text class="grid-value">{{prInfo.specification || '-'}}</text>
         </view>
+        <view class="grid-item" wx:if="{{prInfo.materialName}}">
+          <text class="grid-label">物料</text><text class="grid-value">{{prInfo.materialName || '-'}}</text>
+        </view>
         <view class="grid-item" wx:if="{{prInfo}}">
           <text class="grid-label">数量</text><text class="grid-value">{{prInfo.quantityStr || '-'}}</text>
         </view>
@@ -71,12 +74,6 @@
           <image class="photo-thumb" src="{{item}}" mode="aspectFill" />
         </view>
       </view>
-    </view>
-
-    <!-- 操作栏 -->
-    <view class="action-bar">
-      <button class="btn-edit" wx:if="{{canEdit && record.statusCode === 0 && !record.supplierName}}" bindtap="handleEdit">采购完成</button>
-      <button class="btn-inbound" wx:if="{{canInbound && record.statusCode === 1}}" bindtap="handleInbound">入库</button>
     </view>
   </view>
 </view>

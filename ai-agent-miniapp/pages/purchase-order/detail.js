@@ -6,18 +6,13 @@ const STATUSES = { 0: '待采购', 1: '已采购', 2: '已到货' }
 Page({
   data: {
     id: null, record: null, loading: true, needRefresh: false,
-    canEdit: false, canInbound: false,
     statusLabel: '', purchaseDateStr: '', createdAtStr: '',
     photoUrls: [], prInfo: null
   },
 
   onLoad(options) {
     if (!auth.isLoggedIn()) { wx.reLaunch({ url: '/pages/login/login' }); return }
-    this.setData({
-      id: options.id ? parseInt(options.id) : null,
-      canEdit: auth.hasPermission('purchase:update'),
-      canInbound: auth.hasPermission('stock:in')
-    })
+    this.setData({ id: options.id ? parseInt(options.id) : null })
     this.loadDetail()
   },
 
@@ -36,7 +31,7 @@ Page({
         purchaseDateStr: formatDate(r.purchaseDate),
         createdAtStr: formatDateTime(r.createdAt),
         photoUrls: (r.files || []).map(f => API_BASE + f.url),
-        prInfo: r.purchaseRequest || null
+        prInfo: (r.purchaseRequests && r.purchaseRequests[0]) || null
       })
     } catch (e) { wx.showToast({ title: e.message || '加载失败', icon: 'none' }) }
     finally { this.setData({ loading: false }) }
@@ -44,17 +39,6 @@ Page({
 
   handlePreviewPhoto(e) {
     wx.previewImage({ current: this.data.photoUrls[e.currentTarget.dataset.index], urls: this.data.photoUrls })
-  },
-
-  // 待采购 → 完善供应商信息
-  handleEdit() {
-    wx.navigateTo({ url: '/pages/purchase-order/form?id=' + this.data.id })
-  },
-
-  // 已采购 → 入库
-  handleInbound() {
-    const { id, record } = this.data
-    wx.navigateTo({ url: '/pages/purchase-order/inbound?id=' + id + '&prId=' + (record.purchaseRequestId || '') })
   },
 })
 

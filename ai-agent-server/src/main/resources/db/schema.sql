@@ -527,7 +527,10 @@ INSERT INTO t_permission (code, name, description) VALUES
     ('waste:read', '查看建筑废渣', '查看建筑废渣运出记录列表和详情'),
     ('waste:create', '创建建筑废渣记录', '创建建筑废渣运出记录并上传照片'),
     ('waste:delete', '删除建筑废渣记录', '删除建筑废渣运出记录及关联文件'),
-    ('purchase:read', '查看采购记录', '查看采购记录列表和详情'),
+    ('purchase:read', '查看采购汇总', '查看全部采购记录列表'),
+    ('purchase:pending:read', '查看待采购', '查看待采购列表'),
+    ('purchase:purchased:read', '查看已采购', '查看已采购列表'),
+    ('purchase:arrived:read', '查看已到货', '查看已到货列表'),
     ('purchase:create', '创建采购记录', '创建新采购记录'),
     ('purchase:update', '编辑采购记录', '编辑采购记录信息和状态'),
     ('purchase:delete', '删除采购记录', '删除采购记录及关联文件'),
@@ -563,8 +566,8 @@ BEGIN
         INSERT INTO t_role_permission (role_id, permission_id) VALUES (pm_id, perm.id) ON CONFLICT DO NOTHING;
     END LOOP;
 
-    -- finance: 用户查看 + 项目查看 + 采购全部 + 任务全部
-    FOR perm IN SELECT id FROM t_permission WHERE code IN ('user:read', 'project:read', 'pr:read', 'pr:create', 'pr:approve', 'task:read', 'task:complete') LOOP
+    -- finance: 用户查看 + 项目查看 + 采购申请全部 + 采购管理全部 + 任务全部
+    FOR perm IN SELECT id FROM t_permission WHERE code IN ('user:read', 'project:read', 'pr:read', 'pr:create', 'pr:approve', 'task:read', 'task:complete', 'purchase:read', 'purchase:pending:read', 'purchase:purchased:read', 'purchase:arrived:read') LOOP
         INSERT INTO t_role_permission (role_id, permission_id) VALUES (finance_id, perm.id) ON CONFLICT DO NOTHING;
     END LOOP;
 

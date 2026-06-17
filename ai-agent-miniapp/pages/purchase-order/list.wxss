@@ -17,12 +17,14 @@
 .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8rpx; }
 .card-name { font-size: 30rpx; font-weight: 600; color: #1f2937; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 12rpx; }
 .card-status { font-size: 22rpx; padding: 4rpx 14rpx; border-radius: 8rpx; flex-shrink: 0; }
+.card-sub { margin-bottom: 12rpx; }
+.card-sub-text { font-size: 24rpx; color: #6b7280; }
 .status-0 { color: #d97706; background: #fef3c7; }
 .status-1 { color: #2563eb; background: #dbeafe; }
 .status-2 { color: #16a34a; background: #dcfce7; }
 
 .card-row { display: flex; align-items: center; margin-bottom: 6rpx; }
-.card-label { font-size: 24rpx; color: #9ca3af; width: 80rpx; flex-shrink: 0; }
+.card-label { font-size: 24rpx; color: #9ca3af; width: 160rpx; flex-shrink: 0; }
 .card-value { font-size: 24rpx; color: #374151; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .card-amount { font-size: 26rpx; font-weight: 600; color: #1f2937; flex-shrink: 0; }
 
