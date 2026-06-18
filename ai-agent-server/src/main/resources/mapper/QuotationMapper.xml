@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tx.aiagent.quotation.infrastructure.QuotationMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_quotation (purchase_order_id, supplier_id,
+                                  unit_price, total_amount, delivery_date,
+                                  remark, status, is_deleted, created_by)
+        VALUES (#{purchaseOrderId}, #{supplierId},
+                #{unitPrice}, #{totalAmount}, #{deliveryDate},
+                #{remark}, #{status}, #{isDeleted}, #{createdBy})
+    </insert>
+
+    <select id="selectById" resultType="cn.tx.aiagent.quotation.infrastructure.QuotationPO">
+        SELECT id, purchase_order_id, supplier_id,
+               unit_price, total_amount, delivery_date,
+               remark, status, is_deleted, created_by, created_at, updated_at
+        FROM t_quotation
+        WHERE id = #{id} AND is_deleted = 0
+    </select>
+
+    <select id="selectByOrderAndSupplier" resultType="cn.tx.aiagent.quotation.infrastructure.QuotationPO">
+        SELECT id, purchase_order_id, supplier_id,
+               unit_price, total_amount, delivery_date,
+               remark, status, is_deleted, created_by, created_at, updated_at
+        FROM t_quotation
+        WHERE purchase_order_id = #{purchaseOrderId}
+          AND supplier_id = #{supplierId}
+          AND is_deleted = 0
+    </select>
+
+    <select id="selectByPage" resultType="cn.tx.aiagent.quotation.infrastructure.QuotationPO">
+        SELECT id, purchase_order_id, supplier_id,
+               unit_price, total_amount, delivery_date,
+               remark, status, is_deleted, created_by, created_at, updated_at
+        FROM t_quotation
+        WHERE purchase_order_id = #{purchaseOrderId} AND is_deleted = 0
+        ORDER BY id DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countByPurchaseOrder" resultType="long">
+        SELECT COUNT(id)
+        FROM t_quotation
+        WHERE purchase_order_id = #{purchaseOrderId} AND is_deleted = 0
+    </select>
+
+    <select id="selectByCreatedBy" resultType="cn.tx.aiagent.quotation.infrastructure.QuotationPO">
+        SELECT id, purchase_order_id, supplier_id,
+               unit_price, total_amount, delivery_date,
+               remark, status, is_deleted, created_by, created_at, updated_at
+        FROM t_quotation
+        WHERE created_by = #{createdBy} AND is_deleted = 0
+        ORDER BY id DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countByCreatedBy" resultType="long">
+        SELECT COUNT(id)
+        FROM t_quotation
+        WHERE created_by = #{createdBy} AND is_deleted = 0
+    </select>
+
+    <update id="update">
+        UPDATE t_quotation
+        SET unit_price   = #{unitPrice},
+            total_amount = #{totalAmount},
+            delivery_date = #{deliveryDate},
+            remark       = #{remark},
+            status       = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE t_quotation SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <update id="softDelete">
+        UPDATE t_quotation SET is_deleted = 1 WHERE id = #{id}
+    </update>
+
+</mapper>

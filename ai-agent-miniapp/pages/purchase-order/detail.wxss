@@ -12,3 +12,19 @@
 .btn-change { width: 100%; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: #fff; font-size: 28rpx; font-weight: 600; border-radius: 14rpx; padding: 20rpx 0; border: none; box-shadow: 0 4rpx 14rpx rgba(99,102,241,0.25); }
 .btn-edit { width: 100%; background: #fff; color: #6366f1; border: 1px solid #c7d2fe; font-size: 28rpx; border-radius: 14rpx; padding: 20rpx 0; }
 .btn-inbound { width: 100%; background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: #fff; font-size: 28rpx; font-weight: 600; border-radius: 14rpx; padding: 20rpx 0; border: none; box-shadow: 0 4rpx 14rpx rgba(22,163,74,0.25); }
+
+/* 报价列表 */
+.quotation-item { padding: 20rpx 0; border-bottom: 1rpx solid #f3f4f6; }
+.quotation-item:last-child { border-bottom: none; }
+.q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12rpx; }
+.q-company { font-size: 28rpx; font-weight: 600; color: #1f2937; }
+.q-status { font-size: 22rpx; padding: 4rpx 12rpx; border-radius: 6rpx; color: #2563eb; background: #dbeafe; }
+.q-status.status-selected { color: #16a34a; background: #dcfce7; }
+.q-empty { text-align: center; padding: 40rpx 0; font-size: 26rpx; color: #9ca3af; }
+.q-body { background: #f9fafb; border-radius: 10rpx; padding: 16rpx; }
+.q-row { display: flex; justify-content: space-between; padding: 4rpx 0; }
+.q-label { font-size: 24rpx; color: #9ca3af; }
+.q-value { font-size: 24rpx; color: #1f2937; }
+.q-value.price { font-weight: 600; color: #cf1322; }
+.q-footer { margin-top: 12rpx; text-align: right; }
+.q-select-btn { display: inline-block; font-size: 24rpx; color: #fff; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border-radius: 8rpx; padding: 12rpx 24rpx; border: none; }

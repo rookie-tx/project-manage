@@ -31,4 +31,17 @@ function changeStatus(id, status) { return client.put('/purchase-orders/' + id +
  */
 function pendingInbound() { return client.get('/purchase-orders/pending-inbound') }
 
-module.exports = { list, detail, update, changeStatus, pendingInbound }
+/**
+ * 获取采购单的报价列表
+ * @param {number} orderId
+ */
+function fetchQuotations(orderId) { return client.get('/purchase-orders/' + orderId + '/quotations') }
+
+/**
+ * 选用报价
+ * @param {number} orderId
+ * @param {number} quotationId
+ */
+function selectQuotation(orderId, quotationId) { return client.post('/purchase-orders/' + orderId + '/quotations/' + quotationId + '/select') }
+
+module.exports = { list, detail, update, changeStatus, pendingInbound, fetchQuotations, selectQuotation }

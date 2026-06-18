@@ -427,6 +427,28 @@ CREATE TABLE IF NOT EXISTS t_supplier (
     CONSTRAINT fk_supplier_user FOREIGN KEY (user_id) REFERENCES t_user(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='供应商表';
 
+-- 报价表
+CREATE TABLE IF NOT EXISTS t_quotation (
+    id                 BIGINT         NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '主键',
+    purchase_order_id  BIGINT         NOT NULL COMMENT '关联采购单ID',
+    supplier_id        BIGINT         NOT NULL COMMENT '关联供应商ID',
+    unit_price         DECIMAL(12,2)  COMMENT '单价',
+    total_amount       DECIMAL(14,2)  NOT NULL DEFAULT 0 COMMENT '总金额',
+    delivery_date      DATE           COMMENT '预计交货日期',
+    remark             VARCHAR(500)   COMMENT '备注',
+    status             SMALLINT       NOT NULL DEFAULT 0  COMMENT '0=待审核, 1=已选用',
+    is_deleted         SMALLINT       NOT NULL DEFAULT 0  COMMENT '0=正常, 1=已删除',
+    created_by         BIGINT         COMMENT '创建人ID（供应商用户）',
+    created_at         TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at         TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    UNIQUE INDEX idx_quo_order_supplier (purchase_order_id, supplier_id),
+    INDEX idx_quo_supplier (supplier_id),
+    INDEX idx_quo_order (purchase_order_id),
+    INDEX idx_quo_created_by (created_by),
+    CONSTRAINT fk_quo_order FOREIGN KEY (purchase_order_id) REFERENCES t_purchase_order(id),
+    CONSTRAINT fk_quo_supplier FOREIGN KEY (supplier_id) REFERENCES t_supplier(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='报价表';
+
 -- ============================================================
 -- 预置种子数据：角色、权限、角色-权限关联
 -- ============================================================

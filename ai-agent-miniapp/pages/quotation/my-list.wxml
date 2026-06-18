@@ -1,0 +1,43 @@
+<view class="container">
+  <view class="header">
+    <text class="title">我的报价</text>
+  </view>
+
+  <view wx:if="{{loading && items.length === 0}}" class="loading-wrap">
+    <text>加载中...</text>
+  </view>
+
+  <view wx:elif="{{!loading && items.length === 0}}" class="empty-wrap">
+    <text class="empty-icon">📝</text>
+    <text class="empty-text">暂无报价记录</text>
+  </view>
+
+  <view wx:else class="list">
+    <view wx:for="{{items}}" wx:key="id" class="card" bindtap="handleDetail" data-id="{{item.id}}">
+      <view class="card-header">
+        <text class="material-name">{{item.materialName}}</text>
+        <text class="status-tag {{item.statusCode === 1 ? 'selected' : ''}}">{{item.statusLabel}}</text>
+      </view>
+      <view class="card-body">
+        <view class="row">
+          <text class="label">总金额</text>
+          <text class="value price">{{item.totalAmount != null ? '¥' + Number(item.totalAmount).toFixed(2) : '-'}}</text>
+        </view>
+        <view class="row">
+          <text class="label">交货日期</text>
+          <text class="value">{{item.deliveryDate}}</text>
+        </view>
+        <view class="row">
+          <text class="label">报价时间</text>
+          <text class="value">{{item.createdAt}}</text>
+        </view>
+      </view>
+      <view class="card-footer">
+        <text class="view-btn">查看详情 →</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading && items.length > 0}}" class="loading-more">加载更多...</view>
+  <view wx:elif="{{!hasMore && items.length > 0}}" class="no-more">没有更多了</view>
+</view>

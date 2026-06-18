@@ -28,4 +28,7 @@ public interface PurchaseOrderRepository {
     void updateInboundOperator(Long id, Long inboundOperatorId);
 
     boolean existsByPurchaseRequestId(Long purchaseRequestId);
+
+    /** 查询待报价采购单列表（含项目、物料信息） */
+    List<cn.tx.aiagent.purchasemanagement.infrastructure.PendingOrderResult> findPendingWithDetails();
 }

@@ -37,4 +37,7 @@ public interface PurchaseOrderMapper {
     void updateInboundOperator(@Param("id") Long id, @Param("inboundOperatorId") Long inboundOperatorId);
 
     boolean existsByPurchaseRequestId(@Param("purchaseRequestId") Long purchaseRequestId);
+
+    /** 查询待报价采购单列表（关联采购申请、项目、物料） */
+    List<PendingOrderResult> selectPendingWithDetails(@Param("status") Integer status);
 }

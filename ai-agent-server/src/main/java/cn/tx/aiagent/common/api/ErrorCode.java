@@ -71,6 +71,12 @@ public enum ErrorCode {
     // 供应商管理错误 11xxx
     SUPPLIER_NOT_FOUND(11001, "supplier.not_found"),
 
+    // 报价管理错误 12xxx
+    QUOTATION_NOT_FOUND(12001, "quotation.not_found"),
+    QUOTATION_ALREADY_SELECTED(12002, "quotation.already_selected"),
+    QUOTATION_ORDER_STATUS_INVALID(12003, "quotation.order_status_invalid"),
+    QUOTATION_NOT_OWNER(12004, "quotation.not_owner"),
+
     // 微信认证错误 10xxx
     WECHAT_CODE_INVALID(10001, "wechat.code_invalid"),
     WECHAT_API_ERROR(10002, "wechat.api_error"),

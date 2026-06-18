@@ -24,7 +24,11 @@
     "pages/purchase-order/purchased",
     "pages/purchase-order/arrived",
     "pages/supplier/register/register",
-    "pages/supplier/profile/profile"
+    "pages/supplier/profile/profile",
+    "pages/quotation/pending",
+    "pages/quotation/submit",
+    "pages/quotation/my-list",
+    "pages/quotation/detail"
   ],
   "window": {
     "navigationBarTextStyle": "black",

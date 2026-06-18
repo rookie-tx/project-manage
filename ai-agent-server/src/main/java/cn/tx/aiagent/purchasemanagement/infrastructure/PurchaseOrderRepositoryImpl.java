@@ -80,4 +80,9 @@ public class PurchaseOrderRepositoryImpl implements PurchaseOrderRepository {
     public boolean existsByPurchaseRequestId(Long purchaseRequestId) {
         return mapper.existsByPurchaseRequestId(purchaseRequestId);
     }
+
+    @Override
+    public List<PendingOrderResult> findPendingWithDetails() {
+        return mapper.selectPendingWithDetails(PurchaseOrderStatus.PURCHASING.getCode());
+    }
 }

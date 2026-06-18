@@ -9,11 +9,14 @@ import cn.tx.aiagent.file.domain.UploadFile;
 import cn.tx.aiagent.file.domain.UploadFileRepository;
 import cn.tx.aiagent.purchasemanagement.application.PurchaseOrderApplicationService;
 import cn.tx.aiagent.purchasemanagement.application.PurchaseOrderListResponse;
+import cn.tx.aiagent.quotation.application.QuotationApplicationService;
+import cn.tx.aiagent.quotation.application.QuotationResponse;
 import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/purchase-orders")
@@ -21,11 +24,14 @@ public class PurchaseOrderController {
 
     private final PurchaseOrderApplicationService applicationService;
     private final UploadFileRepository uploadFileRepository;
+    private final QuotationApplicationService quotationApplicationService;
 
     public PurchaseOrderController(PurchaseOrderApplicationService applicationService,
-                                    UploadFileRepository uploadFileRepository) {
+                                    UploadFileRepository uploadFileRepository,
+                                    QuotationApplicationService quotationApplicationService) {
         this.applicationService = applicationService;
         this.uploadFileRepository = uploadFileRepository;
+        this.quotationApplicationService = quotationApplicationService;
     }
 
     @RequirePermission("purchase:create")
@@ -75,6 +81,35 @@ public class PurchaseOrderController {
     @DeleteMapping("/{id}")
     public Result<Void> delete(@PathVariable Long id) {
         applicationService.softDelete(id);
+        return Result.success();
+    }
+
+    // ========== 报价管理（管理端） ==========
+
+    /**
+     * 查看某采购单的所有报价
+     */
+    @GetMapping("/{id}/quotations")
+    public Result<Map<String, Object>> listQuotations(@PathVariable Long id,
+                                                       @RequestParam(defaultValue = "1") int page,
+                                                       @RequestParam(defaultValue = "20") int size) {
+        List<QuotationResponse> records = quotationApplicationService.listByOrder(id, page, size);
+        return Result.success(Map.of(
+                "records", records,
+                "page", page,
+                "size", size
+        ));
+    }
+
+    /**
+     * 选用报价
+     */
+    @RequirePermission("purchase:update")
+    @PostMapping("/{orderId}/quotations/{quotationId}/select")
+    public Result<Void> selectQuotation(@PathVariable Long orderId,
+                                         @PathVariable Long quotationId) {
+        Long userId = LoginContextHolder.getUserId();
+        quotationApplicationService.selectQuotation(quotationId, userId);
         return Result.success();
     }
 }

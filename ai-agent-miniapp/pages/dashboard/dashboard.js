@@ -8,6 +8,7 @@ const approvalApi = require('../../api/approval')
  */
 const ALL_FEATURES = [
   { key: 'supplier', icon: '🏢', name: '我的供应商', tip: '查看资料', url: '/pages/supplier/profile/profile', color: '#eef2ff', permission: 'supplier:profile' },
+  { key: 'quotationPending', icon: '📋', name: '待报价', tip: '物料报价', url: '/pages/quotation/pending', color: '#fef3c7', permission: 'supplier:profile' },
   { key: 'waste',    icon: '📷', name: '废渣管理',   tip: '记录运出', url: '/pages/waste/list',             color: '#eff6ff', permission: 'waste:read' },
   { key: 'purchase', icon: '📦', name: '采购申请',   tip: '提交申请', url: '/pages/purchase/list',           color: '#fef3c7', permission: 'pr:read' },
   { key: 'purchaseSummary', icon: '📋', name: '采购汇总', tip: '全部记录', url: '/pages/purchase-order/list',      color: '#fef3c7', permission: 'purchase:read' },

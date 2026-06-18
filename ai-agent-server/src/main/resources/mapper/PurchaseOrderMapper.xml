@@ -110,4 +110,36 @@
         SELECT EXISTS(SELECT 1 FROM t_purchase_order WHERE purchase_request_id = #{purchaseRequestId} AND is_deleted = 0)
     </select>
 
+    <resultMap id="pendingOrderMap" type="cn.tx.aiagent.purchasemanagement.infrastructure.PendingOrderResult">
+        <id column="po_id" property="id"/>
+        <result column="po_expected_arrival_date" property="expectedArrivalDate"/>
+        <result column="po_status" property="statusCode"/>
+        <result column="pr_name" property="materialName"/>
+        <result column="pr_spec" property="specification"/>
+        <result column="pr_quantity" property="quantity"/>
+        <result column="pr_unit" property="unit"/>
+        <result column="pr_brand" property="brand"/>
+        <result column="project_name" property="projectName"/>
+        <result column="material_name" property="materialName2"/>
+    </resultMap>
+
+    <select id="selectPendingWithDetails" resultMap="pendingOrderMap">
+        SELECT po.id AS po_id,
+               po.expected_arrival_date AS po_expected_arrival_date,
+               po.status AS po_status,
+               pr.name AS pr_name,
+               pr.specification AS pr_spec,
+               pr.quantity AS pr_quantity,
+               pr.unit AS pr_unit,
+               pr.brand AS pr_brand,
+               p.name AS project_name,
+               m.name AS material_name
+        FROM t_purchase_order po
+        LEFT JOIN t_purchase_request pr ON po.purchase_request_id = pr.id AND pr.is_deleted = 0
+        LEFT JOIN t_project p ON pr.project_id = p.id
+        LEFT JOIN t_material m ON pr.material_id = m.id
+        WHERE po.status = #{status} AND po.is_deleted = 0
+        ORDER BY po.id DESC
+    </select>
+
 </mapper>

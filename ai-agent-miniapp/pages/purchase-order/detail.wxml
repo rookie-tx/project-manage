@@ -72,6 +72,29 @@
       </view>
     </view>
 
+    <!-- 供应商报价 -->
+    <view class="detail-card">
+      <text class="card-title">供应商报价</text>
+      <view wx:if="{{quotations.length === 0}}" class="q-empty">暂无供应商报价</view>
+      <view class="quotation-item" wx:for="{{quotations}}" wx:key="id">
+        <view class="q-header">
+          <text class="q-company">{{item.companyName}}</text>
+          <text class="q-status {{item.statusCode === 1 ? 'status-selected' : ''}}">{{item.statusLabel}}</text>
+        </view>
+        <view class="q-body">
+          <view class="q-row"><text class="q-label">联系人</text><text class="q-value">{{item.contactPerson}}</text></view>
+          <view class="q-row"><text class="q-label">电话</text><text class="q-value">{{item.contactPhone}}</text></view>
+          <view class="q-row"><text class="q-label">单价</text><text class="q-value">{{item.unitPriceStr}}</text></view>
+          <view class="q-row"><text class="q-label">总金额</text><text class="q-value price">{{item.totalAmountStr}}</text></view>
+          <view class="q-row"><text class="q-label">交货日期</text><text class="q-value">{{item.deliveryDate}}</text></view>
+          <view class="q-row" wx:if="{{item.remark}}"><text class="q-label">备注</text><text class="q-value">{{item.remark}}</text></view>
+        </view>
+        <view class="q-footer" wx:if="{{item.statusCode === 0 && !hasSelected}}">
+          <button class="q-select-btn" data-index="{{index}}" catchtap="handleSelectQuotation">选用此报价</button>
+        </view>
+      </view>
+    </view>
+
     <!-- 附件 -->
     <view class="detail-card" wx:if="{{photoUrls.length > 0}}">
       <text class="card-title">附件</text>

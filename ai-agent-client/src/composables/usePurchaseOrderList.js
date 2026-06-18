@@ -1,4 +1,5 @@
 import { ref, reactive, onMounted, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
 import { usePurchaseOrderStore } from '@/stores/purchaseOrder'
 import { useAuthStore } from '@/stores/auth'
@@ -12,6 +13,7 @@ import dayjs from 'dayjs'
 export function usePurchaseOrderList(statusFilter) {
   const store = usePurchaseOrderStore()
   const auth = useAuthStore()
+  const router = useRouter()
 
   const pagination = reactive({ current: 1, pageSize: 20 })
 
@@ -87,6 +89,11 @@ export function usePurchaseOrderList(statusFilter) {
   async function handleTableChange(pag) {
     pagination.current = pag.current
     await loadData()
+  }
+
+  // --- view quotation ---
+  function viewQuotation(record) {
+    router.push('/purchase-orders/' + record.id + '/edit')
   }
 
   // --- edit ---
@@ -181,7 +188,7 @@ export function usePurchaseOrderList(statusFilter) {
     showStatusColumn,
     // edit
     editVisible, editingPO, editForm, editError, editSubmitting,
-    openEdit, handleEdit,
+    openEdit, handleEdit, viewQuotation,
     // inbound
     inboundVisible, inboundPO, warehouses, inboundForm, inboundError, inboundSubmitting,
     openInbound, handleInbound,

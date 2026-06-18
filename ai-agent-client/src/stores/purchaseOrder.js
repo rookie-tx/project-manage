@@ -55,7 +55,28 @@ export const usePurchaseOrderStore = defineStore('purchaseOrder', () => {
     finally { loading.value = false }
   }
 
+  // ========== 报价管理 ==========
+
+  const quotations = ref([])
+
+  async function fetchQuotations(orderId) {
+    loading.value = true; error.value = null
+    try {
+      const { data } = await client.get(`/purchase-orders/${orderId}/quotations`)
+      quotations.value = data.records || []
+    } catch (e) { error.value = e.message; throw e }
+    finally { loading.value = false }
+  }
+
+  async function selectQuotation(orderId, quotationId) {
+    loading.value = true; error.value = null
+    try {
+      await client.post(`/purchase-orders/${orderId}/quotations/${quotationId}/select`)
+    } catch (e) { error.value = e.message; throw e }
+    finally { loading.value = false }
+  }
+
   function getStatusLabel(code) { return STATUS_MAP[code] || '未知' }
 
-  return { items, total, current, loading, error, fetchList, fetchDetail, create, update, changeStatus, remove, getStatusLabel }
+  return { items, total, current, loading, error, quotations, fetchList, fetchDetail, create, update, changeStatus, remove, fetchQuotations, selectQuotation, getStatusLabel }
 })

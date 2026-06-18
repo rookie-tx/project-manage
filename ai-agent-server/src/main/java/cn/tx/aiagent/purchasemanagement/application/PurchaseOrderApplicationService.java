@@ -20,7 +20,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import cn.tx.aiagent.dict.infrastructure.DictPO;
 
 @Service
 public class PurchaseOrderApplicationService {
@@ -81,6 +86,37 @@ public class PurchaseOrderApplicationService {
         long total = repository.countByFilter(projectId, status, tab);
         List<PurchaseOrderResponse> responses = items.stream().map(this::toResponse).toList();
         return new PurchaseOrderListResponse(responses, total, page, size);
+    }
+
+    /**
+     * 待报价采购单列表（含项目名、物料信息）
+     */
+    public List<Map<String, Object>> listPendingForQuotation() {
+        var results = repository.findPendingWithDetails();
+        // 预加载单位字典映射 (code -> label)，避免 N+1 查询
+        Map<String, String> unitMap = dictMapper.selectByType("UNIT", true).stream()
+                .collect(Collectors.toMap(DictPO::getCode, DictPO::getLabel, (a, b) -> b));
+        return results.stream().map(r -> {
+            Map<String, Object> m = new java.util.LinkedHashMap<>();
+            m.put("id", r.getId());
+            m.put("expectedArrivalDate", r.getExpectedArrivalDate());
+            m.put("statusCode", r.getStatusCode());
+            // 物料名称优先用 pr.name，降级用 material.name
+            String matName = r.getMaterialName() != null ? r.getMaterialName()
+                    : r.getMaterialName2();
+            m.put("materialName", matName);
+            m.put("specification", r.getSpecification());
+            m.put("brand", r.getBrand());
+            // 数量和单位（code 转中文 label）
+            String qtyStr = r.getQuantity() != null ? String.valueOf(r.getQuantity()) : "";
+            if (r.getUnit() != null && !r.getUnit().isEmpty()) {
+                String unitLabel = unitMap.getOrDefault(r.getUnit(), r.getUnit());
+                qtyStr += " " + unitLabel;
+            }
+            m.put("quantityStr", qtyStr.trim().isEmpty() ? "-" : qtyStr.trim());
+            m.put("projectName", r.getProjectName());
+            return m;
+        }).toList();
     }
 
     public List<PurchaseOrderResponse> listPendingInbound() {

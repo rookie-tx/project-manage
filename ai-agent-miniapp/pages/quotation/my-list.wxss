@@ -1,0 +1,17 @@
+.container { padding: 16px; background: #f5f5f5; min-height: 100vh; }
+.header { padding: 16px 0; }
+.title { font-size: 20px; font-weight: bold; color: #1a1a1a; }
+.loading-wrap, .empty-wrap { text-align: center; padding: 80px 0; color: #999; }
+.empty-icon { font-size: 48px; display: block; margin-bottom: 12px; }
+.card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.material-name { font-size: 16px; font-weight: 600; color: #1a1a1a; }
+.status-tag { font-size: 12px; padding: 2px 8px; border-radius: 4px; background: #e6f7ff; color: #1890ff; }
+.status-tag.selected { background: #f6ffed; color: #52c41a; }
+.row { display: flex; justify-content: space-between; padding: 4px 0; }
+.label { font-size: 13px; color: #999; }
+.value { font-size: 13px; color: #333; }
+.price { font-weight: 600; color: #cf1322; }
+.card-footer { margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0; text-align: right; }
+.view-btn { font-size: 14px; color: #1890ff; font-weight: 500; }
+.loading-more, .no-more { text-align: center; padding: 16px; color: #999; font-size: 13px; }

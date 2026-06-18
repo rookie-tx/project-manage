@@ -1,0 +1,46 @@
+<view class="container">
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <text>加载中...</text>
+  </view>
+
+  <view wx:elif="{{detail}}" class="detail">
+    <!-- 状态标签 -->
+    <view class="status-bar">
+      <text class="status-tag {{detail.statusCode === 1 ? 'selected' : ''}}">{{detail.statusLabel}}</text>
+    </view>
+
+    <!-- 物料信息 -->
+    <view class="section">
+      <text class="section-title">物料信息</text>
+      <view class="info-row"><text class="label">物料名称</text><text class="value">{{detail.materialName}}</text></view>
+      <view class="info-row"><text class="label">规格型号</text><text class="value">{{detail.materialSpec}}</text></view>
+      <view class="info-row"><text class="label">数量</text><text class="value">{{detail.quantityStr}}</text></view>
+      <view class="info-row"><text class="label">所属项目</text><text class="value">{{detail.projectName}}</text></view>
+    </view>
+
+    <!-- 报价信息 -->
+    <view class="section">
+      <text class="section-title">报价信息</text>
+      <view class="info-row"><text class="label">单价</text><text class="value">{{detail.unitPrice != null ? '¥' + Number(detail.unitPrice).toFixed(2) : '-'}}</text></view>
+      <view class="info-row"><text class="label">总金额</text><text class="value price">¥{{detail.totalAmount != null ? Number(detail.totalAmount).toFixed(2) : '0.00'}}</text></view>
+      <view class="info-row"><text class="label">交货日期</text><text class="value">{{detail.deliveryDate}}</text></view>
+      <view class="info-row"><text class="label">备注</text><text class="value">{{detail.remark}}</text></view>
+    </view>
+
+    <!-- 供应商信息 -->
+    <view class="section">
+      <text class="section-title">供应商信息</text>
+      <view class="info-row"><text class="label">公司名称</text><text class="value">{{detail.supplierCompanyName}}</text></view>
+      <view class="info-row"><text class="label">联系人</text><text class="value">{{detail.supplierContactPerson}}</text></view>
+      <view class="info-row"><text class="label">联系电话</text><text class="value">{{detail.supplierContactPhone}}</text></view>
+    </view>
+
+    <!-- 时间信息 -->
+    <view class="section">
+      <text class="section-title">记录信息</text>
+      <view class="info-row"><text class="label">创建人</text><text class="value">{{detail.createdByName}}</text></view>
+      <view class="info-row"><text class="label">创建时间</text><text class="value">{{detail.createdAt}}</text></view>
+      <view class="info-row"><text class="label">更新时间</text><text class="value">{{detail.updatedAt}}</text></view>
+    </view>
+  </view>
+</view>

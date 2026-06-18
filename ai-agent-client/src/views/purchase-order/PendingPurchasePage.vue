@@ -5,7 +5,7 @@ import { usePurchaseOrderList } from '@/composables/usePurchaseOrderList'
 const {
   store, auth, pagination, columns,
   showEditAction, showInboundAction, showStatusColumn,
-  editVisible, editForm, editError, editSubmitting, openEdit, handleEdit,
+  editVisible, editForm, editError, editSubmitting, openEdit, handleEdit, viewQuotation,
   prField, formatDate, formatMoney,
   loadData, handleTableChange,
 } = usePurchaseOrderList(0)
@@ -43,6 +43,7 @@ const {
         </template>
         <template v-if="column.key === 'action'">
           <Space>
+            <Button v-if="showEditAction" type="link" size="small" @click="viewQuotation(record)">查看报价</Button>
             <Button v-if="showEditAction && auth.hasPermission('purchase:update')" type="link" size="small" @click="openEdit(record)">采购完成</Button>
           </Space>
         </template>
