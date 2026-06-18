@@ -88,11 +88,12 @@ public class MaterialController {
                 StockType.fromCode(request.getType()), request.getQuantity(),
                 request.getPurchaseRequestId(), request.getProjectId(), userId);
 
-        // 入库操作关联采购申请 → PO 流转为已到货
+        // 入库操作关联采购申请 → PO 流转为已到货，记录入库人
         if (request.getType() == 1 && request.getPurchaseRequestId() != null) {
             purchaseOrderRepository.findByPRId(request.getPurchaseRequestId()).ifPresent(po -> {
                 if (po.getStatus() == PurchaseOrderStatus.PURCHASED) {
                     purchaseOrderRepository.updateStatus(po.getId(), PurchaseOrderStatus.ARRIVED);
+                    purchaseOrderRepository.updateInboundOperator(po.getId(), userId);
                 }
             });
         }

@@ -20,6 +20,8 @@ public class PurchaseOrderPO {
     private String remark;
     private Integer isDeleted;
     private Long createdBy;
+    private Long purchaserId;
+    private Long inboundOperatorId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

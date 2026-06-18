@@ -28,10 +28,7 @@ const {
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'code'">{{ prField(record, 'code') }}</template>
         <template v-if="column.key === 'name'">{{ prField(record, 'name') }}</template>
-        <template v-if="column.key === 'material'">
-          <span>{{ prField(record, 'materialName') || '-' }}</span>
-          <span v-if="prField(record, 'materialSpec')" style="color:#9ca3af"> / {{ prField(record, 'materialSpec') }}</span>
-        </template>
+        <template v-if="column.key === 'material'">{{ prField(record, 'materialName') || '-' }}</template>
         <template v-if="column.key === 'spec'">{{ prField(record, 'specification') }}</template>
         <template v-if="column.key === 'qty'">{{ prField(record, 'quantityStr') }}</template>
         <template v-if="column.key === 'supplier'">{{ record.supplierName || '-' }}</template>
@@ -39,6 +36,8 @@ const {
         <template v-if="column.key === 'totalAmount'">{{ formatMoney(record.totalAmount) }}</template>
         <template v-if="column.key === 'purchaseDate'">{{ formatDate(record.purchaseDate) }}</template>
         <template v-if="column.key === 'arrivalDate'">{{ formatDate(record.expectedArrivalDate) }}</template>
+        <template v-if="column.key === 'purchaser'">{{ record.purchaserName || '-' }}</template>
+        <template v-if="column.key === 'inboundOperator'">{{ record.inboundOperatorName || '-' }}</template>
         <template v-if="column.key === 'status'">
           <Tag :color="['orange', 'blue', 'green'][record.statusCode]">{{ store.getStatusLabel(record.statusCode) }}</Tag>
         </template>

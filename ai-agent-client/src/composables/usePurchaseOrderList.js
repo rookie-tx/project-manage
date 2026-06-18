@@ -26,6 +26,8 @@ export function usePurchaseOrderList(statusFilter) {
     { title: '总金额', key: 'totalAmount', width: 100 },
     { title: '采购日期', key: 'purchaseDate', width: 110 },
     { title: '预计到货', key: 'arrivalDate', width: 110 },
+    { title: '采购人', key: 'purchaser', width: 80 },
+    { title: '入库人', key: 'inboundOperator', width: 80 },
     { title: '状态', key: 'status', width: 80 },
     { title: '操作', key: 'action', width: 120 },
   ]

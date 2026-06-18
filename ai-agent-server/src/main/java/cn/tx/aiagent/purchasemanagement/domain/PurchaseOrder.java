@@ -21,6 +21,8 @@ public class PurchaseOrder {
     private String remark;
     private Integer isDeleted;
     private Long createdBy;
+    private Long purchaserId;
+    private Long inboundOperatorId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -39,6 +41,8 @@ public class PurchaseOrder {
         po.status = PurchaseOrderStatus.PURCHASING;
         po.isDeleted = 0;
         po.createdBy = createdBy;
+        po.purchaserId = null;
+        po.inboundOperatorId = null;
         return po;
     }
 
@@ -58,6 +62,8 @@ public class PurchaseOrder {
         po.status = PurchaseOrderStatus.PURCHASING;
         po.isDeleted = 0;
         po.createdBy = createdBy;
+        po.purchaserId = null;
+        po.inboundOperatorId = null;
         return po;
     }
 
@@ -65,7 +71,8 @@ public class PurchaseOrder {
                                                   String supplierPhone, BigDecimal unitPrice, BigDecimal totalAmount,
                                                   LocalDate purchaseDate, LocalDate expectedArrivalDate,
                                                   int statusCode, String remark, Integer isDeleted,
-                                                  Long createdBy, LocalDateTime createdAt, LocalDateTime updatedAt) {
+                                                  Long createdBy, Long purchaserId, Long inboundOperatorId,
+                                                  LocalDateTime createdAt, LocalDateTime updatedAt) {
         PurchaseOrder po = new PurchaseOrder();
         po.id = id;
         po.purchaseRequestId = purchaseRequestId;
@@ -79,6 +86,8 @@ public class PurchaseOrder {
         po.remark = remark;
         po.isDeleted = isDeleted;
         po.createdBy = createdBy;
+        po.purchaserId = purchaserId;
+        po.inboundOperatorId = inboundOperatorId;
         po.createdAt = createdAt;
         po.updatedAt = updatedAt;
         return po;
@@ -110,4 +119,8 @@ public class PurchaseOrder {
     public void setId(Long id) { this.id = id; }
 
     public void markDeleted() { this.isDeleted = 1; }
+
+    public void setPurchaser(Long purchaserId) { this.purchaserId = purchaserId; }
+
+    public void setInboundOperator(Long inboundOperatorId) { this.inboundOperatorId = inboundOperatorId; }
 }

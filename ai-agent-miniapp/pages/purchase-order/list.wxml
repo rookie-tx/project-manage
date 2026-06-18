@@ -35,6 +35,14 @@
           <text class="card-label">供应商</text>
           <text class="card-value">{{item.supplierName || '待填写'}}</text>
         </view>
+        <view class="card-row" wx:if="{{item.purchaserName}}">
+          <text class="card-label">采购人</text>
+          <text class="card-value">{{item.purchaserName}}</text>
+        </view>
+        <view class="card-row" wx:if="{{item.inboundOperatorName}}">
+          <text class="card-label">入库人</text>
+          <text class="card-value">{{item.inboundOperatorName}}</text>
+        </view>
         <view class="card-row">
           <text class="card-label">总价</text>
           <text class="card-value">{{item.totalAmount != null ? '¥' + item.totalAmount : '-'}}</text>

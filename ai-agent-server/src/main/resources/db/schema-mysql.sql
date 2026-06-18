@@ -380,17 +380,24 @@ CREATE TABLE IF NOT EXISTS t_purchase_order (
     remark                VARCHAR(500)  COMMENT '备注',
     is_deleted            SMALLINT      NOT NULL DEFAULT 0  COMMENT '0=正常, 1=已删除',
     created_by            BIGINT        COMMENT '创建人ID',
+    purchaser_id          BIGINT        COMMENT '采购人ID',
+    inbound_operator_id   BIGINT        COMMENT '入库人ID',
     created_at            TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at            TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     INDEX idx_po_status (status),
     INDEX idx_po_is_deleted (is_deleted),
     UNIQUE INDEX idx_po_pr (purchase_request_id),
     CONSTRAINT fk_po_created_by FOREIGN KEY (created_by) REFERENCES t_user(id),
+    CONSTRAINT fk_po_purchaser FOREIGN KEY (purchaser_id) REFERENCES t_user(id),
+    CONSTRAINT fk_po_inbound_op FOREIGN KEY (inbound_operator_id) REFERENCES t_user(id),
     CONSTRAINT fk_po_pr FOREIGN KEY (purchase_request_id) REFERENCES t_purchase_request(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='采购记录表';
 
 -- DDL 增量变更：采购记录 1:1 关联采购申请（幂等，已有表时生效）
 CALL proc_add_column_if_not_exists('t_purchase_order', 'purchase_request_id', 'purchase_request_id BIGINT COMMENT \'关联采购申请ID，1:1\'');
+-- DDL 增量变更：采购人和入库人字段
+CALL proc_add_column_if_not_exists('t_purchase_order', 'purchaser_id', 'purchaser_id BIGINT COMMENT \'采购人ID\'');
+CALL proc_add_column_if_not_exists('t_purchase_order', 'inbound_operator_id', 'inbound_operator_id BIGINT COMMENT \'入库人ID\'');
 -- 为已有表补建索引和外键（若已存在则忽略错误）
 ALTER TABLE t_purchase_order MODIFY COLUMN supplier_name VARCHAR(100) NULL COMMENT '供应商名称';
 ALTER TABLE t_purchase_order MODIFY COLUMN purchase_date DATE NULL COMMENT '采购日期';

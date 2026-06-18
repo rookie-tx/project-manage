@@ -67,6 +67,16 @@ public class PurchaseOrderRepositoryImpl implements PurchaseOrderRepository {
     }
 
     @Override
+    public void updatePurchaser(Long id, Long purchaserId) {
+        mapper.updatePurchaser(id, purchaserId);
+    }
+
+    @Override
+    public void updateInboundOperator(Long id, Long inboundOperatorId) {
+        mapper.updateInboundOperator(id, inboundOperatorId);
+    }
+
+    @Override
     public boolean existsByPurchaseRequestId(Long purchaseRequestId) {
         return mapper.existsByPurchaseRequestId(purchaseRequestId);
     }

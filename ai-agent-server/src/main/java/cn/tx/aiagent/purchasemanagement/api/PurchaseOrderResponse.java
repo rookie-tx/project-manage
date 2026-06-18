@@ -25,6 +25,10 @@ public class PurchaseOrderResponse {
     private String remark;
     private Long createdBy;
     private String createdByName;
+    private Long purchaserId;
+    private String purchaserName;
+    private Long inboundOperatorId;
+    private String inboundOperatorName;
     private List<FileInfo> files;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

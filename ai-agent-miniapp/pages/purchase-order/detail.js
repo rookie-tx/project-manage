@@ -26,7 +26,12 @@ Page({
       const r = await poApi.detail(this.data.id)
       const API_BASE = 'https://legwork-blush-vitally.ngrok-free.dev'
       this.setData({
-        record: r,
+        record: {
+          ...r,
+          purchaserName: r.purchaserName || '',
+          inboundOperatorName: r.inboundOperatorName || '',
+          createdByName: r.createdByName || ''
+        },
         statusLabel: STATUSES[r.statusCode] || '未知',
         purchaseDateStr: formatDate(r.purchaseDate),
         createdAtStr: formatDateTime(r.createdAt),

@@ -413,6 +413,8 @@ CREATE TABLE IF NOT EXISTS t_purchase_order (
     remark              VARCHAR(500),
     is_deleted          SMALLINT        NOT NULL DEFAULT 0,
     created_by          BIGINT          REFERENCES t_user(id),
+    purchaser_id        BIGINT          REFERENCES t_user(id),
+    inbound_operator_id BIGINT          REFERENCES t_user(id),
     created_at          TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at          TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -420,6 +422,8 @@ CREATE TABLE IF NOT EXISTS t_purchase_order (
 COMMENT ON TABLE t_purchase_order IS '采购记录表';
 COMMENT ON COLUMN t_purchase_order.status IS '0=采购中, 1=已采购, 2=已到货';
 COMMENT ON COLUMN t_purchase_order.is_deleted IS '0=正常, 1=已删除';
+COMMENT ON COLUMN t_purchase_order.purchaser_id IS '采购人ID';
+COMMENT ON COLUMN t_purchase_order.inbound_operator_id IS '入库人ID';
 
 -- DDL 增量变更：采购记录 1:1 关联采购申请
 ALTER TABLE t_purchase_order ADD COLUMN IF NOT EXISTS purchase_request_id BIGINT;
@@ -430,6 +434,9 @@ ALTER TABLE t_purchase_order ADD CONSTRAINT fk_po_pr FOREIGN KEY (purchase_reque
 ALTER TABLE t_purchase_order ALTER COLUMN supplier_name DROP NOT NULL;
 ALTER TABLE t_purchase_order ALTER COLUMN purchase_date DROP NOT NULL;
 ALTER TABLE t_purchase_order ALTER COLUMN total_amount SET DEFAULT 0;
+-- DDL 增量变更：采购人和入库人字段
+ALTER TABLE t_purchase_order ADD COLUMN IF NOT EXISTS purchaser_id BIGINT REFERENCES t_user(id);
+ALTER TABLE t_purchase_order ADD COLUMN IF NOT EXISTS inbound_operator_id BIGINT REFERENCES t_user(id);
 
 -- DDL 清理：删除 t_purchase_order_item 表
 DROP TABLE IF EXISTS t_purchase_order_item;

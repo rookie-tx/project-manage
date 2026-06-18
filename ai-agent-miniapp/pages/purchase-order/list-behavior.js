@@ -64,6 +64,8 @@ function createListBehavior(statusFilter) {
             ...r,
             purchaseDateStr: formatDate(r.purchaseDate),
             statusLabel: STATUS_LABEL[r.statusCode] || '未知',
+            purchaserName: r.purchaserName || '',
+            inboundOperatorName: r.inboundOperatorName || '',
             prName: pr.name || '-',
             prCode: pr.code || '',
             prSpec: pr.specification || '',

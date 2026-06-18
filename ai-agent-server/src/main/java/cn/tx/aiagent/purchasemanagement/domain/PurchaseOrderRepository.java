@@ -23,5 +23,9 @@ public interface PurchaseOrderRepository {
 
     void updateStatus(Long id, PurchaseOrderStatus status);
 
+    void updatePurchaser(Long id, Long purchaserId);
+
+    void updateInboundOperator(Long id, Long inboundOperatorId);
+
     boolean existsByPurchaseRequestId(Long purchaseRequestId);
 }

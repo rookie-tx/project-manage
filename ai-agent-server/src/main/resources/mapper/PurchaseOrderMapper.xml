@@ -5,16 +5,16 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO t_purchase_order (purchase_request_id, supplier_name, supplier_phone,
                                       unit_price, total_amount, purchase_date, expected_arrival_date,
-                                      status, remark, is_deleted, created_by)
+                                      status, remark, is_deleted, created_by, purchaser_id, inbound_operator_id)
         VALUES (#{purchaseRequestId}, #{supplierName}, #{supplierPhone},
                 #{unitPrice}, #{totalAmount}, #{purchaseDate}, #{expectedArrivalDate},
-                #{status}, #{remark}, #{isDeleted}, #{createdBy})
+                #{status}, #{remark}, #{isDeleted}, #{createdBy}, #{purchaserId}, #{inboundOperatorId})
     </insert>
 
     <select id="selectById" resultType="cn.tx.aiagent.purchasemanagement.infrastructure.PurchaseOrderPO">
         SELECT id, purchase_request_id, supplier_name, supplier_phone,
                unit_price, total_amount, purchase_date, expected_arrival_date,
-               status, remark, is_deleted, created_by, created_at, updated_at
+               status, remark, is_deleted, created_by, purchaser_id, inbound_operator_id, created_at, updated_at
         FROM t_purchase_order
         WHERE id = #{id} AND is_deleted = 0
     </select>
@@ -22,7 +22,7 @@
     <select id="selectByPage" resultType="cn.tx.aiagent.purchasemanagement.infrastructure.PurchaseOrderPO">
         SELECT po.id, po.purchase_request_id, po.supplier_name, po.supplier_phone,
                po.unit_price, po.total_amount, po.purchase_date, po.expected_arrival_date,
-               po.status, po.remark, po.is_deleted, po.created_by, po.created_at, po.updated_at
+               po.status, po.remark, po.is_deleted, po.created_by, po.purchaser_id, po.inbound_operator_id, po.created_at, po.updated_at
         FROM t_purchase_order po
         LEFT JOIN t_purchase_request pr ON po.purchase_request_id = pr.id
         WHERE po.is_deleted = 0
@@ -64,7 +64,7 @@
     <select id="selectByPRId" resultType="cn.tx.aiagent.purchasemanagement.infrastructure.PurchaseOrderPO">
         SELECT id, purchase_request_id, supplier_name, supplier_phone,
                unit_price, total_amount, purchase_date, expected_arrival_date,
-               status, remark, is_deleted, created_by, created_at, updated_at
+               status, remark, is_deleted, created_by, purchaser_id, inbound_operator_id, created_at, updated_at
         FROM t_purchase_order
         WHERE purchase_request_id = #{prId} AND is_deleted = 0
     </select>
@@ -72,7 +72,7 @@
     <select id="selectByStatus" resultType="cn.tx.aiagent.purchasemanagement.infrastructure.PurchaseOrderPO">
         SELECT id, purchase_request_id, supplier_name, supplier_phone,
                unit_price, total_amount, purchase_date, expected_arrival_date,
-               status, remark, is_deleted, created_by, created_at, updated_at
+               status, remark, is_deleted, created_by, purchaser_id, inbound_operator_id, created_at, updated_at
         FROM t_purchase_order
         WHERE status = #{status} AND is_deleted = 0
         ORDER BY id DESC
@@ -92,6 +92,14 @@
 
     <update id="updateStatus">
         UPDATE t_purchase_order SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <update id="updatePurchaser">
+        UPDATE t_purchase_order SET purchaser_id = #{purchaserId} WHERE id = #{id}
+    </update>
+
+    <update id="updateInboundOperator">
+        UPDATE t_purchase_order SET inbound_operator_id = #{inboundOperatorId} WHERE id = #{id}
     </update>
 
     <update id="softDelete">

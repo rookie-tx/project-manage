@@ -14,7 +14,8 @@ public interface PurchaseOrderPoMapper {
                 po.getSupplierPhone(), po.getUnitPrice(), po.getTotalAmount(),
                 po.getPurchaseDate(), po.getExpectedArrivalDate(),
                 po.getStatus(), po.getRemark(), po.getIsDeleted(),
-                po.getCreatedBy(), po.getCreatedAt(), po.getUpdatedAt());
+                po.getCreatedBy(), po.getPurchaserId(), po.getInboundOperatorId(),
+                po.getCreatedAt(), po.getUpdatedAt());
     }
 
     @Mapping(target = "status", expression = "java(po.getStatus() != null ? po.getStatus().getCode() : 0)")

@@ -44,8 +44,14 @@
         <view class="grid-item" wx:if="{{record.expectedArrivalDate}}">
           <text class="grid-label">预计到货</text><text class="grid-value">{{record.expectedArrivalDate}}</text>
         </view>
+        <view class="grid-item" wx:if="{{record.purchaserName}}">
+          <text class="grid-label">采购人</text><text class="grid-value">{{record.purchaserName}}</text>
+        </view>
+        <view class="grid-item" wx:if="{{record.inboundOperatorName}}">
+          <text class="grid-label">入库人</text><text class="grid-value">{{record.inboundOperatorName}}</text>
+        </view>
         <view class="grid-item" wx:if="{{record.createdByName}}">
-          <text class="grid-label">采购员</text><text class="grid-value">{{record.createdByName}}</text>
+          <text class="grid-label">创建人</text><text class="grid-value">{{record.createdByName}}</text>
         </view>
         <view class="grid-item" wx:if="{{createdAtStr}}">
           <text class="grid-label">创建时间</text><text class="grid-value">{{createdAtStr}}</text>

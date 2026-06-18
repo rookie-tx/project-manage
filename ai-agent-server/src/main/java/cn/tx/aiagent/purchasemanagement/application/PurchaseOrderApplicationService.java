@@ -1,6 +1,7 @@
 package cn.tx.aiagent.purchasemanagement.application;
 
 import cn.tx.aiagent.common.api.ErrorCode;
+import cn.tx.aiagent.common.config.LoginContextHolder;
 import cn.tx.aiagent.common.exception.BusinessException;
 import cn.tx.aiagent.dict.infrastructure.DictMapper;
 import cn.tx.aiagent.file.domain.UploadFile;
@@ -129,11 +130,14 @@ public class PurchaseOrderApplicationService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.UNKNOWN_ERROR, "采购记录不存在"));
         PurchaseOrderStatus target = PurchaseOrderStatus.fromCode(statusCode);
 
-        // 采购中→已采购 需要校验供应商信息已填写
+        // 采购中→已采购 需要校验供应商信息已填写，并记录采购人
         if (po.getStatus() == PurchaseOrderStatus.PURCHASING && target == PurchaseOrderStatus.PURCHASED) {
             if (!po.isSupplierFilled()) {
                 throw new BusinessException(ErrorCode.PO_SUPPLIER_REQUIRED);
             }
+            Long userId = LoginContextHolder.getUserId();
+            po.setPurchaser(userId);
+            repository.updatePurchaser(id, userId);
         }
 
         try {
@@ -166,6 +170,20 @@ public class PurchaseOrderApplicationService {
             userRepository.findById(po.getCreatedBy())
                     .map(u -> u.getName() != null ? u.getName() : u.getUsername())
                     .ifPresent(resp::setCreatedByName);
+        }
+
+        if (po.getPurchaserId() != null) {
+            resp.setPurchaserId(po.getPurchaserId());
+            userRepository.findById(po.getPurchaserId())
+                    .map(u -> u.getName() != null ? u.getName() : u.getUsername())
+                    .ifPresent(resp::setPurchaserName);
+        }
+
+        if (po.getInboundOperatorId() != null) {
+            resp.setInboundOperatorId(po.getInboundOperatorId());
+            userRepository.findById(po.getInboundOperatorId())
+                    .map(u -> u.getName() != null ? u.getName() : u.getUsername())
+                    .ifPresent(resp::setInboundOperatorName);
         }
 
         // 1:1 关联单个 PR

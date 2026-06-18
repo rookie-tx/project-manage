@@ -32,5 +32,9 @@ public interface PurchaseOrderMapper {
 
     void updateStatus(@Param("id") Long id, @Param("status") Integer status);
 
+    void updatePurchaser(@Param("id") Long id, @Param("purchaserId") Long purchaserId);
+
+    void updateInboundOperator(@Param("id") Long id, @Param("inboundOperatorId") Long inboundOperatorId);
+
     boolean existsByPurchaseRequestId(@Param("purchaseRequestId") Long purchaseRequestId);
 }
