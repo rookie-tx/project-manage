@@ -1,0 +1,79 @@
+.stats-page {
+  min-height: 100vh;
+  background: #f3f4f6;
+  padding-bottom: 40rpx;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  background: #ffffff;
+  border-bottom: 1rpx solid #e5e7eb;
+}
+
+.header-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2937;
+  flex: 1;
+}
+
+.header-action {
+  font-size: 26rpx;
+  color: #6366f1;
+  padding: 8rpx 20rpx;
+}
+
+.state-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 180rpx 0;
+}
+
+.state-icon {
+  font-size: 64rpx;
+  margin-bottom: 16rpx;
+}
+
+.state-text {
+  font-size: 28rpx;
+  color: #9ca3af;
+}
+
+/* 表格 */
+.stats-table {
+  margin: 24rpx 32rpx;
+  background: #ffffff;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.table-header {
+  display: flex;
+  background: #f3f4f6;
+  padding: 20rpx 16rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #374151;
+}
+
+.table-row {
+  display: flex;
+  padding: 20rpx 16rpx;
+  font-size: 24rpx;
+  color: #4b5563;
+  border-bottom: 1rpx solid #f3f4f6;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.col-name { flex: 2; min-width: 0; padding-right: 8rpx; }
+.col-spec { flex: 1.5; min-width: 0; padding-right: 8rpx; text-align: center; }
+.col-unit { flex: 1; min-width: 0; text-align: center; }
+.col-qty { flex: 1.5; min-width: 0; text-align: center; }
+.col-amt { flex: 1.8; min-width: 0; text-align: right; color: #dc2626; }

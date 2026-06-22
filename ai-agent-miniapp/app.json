@@ -16,6 +16,7 @@
     "pages/project/list",
     "pages/project/form",
     "pages/project/detail",
+    "pages/project/stats",
     "pages/purchase-order/list",
     "pages/purchase-order/form",
     "pages/purchase-order/detail",

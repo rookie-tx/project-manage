@@ -79,6 +79,7 @@ Page({
   onStatusChange(e) { this.setData({ statusIdx: parseInt(e.detail.value) }); this.loadItems(true) },
 
   handleTap(e) { wx.navigateTo({ url: '/pages/project/detail?id=' + e.currentTarget.dataset.id }) },
+  handleStats(e) { wx.navigateTo({ url: '/pages/project/stats?id=' + e.currentTarget.dataset.id }) },
   handleCreate() { wx.navigateTo({ url: '/pages/project/form' }) }
 })
 

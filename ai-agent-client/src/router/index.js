@@ -43,6 +43,11 @@ const routes = [
         component: () => import('@/views/project/ProjectEditPage.vue'),
       },
       {
+        path: 'projects/:id/stats',
+        name: 'ProjectPurchaseStats',
+        component: () => import('@/views/project/ProjectPurchaseStatsPage.vue'),
+      },
+      {
         path: 'procurement',
         name: 'PurchaseRequestList',
         component: () => import('@/views/purchase/PurchaseRequestListPage.vue'),

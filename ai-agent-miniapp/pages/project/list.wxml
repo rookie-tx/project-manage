@@ -57,7 +57,7 @@
         <view class="card-bottom">
           <text class="card-client" wx:if="{{item.clientName}}">{{item.clientName}}</text>
           <text class="card-mgr" wx:if="{{item.projectManagerName}}">{{item.projectManagerName}}</text>
-          <text class="card-arrow">查看 ›</text>
+          <text class="card-stats" catchtap="handleStats" data-id="{{item.id}}">统计 ›</text>
         </view>
       </view>
     </view>

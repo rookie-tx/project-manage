@@ -1,0 +1,33 @@
+<view class="stats-page">
+  <view class="page-header">
+    <text class="header-title">{{projectName || '加载中...'}} — 物料采购统计</text>
+    <text class="header-action" bindtap="handlePrint" wx:if="{{items.length > 0}}">🖨️ 打印</text>
+  </view>
+
+  <!-- 状态 -->
+  <view wx:if="{{loading}}" class="state-box"><text class="state-text">加载中...</text></view>
+  <view wx:elif="{{items.length === 0}}" class="state-box">
+    <text class="state-icon">📊</text><text class="state-text">暂无已完成采购记录</text>
+  </view>
+
+  <!-- 统计表格 -->
+  <view wx:else class="stats-table">
+    <view class="table-header">
+      <text class="col-name">物料名称</text>
+      <text class="col-spec">规格</text>
+      <text class="col-unit">单位</text>
+      <text class="col-qty">总采购数量</text>
+      <text class="col-amt">总采购金额</text>
+    </view>
+    <view class="table-row" wx:for="{{items}}" wx:key="materialId">
+      <text class="col-name">{{item.materialName || '-'}}</text>
+      <text class="col-spec">{{item.materialSpec || '-'}}</text>
+      <text class="col-unit">{{item.materialUnit || '-'}}</text>
+      <text class="col-qty">{{item.totalQuantity || '-'}}</text>
+      <text class="col-amt">{{item.totalAmount != null ? '¥' + item.totalAmount : '-'}}</text>
+    </view>
+  </view>
+
+  <!-- Canvas 打印区域（隐藏，仅用于生成图片） -->
+  <canvas type="2d" id="statsCanvas" style="position:fixed;left:-9999px;top:-9999px;width:{{canvasWidth || 720}}px;height:{{canvasHeight || 400}}px;"></canvas>
+</view>

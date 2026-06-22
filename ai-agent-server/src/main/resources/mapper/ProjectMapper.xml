@@ -94,6 +94,25 @@
         UPDATE t_project SET is_deleted = 1 WHERE id = #{id}
     </update>
 
+    <select id="selectMaterialPurchaseStats" resultType="cn.tx.aiagent.project.infrastructure.MaterialPurchaseStatsResult">
+        SELECT
+            m.id                 AS material_id,
+            m.name               AS material_name,
+            m.spec               AS material_spec,
+            m.unit               AS material_unit,
+            SUM(pr.quantity)     AS total_quantity,
+            SUM(po.total_amount) AS total_amount
+        FROM t_purchase_request pr
+        JOIN t_purchase_order po ON pr.id = po.purchase_request_id
+        JOIN t_material m ON pr.material_id = m.id
+        WHERE pr.project_id = #{projectId}
+          AND po.status = 2
+          AND pr.is_deleted = 0
+          AND po.is_deleted = 0
+        GROUP BY m.id, m.name, m.spec, m.unit
+        ORDER BY total_amount DESC
+    </select>
+
     <select id="selectAllActive" resultType="cn.tx.aiagent.project.infrastructure.ProjectPO">
         SELECT id, code, name, type, location, client_name, supervisor_unit,
                project_manager_id, planned_start_date, planned_end_date,

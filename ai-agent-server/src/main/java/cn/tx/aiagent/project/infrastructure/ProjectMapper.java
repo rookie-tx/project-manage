@@ -32,4 +32,7 @@ public interface ProjectMapper {
     void softDelete(@Param("id") Long id);
 
     List<ProjectPO> selectAllActive();
+
+    /** 按项目统计物料采购汇总（仅已到货的采购单），GROUP BY 物料 */
+    List<MaterialPurchaseStatsResult> selectMaterialPurchaseStats(@Param("projectId") Long projectId);
 }

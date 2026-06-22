@@ -10,7 +10,7 @@ import {
   Modal,
   message,
 } from 'ant-design-vue'
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons-vue'
+import { PlusOutlined, SearchOutlined, BarChartOutlined } from '@ant-design/icons-vue'
 import { useProjectStore } from '@/stores/project'
 
 const router = useRouter()
@@ -75,6 +75,10 @@ function handleView(id) {
 
 function handleEdit(id) {
   router.push(`/projects/${id}/edit`)
+}
+
+function handleStats(id) {
+  router.push(`/projects/${id}/stats`)
 }
 
 function handleDelete(id) {
@@ -182,6 +186,7 @@ onMounted(() => {
         </template>
         <template v-else-if="column.key === 'action'">
           <Space>
+            <Button type="link" size="small" @click="handleStats(record.id)"><BarChartOutlined /> 统计</Button>
             <Button type="link" size="small" @click="handleView(record.id)">查看</Button>
             <Button type="link" size="small" @click="handleEdit(record.id)">编辑</Button>
             <Button type="link" size="small" danger @click="handleDelete(record.id)">删除</Button>

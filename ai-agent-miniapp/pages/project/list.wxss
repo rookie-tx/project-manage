@@ -40,5 +40,6 @@
 .card-bottom { display: flex; align-items: center; gap: 16rpx; }
 .card-client, .card-mgr { font-size: 22rpx; color: #6b7280; background: #f3f4f6; padding: 4rpx 12rpx; border-radius: 6rpx; }
 .card-arrow { font-size: 24rpx; color: #6366f1; margin-left: auto; }
+.card-stats { font-size: 24rpx; color: #6366f1; }
 
 .load-more { text-align: center; padding: 30rpx 0; font-size: 24rpx; color: #d1d5db; }
