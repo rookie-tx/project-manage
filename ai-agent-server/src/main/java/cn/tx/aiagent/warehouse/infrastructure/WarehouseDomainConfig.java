@@ -10,8 +10,7 @@ public class WarehouseDomainConfig {
     @Bean
     public StockApplicationService stockApplicationService(
             StockRecordRepository stockRecordRepository,
-            StockBalanceRepository stockBalanceRepository,
-            MaterialRepository materialRepository) {
-        return new StockApplicationService(stockRecordRepository, stockBalanceRepository, materialRepository);
+            StockBalanceRepository stockBalanceRepository) {
+        return new StockApplicationService(stockRecordRepository, stockBalanceRepository);
     }
 }

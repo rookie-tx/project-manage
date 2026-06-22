@@ -144,7 +144,7 @@ export function usePurchaseOrderList(statusFilter) {
     inboundForm.materialId = prField(record, 'materialId') || null
     inboundForm.materialLabel = prField(record, 'materialName') || prField(record, 'name') || '-'
     inboundForm.materialSpec = prField(record, 'materialSpec') || prField(record, 'specification') || ''
-    inboundForm.quantity = 1
+    inboundForm.quantity = Number(prField(record, 'quantity')) || 0
     inboundError.value = null
     try {
       const { data } = await client.get('/warehouses')

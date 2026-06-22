@@ -14,4 +14,6 @@ public class StockRecordPO {
     private Long projectId;
     private Long operatorId;
     private LocalDateTime createdAt;
+    private String purchaseRequestCode;
+    private String operatorName;
 }

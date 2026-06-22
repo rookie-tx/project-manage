@@ -13,14 +13,12 @@ import cn.tx.aiagent.purchasemanagement.domain.PurchaseOrder;
 import cn.tx.aiagent.purchasemanagement.domain.PurchaseOrderRepository;
 import cn.tx.aiagent.purchasemanagement.domain.PurchaseOrderStatus;
 import cn.tx.aiagent.purchaserequest.domain.PurchaseRequestRepository;
-import cn.tx.aiagent.user.domain.User;
 import cn.tx.aiagent.user.domain.UserRepository;
 import cn.tx.aiagent.warehouse.domain.MaterialRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -234,9 +232,10 @@ public class PurchaseOrderApplicationService {
                 if (pr.getUnit() != null) {
                     unitLabel = dictMapper.selectByType("UNIT", true).stream()
                             .filter(d -> d.getCode().equals(pr.getUnit()))
-                            .findFirst().map(d -> d.getLabel()).orElse(pr.getUnit());
+                            .findFirst().map(DictPO::getLabel).orElse(pr.getUnit());
                 }
                 info.setQuantityStr(pr.getQuantity() + (unitLabel.isEmpty() ? "" : " " + unitLabel));
+                info.setQuantity(pr.getQuantity());
                 info.setArrivalDate(pr.getArrivalDate() != null ? pr.getArrivalDate().toString() : null);
                 info.setMaterialId(pr.getMaterialId());
                 projectRepository.findById(pr.getProjectId()).ifPresent(p -> info.setProjectName(p.getName()));

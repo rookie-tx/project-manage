@@ -22,20 +22,25 @@ const pendingPOs = ref([])
 const inboundVisible = ref(false)
 const inboundSubmitting = ref(false)
 const inboundError = ref(null)
-const inboundForm = reactive({ warehouseId: null, materialId: null, quantity: 1, purchaseRequestId: null })
+const inboundForm = reactive({ warehouseId: null, materialId: null, materialLabel: '', materialSpec: '', quantity: 1, purchaseRequestId: null })
 
 const columns = [
   { title: '时间', dataIndex: 'createdAt', width: 170 },
   { title: '仓库', key: 'warehouse', width: 120 },
-  { title: '物料', key: 'material', width: 120 },
+  { title: '物料', key: 'material', width: 160 },
   { title: '类型', key: 'type', width: 80 },
   { title: '数量', dataIndex: 'quantity', width: 80 },
-  { title: '关联单据', key: 'ref', width: 140 },
-  { title: '操作人', dataIndex: 'operatorId', width: 80 },
+  { title: '关联单据', key: 'ref', width: 160 },
+  { title: '操作人', key: 'operator', width: 80 },
 ]
 
 function whName(id) { return whStore.warehouses.find(w => w.id === id)?.name || '未知' }
 function matName(id) { return matStore.materials.find(m => m.id === id)?.name || '未知' }
+function matDisplay(id) {
+  const m = matStore.materials.find(m => m.id === id)
+  if (!m) return '未知'
+  return m.spec ? `${m.name} / ${m.spec}` : m.name
+}
 function formatDate(d) { if (!d) return ''; return d.replace('T', ' ').substring(0, 19) }
 
 onMounted(() => { store.fetchAll(); whStore.fetchAll(); matStore.fetchAll(); loadPendingInbound() })
@@ -48,7 +53,12 @@ async function loadPendingInbound() {
 }
 
 function openInboundFromPO(po) {
-  inboundForm.warehouseId = null; inboundForm.materialId = null; inboundForm.quantity = 1
+  const pr = po.purchaseRequests?.[0] || {}
+  inboundForm.warehouseId = null
+  inboundForm.materialId = pr.materialId ?? null
+  inboundForm.materialLabel = pr.materialName || pr.name || '-'
+  inboundForm.materialSpec = pr.materialSpec || pr.specification || ''
+  inboundForm.quantity = Number(pr.quantity) || 0
   inboundForm.purchaseRequestId = po.purchaseRequestId
   inboundError.value = null; inboundVisible.value = true
 }
@@ -116,14 +126,17 @@ async function handleSubmit() {
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'createdAt'">{{ formatDate(record.createdAt) }}</template>
         <template v-if="column.key === 'warehouse'">{{ whName(record.warehouseId) }}</template>
-        <template v-if="column.key === 'material'">{{ matName(record.materialId) }}</template>
+        <template v-if="column.key === 'material'">{{ matDisplay(record.materialId) }}</template>
         <template v-if="column.key === 'type'">
           <Tag :color="record.type === 'IN' ? 'green' : 'red'">{{ record.type === 'IN' ? '入库' : '出库' }}</Tag>
         </template>
         <template v-if="column.key === 'ref'">
-          <template v-if="record.purchaseRequestId">采购单 #{{ record.purchaseRequestId }}</template>
+          <template v-if="record.purchaseRequestId">采购申请 {{ record.purchaseRequestCode || '#' + record.purchaseRequestId }}</template>
           <template v-else-if="record.projectId">项目 #{{ record.projectId }}</template>
           <span v-else style="color:#999">-</span>
+        </template>
+        <template v-if="column.key === 'operator'">
+          {{ record.operatorName || record.operatorId }}
         </template>
       </template>
     </Table>
@@ -133,8 +146,8 @@ async function handleSubmit() {
       <Alert v-if="inboundError" type="error" :message="inboundError" closable style="margin-bottom:16px" />
       <Form layout="vertical">
         <FormItem label="仓库" required><Select v-model:value="inboundForm.warehouseId" placeholder="选择仓库"><Select.Option v-for="w in whStore.warehouses" :key="w.id" :value="w.id">{{ w.name }}</Select.Option></Select></FormItem>
-        <FormItem label="物料" required><Select v-model:value="inboundForm.materialId" placeholder="选择物料"><Select.Option v-for="m in matStore.materials" :key="m.id" :value="m.id">{{ m.name }}</Select.Option></Select></FormItem>
-        <FormItem label="数量" required><InputNumber v-model:value="inboundForm.quantity" :min="0.01" style="width:100%" /></FormItem>
+        <FormItem label="物料"><Input :value="`${inboundForm.materialLabel}${inboundForm.materialSpec ? ' / ' + inboundForm.materialSpec : ''}`" disabled placeholder="从采购申请自动带入" style="width:100%" /></FormItem>
+        <FormItem label="数量" required><InputNumber v-model:value="inboundForm.quantity" :min="0.01" disabled style="width:100%" /></FormItem>
       </Form>
     </Modal>
 

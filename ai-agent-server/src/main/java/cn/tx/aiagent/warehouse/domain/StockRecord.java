@@ -14,13 +14,16 @@ public class StockRecord {
     private Long projectId;
     private Long operatorId;
     private LocalDateTime createdAt;
+    private String purchaseRequestCode;
+    private String operatorName;
 
     private StockRecord() {}
 
     public static StockRecord fromPersistence(Long id, Long warehouseId, Long materialId,
                                                int typeCode, double quantity,
                                                Long purchaseRequestId, Long projectId,
-                                               Long operatorId, LocalDateTime createdAt) {
+                                               Long operatorId, LocalDateTime createdAt,
+                                               String purchaseRequestCode, String operatorName) {
         StockRecord sr = new StockRecord();
         sr.id = id;
         sr.warehouseId = warehouseId;
@@ -31,6 +34,8 @@ public class StockRecord {
         sr.projectId = projectId;
         sr.operatorId = operatorId;
         sr.createdAt = createdAt;
+        sr.purchaseRequestCode = purchaseRequestCode;
+        sr.operatorName = operatorName;
         return sr;
     }
 }

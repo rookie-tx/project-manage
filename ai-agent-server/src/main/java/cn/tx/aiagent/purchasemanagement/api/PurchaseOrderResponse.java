@@ -40,6 +40,7 @@ public class PurchaseOrderResponse {
         private String name;
         private String specification;
         private String quantityStr;
+        private BigDecimal quantity;
         private String arrivalDate;
         private String projectName;
         private Long materialId;

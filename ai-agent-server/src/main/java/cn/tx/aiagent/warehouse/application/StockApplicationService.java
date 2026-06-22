@@ -9,14 +9,11 @@ public class StockApplicationService {
 
     private final StockRecordRepository stockRecordRepository;
     private final StockBalanceRepository stockBalanceRepository;
-    private final MaterialRepository materialRepository;
 
     public StockApplicationService(StockRecordRepository stockRecordRepository,
-                                    StockBalanceRepository stockBalanceRepository,
-                                    MaterialRepository materialRepository) {
+                                    StockBalanceRepository stockBalanceRepository) {
         this.stockRecordRepository = stockRecordRepository;
         this.stockBalanceRepository = stockBalanceRepository;
-        this.materialRepository = materialRepository;
     }
 
     @Transactional
@@ -31,16 +28,10 @@ public class StockApplicationService {
         }
 
         StockRecord record = StockRecord.fromPersistence(null, warehouseId, materialId, type.getCode(),
-                quantity, purchaseRequestId, projectId, operatorId, null);
+                quantity, purchaseRequestId, projectId, operatorId, null, null, null);
         stockRecordRepository.save(record);
 
         double delta = type == StockType.IN ? quantity : -quantity;
         stockBalanceRepository.upsert(warehouseId, materialId, delta);
-    }
-
-    public void updateWarehouse(WarehouseRepository warehouseRepo, Long id, String name, String location, Integer statusCode) {
-        Warehouse w = warehouseRepo.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.WAREHOUSE_NOT_FOUND, id));
-        if (name != null) { /* update via direct set */ }
-        warehouseRepo.update(w);
     }
 }

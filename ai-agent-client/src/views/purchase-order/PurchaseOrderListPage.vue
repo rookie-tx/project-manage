@@ -111,7 +111,7 @@ async function openInbound(record) {
   inboundForm.materialId = prField(record, 'materialId') || null
   inboundForm.materialLabel = prField(record, 'materialName') || prField(record, 'name') || '-'
   inboundForm.materialSpec = prField(record, 'materialSpec') || prField(record, 'specification') || ''
-  inboundForm.quantity = 1
+  inboundForm.quantity = Number(prField(record, 'quantity')) || 0
   inboundError.value = null
   try {
     const { data } = await client.get('/warehouses')
@@ -187,7 +187,7 @@ async function handleInbound() {
         <FormItem label="物料">
           <Input :value="`${inboundForm.materialLabel}${inboundForm.materialSpec ? ' / ' + inboundForm.materialSpec : ''}`" disabled placeholder="从采购申请自动带入" style="width:100%" />
         </FormItem>
-        <FormItem label="数量" required><InputNumber v-model:value="inboundForm.quantity" :min="0.01" style="width:100%" /></FormItem>
+        <FormItem label="数量" required><InputNumber v-model:value="inboundForm.quantity" :min="0.01" disabled style="width:100%" /></FormItem>
       </Form>
     </Modal>
   </div>

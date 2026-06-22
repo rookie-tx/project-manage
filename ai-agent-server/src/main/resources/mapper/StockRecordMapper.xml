@@ -13,12 +13,18 @@
     </insert>
 
     <select id="selectAll" resultType="cn.tx.aiagent.warehouse.infrastructure.StockRecordPO">
-        SELECT id, warehouse_id, material_id, type, quantity, purchase_request_id, project_id, operator_id, created_at
-        FROM t_stock_record WHERE 1=1
-        <if test="warehouseId != null">AND warehouse_id = #{warehouseId}</if>
-        <if test="materialId != null">AND material_id = #{materialId}</if>
-        <if test="type != null">AND type = #{type}</if>
-        ORDER BY created_at DESC
+        SELECT s.id, s.warehouse_id, s.material_id, s.type, s.quantity,
+               s.purchase_request_id, s.project_id, s.operator_id, s.created_at,
+               pr.code AS purchase_request_code,
+               u.name AS operator_name
+        FROM t_stock_record s
+        LEFT JOIN t_purchase_request pr ON s.purchase_request_id = pr.id
+        LEFT JOIN t_user u ON s.operator_id = u.id
+        WHERE 1=1
+        <if test="warehouseId != null">AND s.warehouse_id = #{warehouseId}</if>
+        <if test="materialId != null">AND s.material_id = #{materialId}</if>
+        <if test="type != null">AND s.type = #{type}</if>
+        ORDER BY s.created_at DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
 

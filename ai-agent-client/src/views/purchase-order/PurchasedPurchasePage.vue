@@ -57,7 +57,7 @@ const {
         <FormItem label="物料">
           <Input :value="`${inboundForm.materialLabel}${inboundForm.materialSpec ? ' / ' + inboundForm.materialSpec : ''}`" disabled placeholder="从采购申请自动带入" style="width:100%" />
         </FormItem>
-        <FormItem label="数量" required><InputNumber v-model:value="inboundForm.quantity" :min="0.01" style="width:100%" /></FormItem>
+        <FormItem label="数量" required><InputNumber v-model:value="inboundForm.quantity" :min="0.01" disabled style="width:100%" /></FormItem>
       </Form>
     </Modal>
   </div>
