@@ -26,4 +26,7 @@ public interface ProjectRepository {
 
     /** 查询所有未删除的项目，供下拉选择 */
     List<Project> findAllActive();
+
+    /** 按名称模糊搜索，上限 10 条，供 Agent 工具调用 */
+    List<Project> findByNameLike(String keyword);
 }

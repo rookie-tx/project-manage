@@ -1,9 +1,9 @@
 package cn.tx.aiagent.wechat;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -16,14 +16,14 @@ public class WechatApiClient {
     private static final String CODE2SESSION_URL =
             "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code";
 
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     private final WechatProperties wechatProperties;
     private final HttpClient httpClient;
-    private final ObjectMapper objectMapper;
 
-    public WechatApiClient(WechatProperties wechatProperties, ObjectMapper objectMapper) {
+    public WechatApiClient(WechatProperties wechatProperties) {
         this.wechatProperties = wechatProperties;
         this.httpClient = HttpClient.newHttpClient();
-        this.objectMapper = objectMapper;
     }
 
     /**
@@ -43,17 +43,17 @@ public class WechatApiClient {
                     .GET()
                     .build();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            JsonNode json = objectMapper.readTree(response.body());
+            JsonNode json = OBJECT_MAPPER.readTree(response.body());
 
             if (json.has("errcode") && json.get("errcode").asInt() != 0) {
                 int errcode = json.get("errcode").asInt();
-                String errmsg = json.has("errmsg") ? json.get("errmsg").asText() : "unknown";
+                String errmsg = json.has("errmsg") ? json.get("errmsg").asString() : "unknown";
                 throw new WechatApiException(errcode, errmsg);
             }
 
-            String openid = json.get("openid").asText();
-            String sessionKey = json.get("session_key").asText();
-            String unionid = json.has("unionid") ? json.get("unionid").asText() : null;
+            String openid = json.get("openid").asString();
+            String sessionKey = json.get("session_key").asString();
+            String unionid = json.has("unionid") ? json.get("unionid").asString() : null;
 
             return new WechatSession(openid, sessionKey, unionid);
         } catch (WechatApiException e) {

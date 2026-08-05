@@ -3,7 +3,8 @@ import { ref, watch, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useApprovalStore } from '@/stores/approval'
 import { useRouter, useRoute } from 'vue-router'
-import { UserOutlined, LogoutOutlined, DashboardOutlined, ProjectOutlined, ShoppingOutlined, SettingOutlined, CheckSquareOutlined, TeamOutlined, SafetyOutlined, HomeOutlined, DeleteOutlined, ShopOutlined } from '@ant-design/icons-vue'
+import { UserOutlined, LogoutOutlined, DashboardOutlined, ProjectOutlined, ShoppingOutlined, SettingOutlined, CheckSquareOutlined, TeamOutlined, SafetyOutlined, HomeOutlined, DeleteOutlined, ShopOutlined, RobotOutlined } from '@ant-design/icons-vue'
+import AgentChatPanel from '@/views/agent/AgentChatPanel.vue'
 
 const auth = useAuthStore()
 const approval = useApprovalStore()
@@ -15,6 +16,7 @@ onMounted(() => {
 })
 
 const selectedKeys = ref(['dashboard'])
+const agentDrawerOpen = ref(false)
 
 watch(() => route.path, (path) => {
   if (path.startsWith('/projects')) {
@@ -198,9 +200,25 @@ async function handleLogout() {
       <router-view />
     </a-layout-content>
   </a-layout>
-</template>
 
-<style scoped>
+    <!-- 采购助手悬浮按钮 + 侧边抽屉 -->
+    <div class="agent-float-btn" @click="agentDrawerOpen = true">
+      <RobotOutlined />
+    </div>
+
+    <a-drawer
+      title="采购助手"
+      placement="right"
+      :width="480"
+      :open="agentDrawerOpen"
+      @close="agentDrawerOpen = false"
+      :body-style="{ padding: 0, height: '100%' }"
+    >
+      <AgentChatPanel />
+    </a-drawer>
+  </template>
+
+  <style scoped>
 .dashboard-layout {
   width: 100%;
   min-height: 100vh;
@@ -221,6 +239,8 @@ async function handleLogout() {
 .header-left {
   display: flex;
   align-items: center;
+  flex: 1;
+  min-width: 0;
 }
 
 .logo {
@@ -228,6 +248,7 @@ async function handleLogout() {
   align-items: center;
   gap: 12px;
   margin-right: 40px;
+  flex-shrink: 0;
 }
 
 .logo-icon {
@@ -250,6 +271,8 @@ async function handleLogout() {
 .header-menu {
   border-bottom: none;
   line-height: 60px;
+  flex: 1;
+  min-width: 0;
 }
 
 .header-menu :deep(.ant-menu-item-selected) {
@@ -265,6 +288,7 @@ async function handleLogout() {
 .header-right {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .user-dropdown {
@@ -289,5 +313,37 @@ async function handleLogout() {
 
 .dashboard-content {
   padding: 20px 24px;
+}
+
+/* 采购助手悬浮按钮 */
+.agent-float-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 999;
+  transition: transform 0.2s, box-shadow 0.2s;
+  color: #fff;
+  font-size: 24px;
+}
+
+.agent-float-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 24px rgba(99, 102, 241, 0.5);
+}
+
+/* 抽屉内 AgentChatPanel 全高适配 */
+:deep(.agent-chat-panel) {
+  height: 100% !important;
+  border-radius: 0;
+  box-shadow: none;
 }
 </style>

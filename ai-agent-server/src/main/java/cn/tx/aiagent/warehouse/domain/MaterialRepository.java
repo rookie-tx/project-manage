@@ -10,4 +10,7 @@ public interface MaterialRepository {
     Material save(Material material);
     void update(Material material);
     void softDelete(Long id);
+
+    /** 按名称或规格模糊搜索，上限 10 条，供 Agent 工具调用 */
+    List<Material> findByNameOrSpecLike(String keyword);
 }

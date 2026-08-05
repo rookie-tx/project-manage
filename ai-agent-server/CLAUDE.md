@@ -2,14 +2,14 @@
 
 ## 技术栈
 
-| 组件 | 版本/选型 |
-|------|----------|
-| Java | 25 |
-| 框架 | Spring Boot 3.5.14 |
-| 构建 | Maven (wrapper `./mvnw`) |
-| ORM | MyBatis 3.0.5 |
-| 数据库 | PostgreSQL (环境变量 `DS_URL`, `DS_USERNAME`, `DS_PASSWORD`) |
-| 工具 | Lombok, MapStruct 1.6.3, Spring Security Crypto (BCrypt) |
+| 组件 | 版本/选型                                                             |
+|------|-------------------------------------------------------------------|
+| Java | 25                                                                |
+| 框架 | Spring Boot 4.1.0                                                 |
+| 构建 | Maven (wrapper `./mvnw`)                                          |
+| ORM | MyBatis 4.0.1                                                     |
+| 数据库 | PostgreSQL (环境变量 `DS_URL`, `DS_USERNAME`, `DS_PASSWORD`)          |
+| 工具 | Lombok, MapStruct 1.6.3, Spring Security Crypto (BCrypt)          |
 | 对象映射 | MapStruct (PO↔Domain 用 default 方法 + 表达式, DTO↔Domain/Command 自动生成) |
 
 ## 更多规范

@@ -74,4 +74,11 @@ public class ProjectRepositoryImpl implements ProjectRepository {
                 .map(poMapper::toDomain)
                 .toList();
     }
+
+    @Override
+    public List<Project> findByNameLike(String keyword) {
+        return projectMapper.selectByNameLike(keyword).stream()
+                .map(poMapper::toDomain)
+                .toList();
+    }
 }

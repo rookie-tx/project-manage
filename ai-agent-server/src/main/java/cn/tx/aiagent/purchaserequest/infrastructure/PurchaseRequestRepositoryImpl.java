@@ -21,7 +21,9 @@ public class PurchaseRequestRepositoryImpl implements PurchaseRequestRepository 
 
     @Override
     public void save(PurchaseRequest pr) {
-        mapper.insert(poMapper.toPO(pr));
+        PurchaseRequestPO po = poMapper.toPO(pr);
+        mapper.insert(po);
+        pr.setId(po.getId());
     }
 
     @Override

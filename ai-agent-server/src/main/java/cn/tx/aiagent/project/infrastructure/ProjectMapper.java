@@ -35,4 +35,7 @@ public interface ProjectMapper {
 
     /** 按项目统计物料采购汇总（仅已到货的采购单），GROUP BY 物料 */
     List<MaterialPurchaseStatsResult> selectMaterialPurchaseStats(@Param("projectId") Long projectId);
+
+    /** 按名称模糊搜索项目，上限 10 条 */
+    List<ProjectPO> selectByNameLike(@Param("keyword") String keyword);
 }

@@ -12,4 +12,7 @@ public interface MaterialMapper {
     void insert(MaterialPO po);
     void update(MaterialPO po);
     void softDelete(@Param("id") Long id);
+
+    /** 按名称或规格模糊搜索物料，上限 10 条 */
+    List<MaterialPO> selectByNameOrSpecLike(@Param("keyword") String keyword);
 }

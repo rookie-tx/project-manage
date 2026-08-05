@@ -113,6 +113,17 @@
         ORDER BY total_amount DESC
     </select>
 
+    <select id="selectByNameLike" resultType="cn.tx.aiagent.project.infrastructure.ProjectPO">
+        SELECT id, code, name, type, location, client_name, supervisor_unit,
+               project_manager_id, planned_start_date, planned_end_date,
+               actual_start_date, actual_end_date, status, remark, is_deleted,
+               created_by, created_at, updated_at
+        FROM t_project
+        WHERE is_deleted = 0 AND name LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY id DESC
+        LIMIT 10
+    </select>
+
     <select id="selectAllActive" resultType="cn.tx.aiagent.project.infrastructure.ProjectPO">
         SELECT id, code, name, type, location, client_name, supervisor_unit,
                project_manager_id, planned_start_date, planned_end_date,

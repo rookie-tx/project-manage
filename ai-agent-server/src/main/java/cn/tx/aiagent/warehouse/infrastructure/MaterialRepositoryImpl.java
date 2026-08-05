@@ -22,4 +22,9 @@ public class MaterialRepositoryImpl implements MaterialRepository {
     public Material save(Material m) { MaterialPO po = poMapper.toPO(m); mapper.insert(po); return poMapper.toDomain(po); }
     public void update(Material m) { mapper.update(poMapper.toPO(m)); }
     public void softDelete(Long id) { mapper.softDelete(id); }
+
+    public List<Material> findByNameOrSpecLike(String keyword) {
+        return mapper.selectByNameOrSpecLike(keyword).stream()
+                .map(poMapper::toDomain).toList();
+    }
 }

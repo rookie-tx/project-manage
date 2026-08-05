@@ -31,4 +31,14 @@
         UPDATE t_material SET is_deleted = 1, updated_at = NOW() WHERE id = #{id}
     </update>
 
+    <select id="selectByNameOrSpecLike" resultType="cn.tx.aiagent.warehouse.infrastructure.MaterialPO">
+        SELECT id, code, name, spec, unit, is_deleted, created_at, updated_at
+        FROM t_material
+        WHERE is_deleted = 0
+          AND (name LIKE CONCAT('%', #{keyword}, '%')
+               OR spec LIKE CONCAT('%', #{keyword}, '%'))
+        ORDER BY id
+        LIMIT 10
+    </select>
+
 </mapper>

@@ -3,11 +3,12 @@ package cn.tx.aiagent.common.config;
 import cn.tx.aiagent.common.api.ErrorCode;
 import cn.tx.aiagent.common.api.Result;
 import cn.tx.aiagent.login.domain.LoginContext;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * 强制改密拦截器：mustChangePassword 为 true 的用户只能访问登录/登出/改密/当前用户接口。
@@ -26,8 +27,8 @@ public class ForcePasswordChangeInterceptor implements HandlerInterceptor {
     };
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-                              Object handler) throws Exception {
+    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+                             @NonNull Object handler) throws Exception {
         LoginContext ctx = LoginContextHolder.get();
         if (ctx == null || !ctx.mustChangePassword()) {
             return true;
